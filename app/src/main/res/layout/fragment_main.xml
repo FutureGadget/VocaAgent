@@ -18,6 +18,6 @@
     <Button
         android:id="@+id/manage_notes_button"
         style="@style/fragment_main_btn_wordbook"
-        android:text="단어장 관리" />
+        android:text="단어장 관리씨발" />
 
 </LinearLayout>
