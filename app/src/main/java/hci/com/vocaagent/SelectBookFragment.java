@@ -97,7 +97,6 @@ public class SelectBookFragment extends Fragment {
             mTitleTextView.setText(mBook.getBookName());
             mDetailTextView.setText("단어수: " + mBook.getWords().size() + "\n수정일:" + mBook.getLastModified());
             changeViewHolderStatus(mSavedViewHolderStatus[index]);
-            Log.d("TEST", index+"");
         }
 
         @Override
