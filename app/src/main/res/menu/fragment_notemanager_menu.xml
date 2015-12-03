@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--단어장 추가-->
+    <item
+        android:id="@+id/menu_item_add_book"
+        android:title="@string/add_book"
+        app:showAsAction="never">
+    </item>
+    <!--삭제-->
+    <item
+        android:id="@+id/menu_item_del_book"
+        android:title="@string/del_book"
+        app:showAsAction="never">
+    </item>
+    <!--가져오기-->
+    <item
+        android:id="@+id/menu_item_import_book"
+        android:title="@string/import_book"
+        app:showAsAction="never">
+    </item>
+    <!--내보내기-->
+    <item
+        android:id="@+id/menu_item_export_book"
+        android:title="@string/export_book"
+        app:showAsAction="never">
+    </item>
+</menu>

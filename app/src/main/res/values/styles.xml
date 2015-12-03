@@ -1,0 +1,58 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="common_btn">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="fragment_main_btn_start" parent="common_btn">
+        <item name="android:textSize">40dp</item>
+        <item name="android:padding">20dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:radius">10dp</item>
+        <item name="android:background">@drawable/fragment_main_btn_start</item>
+    </style>
+
+    <style name="fragment_main_btn_wordbook" parent="common_btn">
+        <item name="android:padding">20dp</item>
+        <item name="android:textSize">30dp</item>
+        <item name="android:background">@drawable/fragment_main_btn_wordbook</item>
+    </style>
+
+    <style name="fragment_selectBook_btn" parent="common_btn">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.5</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:background">@drawable/fragment_selectbook_btn</item>
+    </style>
+
+    <style name="fragment_comment">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+</resources>
