@@ -1,11 +1,11 @@
 package hci.com.vocaagent;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +24,7 @@ public class SelectBookFragment extends Fragment {
     private RecyclerView mBookRecyclerView;
     private NoteAdapter mAdapter;
     private Button mSelectButton;
+    private boolean[] mSavedViewHolderStatus;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class SelectBookFragment extends Fragment {
         VocaLab vocaLab = VocaLab.getVoca();
         List<Book> books = vocaLab.getBooks();
         mAdapter = new NoteAdapter(books);
+        mSavedViewHolderStatus = new boolean[books.size()];
         mBookRecyclerView.setAdapter(mAdapter);
     }
 
@@ -62,6 +64,8 @@ public class SelectBookFragment extends Fragment {
         private TextView mDetailTextView;
         private CheckBox mCheckBox; // to select multiple Vocabulary Books.
         private Book mBook;
+
+        public int index; // for saving view holder's status
 
         public BookHolder(View itemView) {
             super(itemView);
@@ -79,15 +83,10 @@ public class SelectBookFragment extends Fragment {
                      */
                     if (mCheckBox.isChecked()) {
                         VocaLab.getVoca().addExamBook(mBook);
-                        mNoteManagerList.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                        mTitleTextView.setTextColor(getResources().getColor(R.color.colorWhite));
-                        mDetailTextView.setTextColor(getResources().getColor(R.color.colorWhite));
-
+                        changeViewHolderStatus(mCheckBox.isChecked());
                     } else {
                         VocaLab.getVoca().removeExamBook(mBook);
-                        mNoteManagerList.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-                        mTitleTextView.setTextColor(getResources().getColor(R.color.textSecondary));
-                        mDetailTextView.setTextColor(getResources().getColor(R.color.textSecondary));
+                        changeViewHolderStatus(mCheckBox.isChecked());
                     }
                 }
             });
@@ -97,11 +96,29 @@ public class SelectBookFragment extends Fragment {
             mBook = book;
             mTitleTextView.setText(mBook.getBookName());
             mDetailTextView.setText("단어수: " + mBook.getWords().size() + "\n수정일:" + mBook.getLastModified());
+            changeViewHolderStatus(mSavedViewHolderStatus[index]);
+            Log.d("TEST", index+"");
         }
 
         @Override
         public void onClick(View v) {
             mCheckBox.performClick();
+        }
+
+        private void changeViewHolderStatus(boolean isChecked) {
+            if (isChecked) {
+                mNoteManagerList.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                mTitleTextView.setTextColor(getResources().getColor(R.color.colorWhite));
+                mDetailTextView.setTextColor(getResources().getColor(R.color.colorWhite));
+                mSavedViewHolderStatus[index] = true;
+                mCheckBox.setChecked(true);
+            } else {
+                mNoteManagerList.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+                mTitleTextView.setTextColor(getResources().getColor(R.color.textSecondary));
+                mDetailTextView.setTextColor(getResources().getColor(R.color.textSecondary));
+                mSavedViewHolderStatus[index] = false;
+                mCheckBox.setChecked(false);
+            }
         }
     }
 
@@ -122,6 +139,7 @@ public class SelectBookFragment extends Fragment {
         @Override
         public void onBindViewHolder(BookHolder holder, int position) {
             Book book = mBooks.get(position);
+            holder.index = position;
             holder.bindBook(book);
         }
 

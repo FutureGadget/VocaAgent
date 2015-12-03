@@ -27,6 +27,7 @@ public class BookFragment extends Fragment {
     private WordAdapter mAdapter;
     private int mBookId;
     private static final String ARG_BOOK_ID = "book_id";
+    private boolean[] mSavedViewHolderStatus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,9 @@ public class BookFragment extends Fragment {
     }
 
     public void updateUI() {
-        mAdapter = new WordAdapter(VocaLab.getVoca().getBookByID(mBookId).getWords());
+        List<Word> words = VocaLab.getVoca().getBookByID(mBookId).getWords();
+        mAdapter = new WordAdapter(words);
+        mSavedViewHolderStatus = new boolean[words.size()];
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -79,13 +82,22 @@ public class BookFragment extends Fragment {
     private class WordHolder extends RecyclerView.ViewHolder {
         private CheckBox mCheckBox;
         private TextView mTextView;
+
+        public int index;
         public WordHolder(View itemView) {
             super(itemView);
             mCheckBox = (CheckBox)itemView.findViewById(R.id.select_word_checkbox);
             mTextView = (TextView)itemView.findViewById(R.id.word_text_view);
+            mCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSavedViewHolderStatus[index] = mCheckBox.isChecked();
+                }
+            });
         }
         public void bindWord(Word word) {
             mTextView.setText(word.getWord());
+            mCheckBox.setChecked(mSavedViewHolderStatus[index]);
         }
     }
 
@@ -102,6 +114,7 @@ public class BookFragment extends Fragment {
         @Override
         public void onBindViewHolder(WordHolder holder, int position) {
             Word word = mWords.get(position);
+            holder.index = position;
             holder.bindWord(word);
         }
 

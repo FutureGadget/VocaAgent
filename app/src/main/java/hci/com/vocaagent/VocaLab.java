@@ -18,13 +18,13 @@ public class VocaLab {
         mBooks = new ArrayList<>();
         mExamBooks = new ArrayList<>();
         // Test code
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 20; ++i) {
             Book book = new Book();
             book.setBookId(i);
             book.setBookName(i + "" + "Book");
             book.setLastModified(DateFormat.format("EEEE, MMM, d, yyyy", new Date()).toString());
             List<Word> words = book.getWords();
-            for (int j = 0; j < 5; ++j) {
+            for (int j = 0; j < 15; ++j) {
                 Word word = new Word();
                 word.setCompleted(false);
                 word.setNumCorrect(0);
