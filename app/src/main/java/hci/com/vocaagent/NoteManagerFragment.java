@@ -18,6 +18,7 @@ import java.util.List;
 public class NoteManagerFragment extends Fragment {
     private RecyclerView mBookRecyclerView;
     private NoteAdapter mAdapter;
+    private boolean[] mSavedViewHolderStatus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,6 @@ public class NoteManagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_note_manager, container, false);
         mBookRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        mBookRecyclerView.setHasFixedSize(true);
         mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
         return v;
@@ -44,6 +44,7 @@ public class NoteManagerFragment extends Fragment {
         VocaLab vocaLab = VocaLab.getVoca();
         List<Book> books = vocaLab.getBooks();
         mAdapter = new NoteAdapter(books);
+        mSavedViewHolderStatus = new boolean[books.size()];
         mBookRecyclerView.setAdapter(mAdapter);
     }
 
@@ -52,6 +53,7 @@ public class NoteManagerFragment extends Fragment {
         private TextView mDetailTextView;
         private CheckBox mCheckBox; // to delete/merge multiple Vocabulary Books.
         private Book mBook;
+        public int index;
 
         public BookHolder(View itemView) {
             super(itemView);
@@ -59,12 +61,19 @@ public class NoteManagerFragment extends Fragment {
             mTitleTextView = (TextView) itemView.findViewById(R.id.title_text_view);
             mDetailTextView = (TextView) itemView.findViewById(R.id.detail_text_view);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.select_check_box);
+            mCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSavedViewHolderStatus[index] = mCheckBox.isChecked();
+                }
+            });
         }
 
         public void bindBook(Book book) {
             mBook = book;
             mTitleTextView.setText(mBook.getBookName());
-            mDetailTextView.setText("1");
+            mDetailTextView.setText("단어수: " + mBook.getWords().size() + "\n수정일:" + mBook.getLastModified());
+            mCheckBox.setChecked(mSavedViewHolderStatus[index]);
         }
 
         @Override
@@ -93,6 +102,7 @@ public class NoteManagerFragment extends Fragment {
         @Override
         public void onBindViewHolder(BookHolder holder, int position) {
             Book book = mBooks.get(position);
+            holder.index = position;
             holder.bindBook(book);
         }
 
