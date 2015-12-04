@@ -16,10 +16,10 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by dw on 2015-11-21.
  * Users can modify words in vocabulary books on this Fragment.
  */
 public class BookFragment extends Fragment {
@@ -64,7 +64,7 @@ public class BookFragment extends Fragment {
     }
 
     public void updateUI() {
-        List<Word> words = VocaLab.getVoca().getBookByID(mBookId).getWords();
+        List<Word> words = VocaLab.getVoca(getActivity()).getWordInBook(mBookId);
         mAdapter = new WordAdapter(words);
         mSavedViewHolderStatus = new boolean[words.size()];
         mRecyclerView.setAdapter(mAdapter);

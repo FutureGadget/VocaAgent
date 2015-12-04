@@ -4,11 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
-/**
- * Created by dw on 2015-11-21.
- */
-
 // Activity to modify the book contents. (list of words)
 public class BookActivity extends SingleFragmentActivity{
     private static String EXTRA_BOOK_ID = "hci.com.vocaagent.book_id";

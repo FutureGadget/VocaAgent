@@ -1,8 +1,5 @@
 package hci.com.vocaagent;
 
-/**
- * Created by dw on 2015-11-21.
- */
 public class Word {
     private int wordId;
     private String word;

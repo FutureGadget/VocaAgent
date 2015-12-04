@@ -17,7 +17,6 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
- * Created by dw on 2015-11-22.
  * Users can choose which books to study.
  */
 public class SelectBookFragment extends Fragment {
@@ -47,11 +46,11 @@ public class SelectBookFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // Landscape -> vertical -> landscape..
-        VocaLab.getVoca().resetExamBooks();
+        VocaLab.getVoca(getActivity()).resetExamBooks();
     }
 
     private void updateUI() {
-        VocaLab vocaLab = VocaLab.getVoca();
+        VocaLab vocaLab = VocaLab.getVoca(getActivity());
         List<Book> books = vocaLab.getBooks();
         mAdapter = new NoteAdapter(books);
         mSavedViewHolderStatus = new boolean[books.size()];
@@ -82,10 +81,10 @@ public class SelectBookFragment extends Fragment {
                      * Add the book to the ExamBook List when touched.
                      */
                     if (mCheckBox.isChecked()) {
-                        VocaLab.getVoca().addExamBook(mBook);
+                        VocaLab.getVoca(getActivity()).addExamBook(mBook);
                         changeViewHolderStatus(mCheckBox.isChecked());
                     } else {
-                        VocaLab.getVoca().removeExamBook(mBook);
+                        VocaLab.getVoca(getActivity()).removeExamBook(mBook);
                         changeViewHolderStatus(mCheckBox.isChecked());
                     }
                 }
@@ -95,7 +94,7 @@ public class SelectBookFragment extends Fragment {
         public void bindBook(Book book) {
             mBook = book;
             mTitleTextView.setText(mBook.getBookName());
-            mDetailTextView.setText("단어수: " + mBook.getWords().size() + "\n수정일:" + mBook.getLastModified());
+            mDetailTextView.setText("단어수: " + mBook.getNumWords() + "\n수정일:" + mBook.getLastModified());
             changeViewHolderStatus(mSavedViewHolderStatus[index]);
         }
 

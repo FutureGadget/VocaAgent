@@ -9,9 +9,6 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-/**
- * Created by dw on 2015-11-22.
- */
 public class Phase1Fragment extends Fragment {
     private static final String ARG_WORDID = "word_id";
     private TextView mSentenceTextView;
@@ -22,7 +19,7 @@ public class Phase1Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
         View v = layoutInflater.inflate(R.layout.fragment_phase1, container, false);
-        mWord = VocaLab.getVoca().getWordByID(getArguments().getInt(ARG_WORDID));
+        mWord = VocaLab.getVoca(getActivity()).getWordByID(getArguments().getInt(ARG_WORDID));
         mSentenceTextView = (TextView) v.findViewById(R.id.sentence_text_view);
         mSubmitButton = (Button) v.findViewById(R.id.submit_button);
         mRadioButton = new RadioButton[4];

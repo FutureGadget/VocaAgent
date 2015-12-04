@@ -10,9 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.List;
 
-/**
- * Created by dw on 2015-11-22.
- */
 public class ExamPagerActivity extends AppCompatActivity{
     private ViewPager mViewPager;
     private List<Word> mWords;
@@ -23,7 +20,7 @@ public class ExamPagerActivity extends AppCompatActivity{
         mViewPager = (ViewPager)findViewById(R.id.activity_exam_pager);
 
         // Get words for exam.
-        mWords = VocaLab.getVoca().getTestWords();
+        mWords = VocaLab.getVoca(ExamPagerActivity.this).getTestWords();
         // Exception : No words in the list.
         if (mWords.size() == 0) {
             finish();

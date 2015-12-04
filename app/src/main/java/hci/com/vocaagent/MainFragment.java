@@ -8,9 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-/**
- * Created by dw on 2015-11-20.
- */
 public class MainFragment extends Fragment {
     private Button mManageBooksButton;
     private Button mStartButton;

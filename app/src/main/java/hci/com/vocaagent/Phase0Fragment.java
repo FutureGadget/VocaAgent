@@ -8,9 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-/**
- * Created by dw on 2015-11-22.
- */
 public class Phase0Fragment extends Fragment {
     private TextView mWordTitle;
     private TextView mContent; // meaning, sentence
@@ -19,7 +16,7 @@ public class Phase0Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_phase0, container, false);
-        mWord = VocaLab.getVoca().getWordByID(getArguments().getInt(ARG_WORDID));
+        mWord = VocaLab.getVoca(getActivity()).getWordByID(getArguments().getInt(ARG_WORDID));
         mWordTitle = (TextView)v.findViewById(R.id.word_title_text_view);
         mContent = (TextView)v.findViewById(R.id.word_meaning_sentence_text_view);
 

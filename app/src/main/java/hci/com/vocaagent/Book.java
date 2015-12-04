@@ -4,24 +4,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by dw on 2015-11-21.
- */
 public class Book {
     private int bookId;
     private String bookName;
-    private List<Word> words;
+    private String lastModified;
+    private int numWords;
 
-    public Book() {
-        words = new ArrayList<>();
+    public int getNumWords() {
+        return numWords;
     }
 
-    public void addWord(Word word) {
-        words.add(word);
-    }
-
-    public List<Word> getWords() {
-        return words;
+    public void setNumWords(int numWords) {
+        this.numWords = numWords;
     }
 
     public String getLastModified() {
@@ -47,6 +41,4 @@ public class Book {
     public void setBookName(String bookName) {
         this.bookName = bookName;
     }
-
-    private String lastModified;
 }

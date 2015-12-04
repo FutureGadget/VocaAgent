@@ -2,12 +2,14 @@ package hci.com.vocaagent;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -39,13 +41,35 @@ public class NoteManagerFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_notemanager_menu, menu);
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.menu_item_add_book:
+                AddBookFragment dialogFragment = new AddBookFragment();
+                dialogFragment.show(getFragmentManager(),"add_book");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
 
     private void updateUI() {
-        VocaLab vocaLab = VocaLab.getVoca();
+        VocaLab vocaLab = VocaLab.getVoca(getActivity());
         List<Book> books = vocaLab.getBooks();
-        mAdapter = new NoteAdapter(books);
+        if (mAdapter == null) {
+            mAdapter = new NoteAdapter(books);
+            mBookRecyclerView.setAdapter(mAdapter);
+        }
+        else {
+            mAdapter.setBooks(books);
+            mAdapter.notifyDataSetChanged();
+        }
         mSavedViewHolderStatus = new boolean[books.size()];
-        mBookRecyclerView.setAdapter(mAdapter);
     }
 
     private class BookHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -72,7 +96,7 @@ public class NoteManagerFragment extends Fragment {
         public void bindBook(Book book) {
             mBook = book;
             mTitleTextView.setText(mBook.getBookName());
-            mDetailTextView.setText("단어수: " + mBook.getWords().size() + "\n수정일:" + mBook.getLastModified());
+            mDetailTextView.setText("단어수: " + mBook.getNumWords() + "\n수정일:" + mBook.getLastModified());
             mCheckBox.setChecked(mSavedViewHolderStatus[index]);
         }
 
@@ -89,6 +113,10 @@ public class NoteManagerFragment extends Fragment {
         private List<Book> mBooks;
 
         public NoteAdapter(List<Book> books) {
+            mBooks = books;
+        }
+
+        public void setBooks(List<Book> books) {
             mBooks = books;
         }
 

@@ -1,44 +1,49 @@
 package hci.com.vocaagent;
 
-import android.text.format.DateFormat;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-/**
- * Created by dw on 2015-11-20.
- */
+import hci.com.vocaagent.database.BookCursorWrapper;
+import hci.com.vocaagent.database.VocaAgentDbSchema.BookTable;
+import hci.com.vocaagent.database.VocaAgentDbSchema.WordTable;
+import hci.com.vocaagent.database.VocaBaseHelper;
+import hci.com.vocaagent.database.WordCursorWrapper;
+
 public class VocaLab {
     public static VocaLab sVocaLab;
-    private List<Book> mBooks;
     private List<Book> mExamBooks;
+    private Context mContext;
+    private SQLiteDatabase mDatabase;
 
-    private VocaLab() {
-        mBooks = new ArrayList<>();
+    private VocaLab(Context context) {
         mExamBooks = new ArrayList<>();
-        // Test code
-        for (int i = 0; i < 20; ++i) {
-            Book book = new Book();
-            book.setBookId(i);
-            book.setBookName(i + "" + "Book");
-            book.setLastModified(DateFormat.format("EEEE, MMM, d, yyyy", new Date()).toString());
-            List<Word> words = book.getWords();
-            for (int j = 0; j < 15; ++j) {
-                Word word = new Word();
-                word.setCompleted(false);
-                word.setNumCorrect(0);
-                word.setPhase(j);
-                word.setRecentTestDate(DateFormat.format("EEEE, MMM, d, yyyy", new Date()).toString());
-                word.setTestCount(0);
-                word.setBookid(i);
-                word.setWord("Test word #" + j);
-                word.setWordId(10*i+j);
-                words.add(word);
-            }
-            mBooks.add(book);
-        }
-        // EOT
+        mContext = context;
+        mDatabase = new VocaBaseHelper(mContext).getWritableDatabase();
+    }
+
+    private static ContentValues getBookContentValues(Book book) {
+        ContentValues values = new ContentValues();
+        values.put(BookTable.Cols.name, book.getBookName());
+        values.put(BookTable.Cols.num_word, book.getNumWords());
+        values.put(BookTable.Cols.last_modified, book.getLastModified());
+        return values;
+    }
+
+    private static ContentValues getWordContentValues(Word word) {
+        ContentValues values = new ContentValues();
+        values.put(WordTable.Cols.word, word.getWord());
+        values.put(WordTable.Cols.book_id, word.getBookid());
+        values.put(WordTable.Cols.completed, (word.isCompleted() ? 1 : 0));
+        values.put(WordTable.Cols.num_correct, word.getNumCorrect());
+        values.put(WordTable.Cols.test_count, word.getTestCount());
+        values.put(WordTable.Cols.recent_test_date, word.getRecentTestDate());
+        values.put(WordTable.Cols.phase, word.getPhase());
+        return values;
     }
 
     public void addExamBook(Book book) {
@@ -51,6 +56,32 @@ public class VocaLab {
 
     public void resetExamBooks() {
         mExamBooks = new ArrayList<>();
+    }
+
+    public void addBook(Book book) {
+        ContentValues values = getBookContentValues(book);
+        mDatabase.insert(BookTable.NAME, null, values);
+    }
+
+    public void updateBook(Book book) {
+        String book_id = book.getBookId() + "";
+        ContentValues values = getBookContentValues(book);
+
+        mDatabase.update(BookTable.NAME, values, BookTable.Cols.book_id + " = ?",
+                new String[]{book_id});
+    }
+
+    public void addWord(Word word) {
+        ContentValues values = getWordContentValues(word);
+        mDatabase.insert(WordTable.NAME, null, values);
+    }
+
+    public void updateWord(Word word) {
+        String word_id = word.getWordId() + "";
+        ContentValues values = getWordContentValues(word);
+
+        mDatabase.update(WordTable.NAME, values, WordTable.Cols.word_id + " = ?",
+                new String[]{word_id});
     }
 
     /*
@@ -81,46 +112,94 @@ public class VocaLab {
          */
 
         // JUST FOR TEST
-        List<Word> list = new ArrayList<>();
-        for (Book b : mExamBooks) {
-            for (Word w : b.getWords()) {
-                list.add(w);
-            }
-        }
-        return list;
+
+        return null;
     }
 
 
-    public static VocaLab getVoca() {
+    public static VocaLab getVoca(Context context) {
         if (sVocaLab == null) {
-            sVocaLab = new VocaLab();
+            sVocaLab = new VocaLab(context);
         }
         return sVocaLab;
     }
 
     public List<Book> getBooks() {
-        return mBooks;
+        List<Book> books = new ArrayList<>();
+
+        BookCursorWrapper cursor = queryBooks(null, null);
+
+        try {
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                books.add(cursor.getBook());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return books;
+    }
+
+    public List<Word> getWordInBook(int bookId) {
+        List<Word> words = new ArrayList<>();
+        WordCursorWrapper cursor = queryWords(WordTable.Cols.book_id + " = ?",
+                new String[] { bookId+"" });
+        try {
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                words.add(cursor.getWord());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return words;
     }
 
     public Book getBookByID(int id) {
         // Must be changed to SQL
-        for (Book b : mBooks) {
-            if (b.getBookId() == id) {
-                return b;
-            }
-        }
+
         return null;
     }
 
     public Word getWordByID(int id) {
-        // Must be changed to SQL
-        for (Book b : mBooks) {
-            for (Word w : b.getWords()) {
-                if (w.getWordId() == id) {
-                    return w;
-                }
+        WordCursorWrapper cursor = queryWords(WordTable.Cols.word_id + " = ?",
+                new String[] { id+"" } );
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
             }
+            cursor.moveToFirst();
+            return cursor.getWord();
+        } finally {
+            cursor.close();
         }
-        return null;
+    }
+
+    private WordCursorWrapper queryWords(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                WordTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null
+        );
+        return new WordCursorWrapper(cursor);
+    }
+
+    private BookCursorWrapper queryBooks(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                BookTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null
+        );
+        return new BookCursorWrapper(cursor);
     }
 }
