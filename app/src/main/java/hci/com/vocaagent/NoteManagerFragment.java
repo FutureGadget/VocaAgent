@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +50,10 @@ public class NoteManagerFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_notemanager_menu, menu);
     }
+
+    /*
+     * Behaviors when one of the overflow menu options on Toolbar is selected.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
@@ -91,6 +96,8 @@ public class NoteManagerFragment extends Fragment {
     private void updateUI() {
         VocaLab vocaLab = VocaLab.getVoca(getActivity());
         List<Book> books = vocaLab.getBooks();
+        mBooksSelected = new HashSet<>();
+        mSavedViewHolderStatus = new boolean[books.size()];
         if (mAdapter == null) {
             mAdapter = new NoteAdapter(books);
             mBookRecyclerView.setAdapter(mAdapter);
@@ -99,8 +106,6 @@ public class NoteManagerFragment extends Fragment {
             mAdapter.setBooks(books);
             mAdapter.notifyDataSetChanged();
         }
-        mBooksSelected = new HashSet<>();
-        mSavedViewHolderStatus = new boolean[books.size()];
     }
 
     private class BookHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

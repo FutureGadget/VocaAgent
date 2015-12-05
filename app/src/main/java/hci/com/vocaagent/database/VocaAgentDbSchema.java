@@ -1,4 +1,5 @@
 package hci.com.vocaagent.database;
+
 //--Random알고리즘 적용
 //        --랜덤으로 N개 뽑은 뒤 그 안에서 아래의 알고리즘 적용
 //        --랜덤추출시 완료비트가 설정된 단어들은 제외
@@ -23,6 +24,7 @@ package hci.com.vocaagent.database;
 public class VocaAgentDbSchema {
     public static final class BookTable {
         public static final String NAME = "Book";
+
         public static final class Cols {
             public static final String book_id = "bid";
             public static final String name = "name";
@@ -30,8 +32,10 @@ public class VocaAgentDbSchema {
             public static final String last_modified = "last_modified";
         }
     }
+
     public static final class WordTable {
         public static final String NAME = "Word";
+
         public static final class Cols {
             public static final String word_id = "wid";
             public static final String word = "word";
@@ -43,8 +47,10 @@ public class VocaAgentDbSchema {
             public static final String phase = "phase";
         }
     }
+
     public static final class DictionaryTable {
         public static final String NAME = "Dictionary";
+
         public static final class Cols {
             public static final String id = "id";
             public static final String word = "word";

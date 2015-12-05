@@ -9,10 +9,11 @@
         android:layout_height="wrap_content"
         android:text="@string/add_word"
         android:textSize="30dp"/>
-    <AutoCompleteTextView
+    <hci.com.vocaagent.CustomAutoCompleteView
         android:id="@+id/edit_text_add_word"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:completionThreshold="1"
         android:layout_below="@id/add_word_title_text_view"/>
     <LinearLayout
         android:layout_width="wrap_content"

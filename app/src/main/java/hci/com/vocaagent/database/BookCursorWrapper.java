@@ -4,13 +4,13 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 
 import hci.com.vocaagent.Book;
+import hci.com.vocaagent.database.VocaAgentDbSchema.BookTable;
 
-import hci.com.vocaagent.database.VocaAgentDbSchema.*;
-
-public class BookCursorWrapper extends CursorWrapper{
+public class BookCursorWrapper extends CursorWrapper {
     public BookCursorWrapper(Cursor cursor) {
         super(cursor);
     }
+
     public Book getBook() {
         int bookId = getInt(getColumnIndex(BookTable.Cols.book_id));
         String name = getString(getColumnIndex(BookTable.Cols.name));

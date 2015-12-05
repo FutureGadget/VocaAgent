@@ -1,9 +1,5 @@
 package hci.com.vocaagent;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 public class Book {
     private int bookId;
     private String bookName;

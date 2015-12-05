@@ -10,6 +10,7 @@ import java.util.List;
 
 import hci.com.vocaagent.database.BookCursorWrapper;
 import hci.com.vocaagent.database.VocaAgentDbSchema.BookTable;
+import hci.com.vocaagent.database.VocaAgentDbSchema.DictionaryTable;
 import hci.com.vocaagent.database.VocaAgentDbSchema.WordTable;
 import hci.com.vocaagent.database.VocaBaseHelper;
 import hci.com.vocaagent.database.WordCursorWrapper;
@@ -133,7 +134,7 @@ public class VocaLab {
 
         try {
             cursor.moveToFirst();
-            while(!cursor.isAfterLast()) {
+            while (!cursor.isAfterLast()) {
                 books.add(cursor.getBook());
                 cursor.moveToNext();
             }
@@ -145,11 +146,10 @@ public class VocaLab {
 
     public List<Word> getWordInBook(int bookId) {
         List<Word> words = new ArrayList<>();
-        WordCursorWrapper cursor = queryWords(WordTable.Cols.book_id + " = ?",
-                new String[]{bookId + ""});
+        WordCursorWrapper cursor = queryWords(WordTable.Cols.book_id + " = ?", new String[]{bookId + ""});
         try {
             cursor.moveToFirst();
-            while(!cursor.isAfterLast()) {
+            while (!cursor.isAfterLast()) {
                 words.add(cursor.getWord());
                 cursor.moveToNext();
             }
@@ -160,14 +160,22 @@ public class VocaLab {
     }
 
     public Book getBookByID(int id) {
-        // Must be changed to SQL
-
-        return null;
+        BookCursorWrapper cursor = queryBooks(BookTable.Cols.book_id + " = ?",
+                new String[]{id + ""});
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+            cursor.moveToFirst();
+            return cursor.getBook();
+        } finally {
+            cursor.close();
+        }
     }
 
     public Word getWordByID(int id) {
         WordCursorWrapper cursor = queryWords(WordTable.Cols.word_id + " = ?",
-                new String[] { id+"" } );
+                new String[]{id + ""});
         try {
             if (cursor.getCount() == 0) {
                 return null;
@@ -209,7 +217,30 @@ public class VocaLab {
         return mDatabase.delete(BookTable.NAME,
                 whereClause, whereArgs);
     }
+
     public int deleteWords(String whereCluase, String[] whereArgs) {
-        return mDatabase.delete(BookTable.NAME, whereCluase, whereArgs);
+        return mDatabase.delete(WordTable.NAME, whereCluase, whereArgs);
+    }
+
+    public List<AutoCompleteDictionary> getAutoAvailable(String searchTerm) {
+        List<AutoCompleteDictionary> autoLists = new ArrayList<>();
+        String sql =
+                "SELECT * FROM " + DictionaryTable.NAME
+                        + " WHERE " + DictionaryTable.Cols.word + " LIKE '" + searchTerm + "%'"
+                        + " ORDER BY " + DictionaryTable.Cols.word
+                        + " LIMIT 0,5";
+
+        Cursor cursor = mDatabase.rawQuery(sql, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String word = cursor.getString(cursor.getColumnIndex(DictionaryTable.Cols.word));
+                String meaning = cursor.getString(cursor.getColumnIndex(DictionaryTable.Cols.meaning));
+                AutoCompleteDictionary dict = new AutoCompleteDictionary(word, meaning);
+                autoLists.add(dict);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return autoLists;
     }
 }

@@ -1,12 +1,12 @@
 package hci.com.vocaagent;
 
-import android.app.FragmentTransaction;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,8 +16,12 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.util.LinkedList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import hci.com.vocaagent.database.VocaAgentDbSchema.*;
 
 /**
  * Users can modify words in vocabulary books on this Fragment.
@@ -28,6 +32,8 @@ public class BookFragment extends Fragment {
     private int mBookId;
     private static final String ARG_BOOK_ID = "book_id";
     private boolean[] mSavedViewHolderStatus;
+    private Set<Word> mWordsSelected;
+    private static final int REQUEST_ADD_WORD = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,21 +59,74 @@ public class BookFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.menu_item_add_word:
-                DialogFragment dialogFragment = new AddWordFragment();
-                dialogFragment.show(getFragmentManager(),"add_word");
+                AddWordFragment dialogFragment = new AddWordFragment();// notify which book is selected so that the word can be added accordingly.
+                dialogFragment.show(getFragmentManager(), "add_word");
+                dialogFragment.setTargetFragment(BookFragment.this, REQUEST_ADD_WORD);
+                return true;
+            case R.id.menu_item_del_word:
+                deleteWords();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK)
+            return;
+        if (requestCode == REQUEST_ADD_WORD) {
+            String wordString = data.getStringExtra(AddWordFragment.EXTRA_WORD);
+            Word newWord = new Word();
+            newWord.setTestCount(0);
+            newWord.setWord(wordString);
+            newWord.setRecentTestDate("0000-00-00");
+            newWord.setPhase(0);
+            newWord.setBookid(mBookId);
+            newWord.setCompleted(false);
+            newWord.setNumCorrect(0);
+            // isnert the word to database and update recycler view adapter
+            VocaLab vocaLab = VocaLab.getVoca(getActivity());
+            vocaLab.addWord(newWord);
+
+            // update book (update number of contained words and last modified date)
+            Book updateBook = vocaLab.getBookByID(mBookId);
+            updateBook.setNumWords(updateBook.getNumWords()+1);
+            updateBook.setLastModified(DateFormat.format("yyyy-MM-dd", new Date()).toString());
+            vocaLab.updateBook(updateBook);
+            updateUI();
+        }
+    }
+
+    private void deleteWords() {
+        int countDeleted = 0;
+        VocaLab vocaLab = VocaLab.getVoca(getActivity());
+        for (Word w : mWordsSelected) {
+            vocaLab.deleteWords(WordTable.Cols.word_id +
+                    " = ? AND " + WordTable.Cols.book_id + " = ?", new String[]{w.getWordId() + "", mBookId + ""});
+            ++countDeleted;
+        }
+        // update book (update number of contained words and last modified date)
+        Book updateBook = vocaLab.getBookByID(mBookId);
+        updateBook.setNumWords(updateBook.getNumWords()-countDeleted);
+        updateBook.setLastModified(DateFormat.format("yyyy-MM-dd", new Date()).toString());
+        vocaLab.updateBook(updateBook);
+        updateUI();
+    }
+
     public void updateUI() {
         List<Word> words = VocaLab.getVoca(getActivity()).getWordInBook(mBookId);
-        mAdapter = new WordAdapter(words);
+        mWordsSelected = new HashSet<>();
         mSavedViewHolderStatus = new boolean[words.size()];
-        mRecyclerView.setAdapter(mAdapter);
+        if (mAdapter == null) {
+            mAdapter = new WordAdapter(words);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.setWords(words);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     public static Fragment newInstance(int bid) {
@@ -82,20 +141,29 @@ public class BookFragment extends Fragment {
     private class WordHolder extends RecyclerView.ViewHolder {
         private CheckBox mCheckBox;
         private TextView mTextView;
+        private Word mWord;
 
         public int index;
+
         public WordHolder(View itemView) {
             super(itemView);
-            mCheckBox = (CheckBox)itemView.findViewById(R.id.select_word_checkbox);
-            mTextView = (TextView)itemView.findViewById(R.id.word_text_view);
+            mCheckBox = (CheckBox) itemView.findViewById(R.id.select_word_checkbox);
+            mTextView = (TextView) itemView.findViewById(R.id.word_text_view);
             mCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mSavedViewHolderStatus[index] = mCheckBox.isChecked();
+                    if (mCheckBox.isChecked()) {
+                        mWordsSelected.add(mWord);
+                    } else {
+                        mWordsSelected.remove(mWord);
+                    }
                 }
             });
         }
+
         public void bindWord(Word word) {
+            mWord = word;
             mTextView.setText(word.getWord());
             mCheckBox.setChecked(mSavedViewHolderStatus[index]);
         }
@@ -103,12 +171,18 @@ public class BookFragment extends Fragment {
 
     private class WordAdapter extends RecyclerView.Adapter<WordHolder> {
         private List<Word> mWords;
-        public WordAdapter (List<Word> words) {
+
+        public WordAdapter(List<Word> words) {
             mWords = words;
         }
+
         @Override
         public int getItemCount() {
             return mWords.size();
+        }
+
+        public void setWords(List<Word> words) {
+            mWords = words;
         }
 
         @Override
