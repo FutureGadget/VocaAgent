@@ -1,11 +1,12 @@
 package hci.com.vocaagent;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,12 +16,19 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import hci.com.vocaagent.database.VocaAgentDbSchema.*;
 
 public class NoteManagerFragment extends Fragment {
     private RecyclerView mBookRecyclerView;
     private NoteAdapter mAdapter;
     private boolean[] mSavedViewHolderStatus;
+    private static final int REQUEST_TITLE = 0;
+    private Set<Book> mBooksSelected;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,15 +55,37 @@ public class NoteManagerFragment extends Fragment {
             case R.id.menu_item_add_book:
                 AddBookFragment dialogFragment = new AddBookFragment();
                 dialogFragment.show(getFragmentManager(),"add_book");
+                dialogFragment.setTargetFragment(NoteManagerFragment.this, REQUEST_TITLE);
+                return true;
+            case R.id.menu_item_del_book:
+                for (Book b : mBooksSelected)
+                    VocaLab.getVoca(getActivity()).
+                            deleteBooks(BookTable.Cols.book_id + " = ?", new String[]{b.getBookId() + ""});
+                updateUI();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+    /*
+     * To get result from the dialog fragments when an option is selected.
+     */
     @Override
-    public void onResume() {
-        super.onResume();
-        updateUI();
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK)
+            return;
+        if (requestCode == REQUEST_TITLE) {
+            String title = data.getStringExtra(AddBookFragment.EXTRA_TITLE);
+
+            Book book = new Book();
+            String lastModified = DateFormat.format("yyyy-MM-dd", new Date()).toString();
+            book.setBookName(title);
+            book.setLastModified(lastModified);
+            book.setNumWords(0);
+
+            VocaLab.getVoca(getActivity()).addBook(book);
+            updateUI();
+        }
     }
 
     private void updateUI() {
@@ -69,6 +99,7 @@ public class NoteManagerFragment extends Fragment {
             mAdapter.setBooks(books);
             mAdapter.notifyDataSetChanged();
         }
+        mBooksSelected = new HashSet<>();
         mSavedViewHolderStatus = new boolean[books.size()];
     }
 
@@ -89,6 +120,10 @@ public class NoteManagerFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     mSavedViewHolderStatus[index] = mCheckBox.isChecked();
+                    if (mSavedViewHolderStatus[index])
+                        mBooksSelected.add(mBook);
+                    else
+                        mBooksSelected.remove(mBook);
                 }
             });
         }

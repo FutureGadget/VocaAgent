@@ -1,19 +1,27 @@
 package hci.com.vocaagent;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.Date;
-
 public class AddBookFragment extends DialogFragment {
     private Button addButton;
     private EditText bookTitle;
+    public static final String EXTRA_TITLE = "hci.com.vocaagent.title";
+
+    private void sendResult(int resultCode, String title) {
+        if (getTargetFragment() == null)
+            return;
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_TITLE, title);
+        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -24,13 +32,7 @@ public class AddBookFragment extends DialogFragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VocaLab vocaLab = VocaLab.getVoca(getActivity());
-                Book book = new Book();
-                String lastModified = DateFormat.format("yyyy-MM-dd", new Date()).toString();
-                book.setBookName(bookTitle.getText().toString());
-                book.setLastModified(lastModified);
-                book.setNumWords(0);
-                vocaLab.addBook(book);
+                sendResult(Activity.RESULT_OK, bookTitle.getText().toString());
                 dismiss();
             }
         });

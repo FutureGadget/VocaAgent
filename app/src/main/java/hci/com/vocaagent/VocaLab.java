@@ -28,6 +28,7 @@ public class VocaLab {
 
     private static ContentValues getBookContentValues(Book book) {
         ContentValues values = new ContentValues();
+        // omit book_id since it is an autoincrement(identity) attribute.
         values.put(BookTable.Cols.name, book.getBookName());
         values.put(BookTable.Cols.num_word, book.getNumWords());
         values.put(BookTable.Cols.last_modified, book.getLastModified());
@@ -36,6 +37,7 @@ public class VocaLab {
 
     private static ContentValues getWordContentValues(Word word) {
         ContentValues values = new ContentValues();
+        // omit word_id since it is an autoincrement(identity) attribute.
         values.put(WordTable.Cols.word, word.getWord());
         values.put(WordTable.Cols.book_id, word.getBookid());
         values.put(WordTable.Cols.completed, (word.isCompleted() ? 1 : 0));
@@ -144,7 +146,7 @@ public class VocaLab {
     public List<Word> getWordInBook(int bookId) {
         List<Word> words = new ArrayList<>();
         WordCursorWrapper cursor = queryWords(WordTable.Cols.book_id + " = ?",
-                new String[] { bookId+"" });
+                new String[]{bookId + ""});
         try {
             cursor.moveToFirst();
             while(!cursor.isAfterLast()) {
@@ -201,5 +203,13 @@ public class VocaLab {
                 null
         );
         return new BookCursorWrapper(cursor);
+    }
+
+    public int deleteBooks(String whereClause, String[] whereArgs) {
+        return mDatabase.delete(BookTable.NAME,
+                whereClause, whereArgs);
+    }
+    public int deleteWords(String whereCluase, String[] whereArgs) {
+        return mDatabase.delete(BookTable.NAME, whereCluase, whereArgs);
     }
 }
