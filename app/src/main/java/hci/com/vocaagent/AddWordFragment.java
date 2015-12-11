@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 
+
 public class AddWordFragment extends DialogFragment {
     private Button mAddButton;
     private Button mClearButton;
