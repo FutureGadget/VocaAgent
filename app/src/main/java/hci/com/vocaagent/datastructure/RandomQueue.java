@@ -22,7 +22,7 @@ public class RandomQueue implements Iterable {
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<String[]> iterator() {
         return new RandomQueueIterator();
     }
 
@@ -35,10 +35,10 @@ public class RandomQueue implements Iterable {
 
         @Override
         public String[] next() {
-            ++cursor;
             String[] item = new String[2];
             item[0] = list.get(cursor).sentence;
             item[1] = list.get(cursor).translation;
+            ++cursor;
             return item;
         }
 

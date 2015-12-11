@@ -16,17 +16,21 @@ public class DictionaryParser {
     private static final String searchEnglish = "&dic=eng";
     private static final String searchExamples = "&t=example";
     private static final String sentenceUrl = "http://alldic.daum.net/search.do?q=";
+    private static final String searchFirstMeaning = "&search_first=Y";
 
     // get a meaning list
-    public static List<String> getMeanings(final String word) {
-        List<String> meaningList = null;
+    public static String getMeanings(final String word) {
+        String meanings = "";
         try {
-            Document doc = Jsoup.connect(meaningUrl + word + searchEnglish).get();
+            Document doc = Jsoup.connect(meaningUrl + word + searchEnglish + searchFirstMeaning).get();
             Element meaning = doc.select("div[class~=(clean)]>ul.list_mean").first();
-            meaningList = processWordMeaning(meaning.text());
+            List<String> meaningList = processWordMeaning(meaning.text());
+            for (String s : meaningList) {
+                meanings += s + "\n";
+            }
         } catch (IOException e) {
         }
-        return meaningList;
+        return meanings.trim();
     }
 
     // get sentences along with translations of them

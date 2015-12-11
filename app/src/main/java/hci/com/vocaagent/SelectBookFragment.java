@@ -51,6 +51,10 @@ public class SelectBookFragment extends Fragment {
         super.onResume();
         // Landscape -> vertical -> landscape..
         VocaLab.getVoca(getActivity()).resetExamBooks();
+        for (int i = 0; i < mSavedViewHolderStatus.length; ++i) {
+            mSavedViewHolderStatus[i] = false;
+        }
+        mAdapter.notifyDataSetChanged();
     }
 
     private void updateUI() {

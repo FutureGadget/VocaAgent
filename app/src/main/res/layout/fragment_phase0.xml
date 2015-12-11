@@ -22,4 +22,13 @@
         android:textSize="20dp"
         tools:text="Meaning"/>
 
+    <Button
+        android:id="@+id/show_examples_button"
+        android:text="예문학습"
+        android:textSize="35dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/word_meaning_sentence_text_view"
+        android:layout_alignRight="@id/word_meaning_sentence_text_view"/>
+
 </RelativeLayout>
