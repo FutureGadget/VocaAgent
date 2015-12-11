@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class AddWordFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_add_word, container, false);
         getDialog().setCanceledOnTouchOutside(false);
+        getDialog().getWindow().setGravity(Gravity.TOP | Gravity.CENTER);
         mInputWord = (CustomAutoCompleteView) v.findViewById(R.id.edit_text_add_word);
         mAddButton = (Button) v.findViewById(R.id.dialog_add_word_button_insert);
         mAddButton.setOnClickListener(new View.OnClickListener() {
@@ -68,15 +70,15 @@ public class AddWordFragment extends DialogFragment {
 
     public void updateAutoCompleteAdapter(String[] autoStrings) {
         mArrayAdapter.notifyDataSetChanged();
-        mArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, autoStrings);
+        mArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_autocomplete, autoStrings);
         mInputWord.setAdapter(mArrayAdapter);
     }
 
-    private void sendResult(int resultCocde, String wordStr) {
+    private void sendResult(int resultCode, String wordStr) {
         if (getTargetFragment() == null)
             return;
         Intent intent = new Intent();
         intent.putExtra(EXTRA_WORD, wordStr);
-        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCocde, intent);
+        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
     }
 }
