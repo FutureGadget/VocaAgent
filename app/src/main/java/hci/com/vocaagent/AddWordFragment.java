@@ -66,6 +66,9 @@ public class AddWordFragment extends DialogFragment {
                 AutoCompleteDictionary.getAutoCompleteStrings(getActivity(),
                         mInputWord.getText().toString()));
         mInputWord.setAdapter(mArrayAdapter);
+
+        // 타이틀
+        getDialog().setTitle("단어 추가");
         return v;
     }
 

@@ -1,42 +1,48 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Add word dialog fragment which will be shown when "단어추가" is clicked. -->
+<?xml version="1.0" encoding="utf-8"?><!-- Add word dialog fragment which will be shown when "단어추가" is clicked. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
 
     <TextView
-        android:id="@+id/add_word_title_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_word"
-        android:layout_gravity="center_horizontal"
-        android:textSize="30dp"/>
-
-    <LinearLayout
-        android:id="@+id/insert_cancel_buttons"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/dialog_add_word_button_clear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CLEAR"/>
-
-        <Button
-            android:id="@+id/dialog_add_word_button_insert"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="INSERT"/>
-    </LinearLayout>
+        android:layout_margin="10dp"
+        android:text="새로운 단어를 추가합니다."
+        android:textSize="15dp" />
 
     <hci.com.vocaagent.CustomAutoCompleteView
         android:id="@+id/edit_text_add_word"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:completionThreshold="1"/>
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:completionThreshold="1"
+        android:hint="단어를 입력하세요"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
 
+    <LinearLayout
+        android:id="@+id/insert_cancel_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialog_add_word_button_clear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:background="@drawable/fragment_dialog_btn"
+            android:text="취소" />
+
+        <Button
+            android:id="@+id/dialog_add_word_button_insert"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:background="@drawable/fragment_dialog_btn"
+            android:text="추가" />
+    </LinearLayout>
 </LinearLayout>
