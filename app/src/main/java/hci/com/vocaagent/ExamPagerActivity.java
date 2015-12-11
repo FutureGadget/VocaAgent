@@ -2,7 +2,6 @@ package hci.com.vocaagent;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -10,14 +9,15 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.List;
 
-public class ExamPagerActivity extends AppCompatActivity{
+public class ExamPagerActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private List<Word> mWords;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_pager);
-        mViewPager = (ViewPager)findViewById(R.id.activity_exam_pager);
+        mViewPager = (ViewPager) findViewById(R.id.activity_exam_pager);
 
         // Get words for exam.
         mWords = VocaLab.getVoca(ExamPagerActivity.this).getTestWords();

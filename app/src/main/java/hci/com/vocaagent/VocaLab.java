@@ -96,6 +96,20 @@ public class VocaLab {
     }
 
     public List<Word> getTestWords() {
+        WordCursorWrapper cursor = queryTestWords();
+        List<Word> words = new ArrayList<>();
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                words.add(cursor.getWord());
+                cursor.moveToNext();
+            }
+        } catch (Exception e) {
+        }
+        return words;
+    }
+
+    public WordCursorWrapper queryTestWords() {
         // select words from mExamBooks based on the algorithm below.
         /*
         --Random알고리즘 적용
@@ -103,20 +117,23 @@ public class VocaLab {
             --랜덤추출시 완료비트가 설정된 단어들은 제외
 
         --정렬시 numCorrect가 같으면 testCount가 높은 단어가 우선순위가 높다.
-        --즉, 정답률이 낮은 단어가 우선순위가 높음
+        --즉, 정답률이 낮은 단어가 우선순위가 높음*/
 
-        --점수 system
-            --Recent Test Date에 기반하여 phase +- 정도를 정한다.
-            --3일 이내 다시 나온 단어를 틀렸을 시 무조건 phase 0으로
-            --하루에 올라갈 수 있는 phase는 최대 2.
-
-            --phase가 10이 되면 완료비트 설정하여 우선순위를 최하위로 한다.
-            --(최소 5일은 맞춰야 완료가능)
-         */
-
-        // JUST FOR TEST
-
-        return null;
+        String whereClause = "WHERE (" + WordTable.Cols.completed + " <> 1) AND (bid = ";
+        for (int i = 0; i < mExamBooks.size(); ++i) {
+            if (i == mExamBooks.size() - 1) {
+                whereClause += mExamBooks.get(i).getBookId() + ")";
+            } else {
+                whereClause += mExamBooks.get(i).getBookId() + "OR ";
+            }
+        }
+        Cursor cursor = mDatabase.rawQuery("WITH samples(" + WordTable.Cols.word_id + "," + WordTable.Cols.word + "," +
+                WordTable.Cols.book_id + "," + WordTable.Cols.completed + "," + WordTable.Cols.recent_test_date + "," + WordTable.Cols.test_count + "," +
+                WordTable.Cols.num_correct + "," + WordTable.Cols.phase + ") AS (SELECT * FROM " + WordTable.NAME + " " +
+                whereClause + " ORDER BY RANDOM() LIMIT 100)" +
+                " SELECT * FROM samples ORDER BY " + WordTable.Cols.num_correct + " ASC,"
+                + WordTable.Cols.test_count + " DESC LIMIT 10", null);
+        return new WordCursorWrapper(cursor);
     }
 
 
