@@ -119,12 +119,12 @@ public class VocaLab {
         --정렬시 numCorrect가 같으면 testCount가 높은 단어가 우선순위가 높다.
         --즉, 정답률이 낮은 단어가 우선순위가 높음*/
 
-        String whereClause = "WHERE (" + WordTable.Cols.completed + " <> 1) AND (bid = ";
+        String whereClause = "WHERE (" + WordTable.Cols.completed + " <> 1) AND (";
         for (int i = 0; i < mExamBooks.size(); ++i) {
             if (i == mExamBooks.size() - 1) {
-                whereClause += mExamBooks.get(i).getBookId() + ")";
+                whereClause += "bid = " + mExamBooks.get(i).getBookId() + ")";
             } else {
-                whereClause += mExamBooks.get(i).getBookId() + "OR ";
+                whereClause += "bid = " + mExamBooks.get(i).getBookId() + " OR ";
             }
         }
         Cursor cursor = mDatabase.rawQuery("WITH samples(" + WordTable.Cols.word_id + "," + WordTable.Cols.word + "," +
