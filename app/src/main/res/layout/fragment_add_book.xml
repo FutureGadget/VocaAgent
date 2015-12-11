@@ -7,20 +7,24 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="단어장 추가"
-        android:textSize="20dp"/>
+        android:text="새로운 단어장을 생성합니다."
+        android:layout_margin="10dp"
+        android:textSize="15dp"/>
 
     <EditText
         android:id="@+id/edit_text_add_book"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="단어장 이름 입력"/>
+        android:hint="추가할 단어장의 이름을 입력하세요."
+
+        android:textColorHint="@color/colorBackground"/>
 
     <Button
         android:id="@+id/button_add_book"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MAKE"/>
+        android:layout_gravity="right"
+        android:text="단어장 만들기"/>
 
 
 </LinearLayout>

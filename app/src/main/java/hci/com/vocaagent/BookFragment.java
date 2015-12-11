@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Date;
@@ -142,6 +143,7 @@ public class BookFragment extends Fragment {
         private CheckBox mCheckBox;
         private TextView mTextView;
         private Word mWord;
+        private LinearLayout mWordManagerList;
 
         public int index;
 
@@ -149,11 +151,13 @@ public class BookFragment extends Fragment {
             super(itemView);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.select_word_checkbox);
             mTextView = (TextView) itemView.findViewById(R.id.word_text_view);
+            mWordManagerList = (LinearLayout) itemView.findViewById(R.id.word_manager_list);
             mCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mSavedViewHolderStatus[index] = mCheckBox.isChecked();
                     if (mCheckBox.isChecked()) {
+
                         mWordsSelected.add(mWord);
                     } else {
                         mWordsSelected.remove(mWord);

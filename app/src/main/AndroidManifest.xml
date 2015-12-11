@@ -15,14 +15,14 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ListNotesActivity"
-            android:parentActivityName=".MainFragmentActivity">
+        </intent-filter>
+    </activity>
+    <activity android:name=".ListNotesActivity"
+        android:parentActivityName=".MainFragmentActivity">
 
-        </activity>
-        <activity android:name=".BookActivity"
-            android:parentActivityName=".ListNotesActivity">
+    </activity>
+    <activity android:name=".BookActivity"
+        android:parentActivityName=".ListNotesActivity">
 
         </activity>
         <activity android:name=".SelectBookActivity"

@@ -36,6 +36,9 @@ public class AddBookFragment extends DialogFragment {
                 dismiss();
             }
         });
+
+        // 추가 부분
+        getDialog().setTitle("단어장 추가");
         return v;
     }
 }
