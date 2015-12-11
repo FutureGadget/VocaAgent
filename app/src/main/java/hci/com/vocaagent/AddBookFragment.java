@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import hci.com.vocaagent.R;
+
 public class AddBookFragment extends DialogFragment {
     private Button addButton;
     private EditText bookTitle;
