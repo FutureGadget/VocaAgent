@@ -70,7 +70,8 @@ public class VocaBaseHelper extends SQLiteOpenHelper {
                 + WordTable.Cols.recent_test_date + " NOT NULL default '0000-00-00', "
                 + WordTable.Cols.test_count + " integer NOT NULL default 0, "
                 + WordTable.Cols.num_correct + " integer NOT NULL default 0, "
-                + WordTable.Cols.phase + " integer NOT NULL default 0)";
+                + WordTable.Cols.phase + " integer NOT NULL default 0, "
+                + WordTable.Cols.today + " integer NOT NULL default 0)";
         db.execSQL(createStr);
     }
 

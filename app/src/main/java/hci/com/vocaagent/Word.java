@@ -9,6 +9,15 @@ public class Word {
     private int testCount;
     private int numCorrect;
     private int phase;
+    private int today;
+
+    public int getToday() {
+        return today;
+    }
+
+    public void setToday(int today) {
+        this.today = today;
+    }
 
     public int getBookid() {
         return bookid;

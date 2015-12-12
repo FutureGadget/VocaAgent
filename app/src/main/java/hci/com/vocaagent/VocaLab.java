@@ -46,6 +46,7 @@ public class VocaLab {
         values.put(WordTable.Cols.test_count, word.getTestCount());
         values.put(WordTable.Cols.recent_test_date, word.getRecentTestDate());
         values.put(WordTable.Cols.phase, word.getPhase());
+        values.put(WordTable.Cols.today, word.getToday());
         return values;
     }
 
@@ -85,14 +86,6 @@ public class VocaLab {
 
         mDatabase.update(WordTable.NAME, values, WordTable.Cols.word_id + " = ?",
                 new String[]{word_id});
-    }
-
-    /*
-     * Get 4 sample words to show them in choices.
-     */
-    public Word[] getSamples() {
-        Word[] samples = new Word[4];
-        return samples;
     }
 
     public List<Word> getTestWords() {

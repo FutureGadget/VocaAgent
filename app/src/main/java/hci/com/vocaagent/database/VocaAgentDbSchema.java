@@ -24,6 +24,7 @@ public class VocaAgentDbSchema {
             public static final String test_count = "test_count";
             public static final String num_correct = "num_correct";
             public static final String phase = "phase";
+            public static final String today = "today";
         }
     }
 

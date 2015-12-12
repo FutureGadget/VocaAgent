@@ -18,6 +18,7 @@ public class WordCursorWrapper extends CursorWrapper{
         int numTest = getInt(getColumnIndex(WordTable.Cols.test_count));
         int numCorrect = getInt(getColumnIndex(WordTable.Cols.num_correct));
         int phase = getInt(getColumnIndex(WordTable.Cols.phase));
+        int today = getInt(getColumnIndex(WordTable.Cols.today));
 
         Word word = new Word();
         word.setBookid(bookId);
@@ -28,6 +29,7 @@ public class WordCursorWrapper extends CursorWrapper{
         word.setTestCount(numTest);
         word.setWord(wordString);
         word.setWordId(wordId);
+        word.setToday(today);
         return word;
     }
 }
