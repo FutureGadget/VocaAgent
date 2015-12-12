@@ -122,7 +122,7 @@ public class VocaLab {
         }
         Cursor cursor = mDatabase.rawQuery("WITH samples(" + WordTable.Cols.word_id + "," + WordTable.Cols.word + "," +
                 WordTable.Cols.book_id + "," + WordTable.Cols.completed + "," + WordTable.Cols.recent_test_date + "," + WordTable.Cols.test_count + "," +
-                WordTable.Cols.num_correct + "," + WordTable.Cols.phase + ") AS (SELECT * FROM " + WordTable.NAME + " " +
+                WordTable.Cols.num_correct + "," + WordTable.Cols.phase + "," + WordTable.Cols.today+") AS (SELECT * FROM " + WordTable.NAME + " " +
                 whereClause + " ORDER BY RANDOM() LIMIT 100)" +
                 " SELECT * FROM samples ORDER BY " + WordTable.Cols.num_correct + " ASC,"
                 + WordTable.Cols.test_count + " DESC LIMIT 10", null);
