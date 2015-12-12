@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -148,13 +149,16 @@ public class VocaLab {
                 whereClause += "bid = " + mExamBooks.get(i).getBookId() + " OR ";
             }
         }
-        Cursor cursor = mDatabase.rawQuery("WITH samples(" + WordTable.Cols.word_id + "," + WordTable.Cols.word + "," +
-                WordTable.Cols.book_id + "," + WordTable.Cols.completed + "," + WordTable.Cols.recent_test_date + "," + WordTable.Cols.test_count + "," +
-                WordTable.Cols.num_correct + "," + WordTable.Cols.phase + "," + WordTable.Cols.today + ") AS (SELECT * FROM " + WordTable.NAME + " " +
-                whereClause + " ORDER BY RANDOM() LIMIT 100)" +
-                " SELECT * FROM samples ORDER BY " + WordTable.Cols.num_correct + " ASC,"
-                + WordTable.Cols.test_count + " DESC LIMIT 10", null);
-        return new WordCursorWrapper(cursor);
+
+        String getTestWordStr = "SELECT * FROM (SELECT * FROM "+ WordTable.NAME + " " + whereClause +
+                " ORDER BY RANDOM() LIMIT 100) as t ORDER BY " + WordTable.Cols.num_correct + " ASC," + WordTable.Cols.test_count + " DESC LIMIT 10";
+//        Cursor cursor = mDatabase.rawQuery("WITH samples(" + WordTable.Cols.word_id + "," + WordTable.Cols.word + "," +
+//                WordTable.Cols.book_id + "," + WordTable.Cols.completed + "," + WordTable.Cols.recent_test_date + "," + WordTable.Cols.test_count + "," +
+//                WordTable.Cols.num_correct + "," + WordTable.Cols.phase + "," + WordTable.Cols.today + ") AS (SELECT * FROM " + WordTable.NAME + " " +
+//                whereClause + " ORDER BY RANDOM() LIMIT 100)" +
+//                " SELECT * FROM samples ORDER BY " + WordTable.Cols.num_correct + " ASC,"
+//                + WordTable.Cols.test_count + " DESC LIMIT 10", null);
+        return new WordCursorWrapper(mDatabase.rawQuery(getTestWordStr, null));
     }
 
 
