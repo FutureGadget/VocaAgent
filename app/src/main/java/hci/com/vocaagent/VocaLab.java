@@ -4,8 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.format.DateFormat;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import hci.com.vocaagent.database.BookCursorWrapper;
@@ -25,6 +28,14 @@ public class VocaLab {
         mExamBooks = new ArrayList<>();
         mContext = context;
         mDatabase = new VocaBaseHelper(mContext).getWritableDatabase();
+    }
+
+    /**
+     * @return "Today" in "yyyy-MM-dd" format.
+     */
+    public static String getToday() {
+        Date date = Calendar.getInstance().getTime();
+        return DateFormat.format("yyyy-MM-dd", date).toString();
     }
 
     private static ContentValues getBookContentValues(Book book) {
@@ -80,6 +91,23 @@ public class VocaLab {
         mDatabase.insert(WordTable.NAME, null, values);
     }
 
+    public List<String> getRandomWords() {
+        List<String> randomWords = new ArrayList<>();
+        Cursor cursor = mDatabase.rawQuery("SELECT "+
+                DictionaryTable.Cols.word
+                + " FROM " + DictionaryTable.NAME
+                + " ORDER BY RANDOM()"
+                + " LIMIT 3",null);
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                randomWords.add(cursor.getString(cursor.getColumnIndex(DictionaryTable.Cols.word)));
+                cursor.moveToNext();
+            }
+        }catch(Exception e) {}
+        return randomWords;
+    }
+
     public void updateWord(Word word) {
         String word_id = word.getWordId() + "";
         ContentValues values = getWordContentValues(word);
@@ -122,7 +150,7 @@ public class VocaLab {
         }
         Cursor cursor = mDatabase.rawQuery("WITH samples(" + WordTable.Cols.word_id + "," + WordTable.Cols.word + "," +
                 WordTable.Cols.book_id + "," + WordTable.Cols.completed + "," + WordTable.Cols.recent_test_date + "," + WordTable.Cols.test_count + "," +
-                WordTable.Cols.num_correct + "," + WordTable.Cols.phase + "," + WordTable.Cols.today+") AS (SELECT * FROM " + WordTable.NAME + " " +
+                WordTable.Cols.num_correct + "," + WordTable.Cols.phase + "," + WordTable.Cols.today + ") AS (SELECT * FROM " + WordTable.NAME + " " +
                 whereClause + " ORDER BY RANDOM() LIMIT 100)" +
                 " SELECT * FROM samples ORDER BY " + WordTable.Cols.num_correct + " ASC,"
                 + WordTable.Cols.test_count + " DESC LIMIT 10", null);

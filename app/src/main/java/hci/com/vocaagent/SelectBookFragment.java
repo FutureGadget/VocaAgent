@@ -51,18 +51,21 @@ public class SelectBookFragment extends Fragment {
         super.onResume();
         // Landscape -> vertical -> landscape..
         VocaLab.getVoca(getActivity()).resetExamBooks();
-        for (int i = 0; i < mSavedViewHolderStatus.length; ++i) {
-            mSavedViewHolderStatus[i] = false;
-        }
-        mAdapter.notifyDataSetChanged();
+        updateUI();
     }
 
     private void updateUI() {
         VocaLab vocaLab = VocaLab.getVoca(getActivity());
         List<Book> books = vocaLab.getBooks();
-        mAdapter = new NoteAdapter(books);
         mSavedViewHolderStatus = new boolean[books.size()];
-        mBookRecyclerView.setAdapter(mAdapter);
+        if (mAdapter == null) {
+            mAdapter = new NoteAdapter(books);
+            mBookRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.setBooks(books);
+            mAdapter.notifyDataSetChanged();
+        }
+
     }
 
     private class BookHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -135,6 +138,9 @@ public class SelectBookFragment extends Fragment {
             mBooks = books;
         }
 
+        public void setBooks(List<Book> books) {
+            mBooks = books;
+        }
         @Override
         public BookHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());

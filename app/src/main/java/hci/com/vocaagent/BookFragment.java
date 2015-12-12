@@ -95,7 +95,7 @@ public class BookFragment extends Fragment {
             // update book (update number of contained words and last modified date)
             Book updateBook = vocaLab.getBookByID(mBookId);
             updateBook.setNumWords(updateBook.getNumWords()+1);
-            updateBook.setLastModified(DateFormat.format("yyyy-MM-dd", new Date()).toString());
+            updateBook.setLastModified(VocaLab.getToday());
             vocaLab.updateBook(updateBook);
             updateUI();
         }
@@ -112,7 +112,7 @@ public class BookFragment extends Fragment {
         // update book (update number of contained words and last modified date)
         Book updateBook = vocaLab.getBookByID(mBookId);
         updateBook.setNumWords(updateBook.getNumWords()-countDeleted);
-        updateBook.setLastModified(DateFormat.format("yyyy-MM-dd", new Date()).toString());
+        updateBook.setLastModified(vocaLab.getToday());
         vocaLab.updateBook(updateBook);
         updateUI();
     }

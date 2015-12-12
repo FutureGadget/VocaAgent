@@ -80,9 +80,8 @@ public class NoteManagerFragment extends Fragment {
             return;
         if (requestCode == REQUEST_TITLE) {
             String title = data.getStringExtra(AddBookFragment.EXTRA_TITLE);
-
             Book book = new Book();
-            String lastModified = DateFormat.format("yyyy-MM-dd", new Date()).toString();
+            String lastModified = VocaLab.getToday();
             book.setBookName(title);
             book.setLastModified(lastModified);
             book.setNumWords(0);
