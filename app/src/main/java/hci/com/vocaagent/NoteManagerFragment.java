@@ -68,9 +68,11 @@ public class NoteManagerFragment extends Fragment {
                 dialogFragment.setTargetFragment(NoteManagerFragment.this, REQUEST_TITLE);
                 return true;
             case R.id.menu_item_del_book:
-                for (Book b : mBooksSelected)
+                for (Book b : mBooksSelected) {
                     VocaLab.getVoca(getActivity()).
                             deleteBooks(BookTable.Cols.book_id + " = ?", new String[]{b.getBookId() + ""});
+                    VocaLab.getVoca(getActivity()).deleteWords(WordTable.Cols.book_id + " = ?", new String[]{ b.getBookId() + "" });
+                }
                 updateUI();
                 return true;
             default:

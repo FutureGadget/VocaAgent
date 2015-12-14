@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -86,6 +87,10 @@ public class BookFragment extends Fragment {
             newWord.setRecentTestDate("0000-00-00");
             newWord.setPhase(0);
             newWord.setBookid(mBookId);
+
+            // DEBUG
+            Log.d("TEST", mBookId+ " onActivityResult()");
+
             newWord.setCompleted(false);
             newWord.setNumCorrect(0);
             // isnert the word to database and update recycler view adapter
@@ -119,6 +124,8 @@ public class BookFragment extends Fragment {
 
     public void updateUI() {
         List<Word> words = VocaLab.getVoca(getActivity()).getWordInBook(mBookId);
+        Log.d("TEST", mBookId+" UpdateUI()");
+
         mWordsSelected = new HashSet<>();
         mSavedViewHolderStatus = new boolean[words.size()];
         if (mAdapter == null) {

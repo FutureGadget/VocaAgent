@@ -64,7 +64,7 @@ public class VocaBaseHelper extends SQLiteOpenHelper {
     private void createWordTable(SQLiteDatabase db) {
         String createStr = "CREATE TABLE IF NOT EXISTS " + WordTable.NAME + "("
                 + WordTable.Cols.word_id + " integer primary key autoincrement, "
-                + WordTable.Cols.word + " UNIQUE, "
+                + WordTable.Cols.word + ", "
                 + WordTable.Cols.book_id + " integer NOT NULL references Book(book_id) on delete cascade on update cascade, "
                 + WordTable.Cols.completed + " NOT NULL default 0, "
                 + WordTable.Cols.recent_test_date + " NOT NULL default '0000-00-00', "
