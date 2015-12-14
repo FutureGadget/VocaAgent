@@ -3,6 +3,7 @@ package hci.com.vocaagent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,8 @@ public class Phase0Fragment extends Fragment {
                         mContent.setText(text[0] + "\n\n" + text[1]);
                     } else {
                         mShowExamplesButton.setText("끝");
+                        ViewPager vp = (ViewPager)getActivity().findViewById(R.id.activity_exam_pager);
+                        vp.setCurrentItem(vp.getCurrentItem()+1);
                     }
                 }
             });

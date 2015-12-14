@@ -3,6 +3,7 @@ package hci.com.vocaagent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,10 +50,12 @@ public class Phase1Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!isSubmitted) {
-                    isSubmitted = true;
                     for (int i = 0; i < 4; ++i) {
                         if (mRadioButton[i].isChecked()) {
+                            isSubmitted = true;
                             scoring(mRadioButton[i].getText().toString());
+                            ViewPager vp = (ViewPager)getActivity().findViewById(R.id.activity_exam_pager);
+                            vp.setCurrentItem(vp.getCurrentItem() + 1);
                         }
                     }
                 }
@@ -165,7 +168,7 @@ public class Phase1Fragment extends Fragment {
             }
         }else {
             Toast.makeText(getActivity(), "오답입니다!", Toast.LENGTH_SHORT).show();
-            if (dateDiff < 3) {
+            if (testCount == 0 || dateDiff < 3) {
                 return -phase;
             } else if (dateDiff < 5) {
                 return 2-phase;

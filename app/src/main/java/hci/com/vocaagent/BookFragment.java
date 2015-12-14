@@ -90,9 +90,6 @@ public class BookFragment extends Fragment {
             newWord.setPhase(0);
             newWord.setBookid(mBookId);
 
-            // DEBUG
-            Log.d("TEST", mBookId+ " onActivityResult()");
-
             newWord.setCompleted(false);
             newWord.setNumCorrect(0);
             // isnert the word to database and update recycler view adapter
@@ -126,7 +123,6 @@ public class BookFragment extends Fragment {
 
     public void updateUI() {
         List<Word> words = VocaLab.getVoca(getActivity()).getWordInBook(mBookId);
-        Log.d("TEST", mBookId+" UpdateUI()");
 
         mWordsSelected = new HashSet<>();
         mSavedViewHolderStatus = new boolean[words.size()];
