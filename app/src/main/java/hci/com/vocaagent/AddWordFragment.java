@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 
 public class AddWordFragment extends DialogFragment {
@@ -38,6 +39,7 @@ public class AddWordFragment extends DialogFragment {
             public void onClick(View v) {
                 String wordStr = mInputWord.getText().toString().split("::")[0].trim();
                 sendResult(Activity.RESULT_OK, wordStr);
+                Toast.makeText(getActivity(), wordStr +" 추가 완료", Toast.LENGTH_SHORT).show();
             }
         });
 
