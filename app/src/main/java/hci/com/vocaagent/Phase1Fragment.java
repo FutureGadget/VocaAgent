@@ -89,7 +89,6 @@ public class Phase1Fragment extends Fragment {
     }
 
     private void scoring(String userAnswer) {
-        int limit = 2;
         int testCount = mWord.getTestCount();
         int numCorrect = mWord.getNumCorrect();
         int todayTotal = mWord.getToday();
