@@ -203,16 +203,21 @@ public class Phase1Fragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            String[] testStr = mSentences.iterator().next()[0].split("\\s+");
+            Iterator<String[]> it = mSentences.iterator();
             String test = "";
+            if (it.hasNext()) {
+                String[] testStr = it.next()[0].split("\\s+");
 
-            // make test sentence (insert blank to matched words)
-            for (String s : testStr) {
-                if (s.toLowerCase().equals(mWord.getWord().toLowerCase())) {
-                    test += "_____" + " ";
-                } else {
-                    test += s + " ";
+                // make test sentence (insert blank to matched words)
+                for (String s : testStr) {
+                    if (s.toLowerCase().equals(mWord.getWord().toLowerCase())) {
+                        test += "_____" + " ";
+                    } else {
+                        test += s + " ";
+                    }
                 }
+            } else {
+                test = "Sorry, There is no example sentence.";
             }
             mSentenceTextView.setText(test);
         }
