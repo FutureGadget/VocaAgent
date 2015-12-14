@@ -27,7 +27,6 @@ public class AddWordFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_add_word, container, false);
-        getDialog().setCanceledOnTouchOutside(false);
         getDialog().getWindow().setGravity(Gravity.TOP | Gravity.CENTER);
         mInputWord = (CustomAutoCompleteView) v.findViewById(R.id.edit_text_add_word);
 

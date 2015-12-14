@@ -139,7 +139,7 @@ public class BookFragment extends Fragment {
         return fragment;
     }
 
-    private class WordHolder extends RecyclerView.ViewHolder {
+    private class WordHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private CheckBox mCheckBox;
         private TextView mTextView;
         private Word mWord;
@@ -149,19 +149,19 @@ public class BookFragment extends Fragment {
 
         public WordHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.select_word_checkbox);
             mTextView = (TextView) itemView.findViewById(R.id.word_text_view);
             mWordManagerList = (LinearLayout) itemView.findViewById(R.id.word_manager_list);
             mCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mSavedViewHolderStatus[index] = mCheckBox.isChecked();
                     if (mCheckBox.isChecked()) {
-
                         mWordsSelected.add(mWord);
                     } else {
                         mWordsSelected.remove(mWord);
                     }
+                    changeViewHolderStatus(mCheckBox.isChecked());
                 }
             });
         }
@@ -169,7 +169,26 @@ public class BookFragment extends Fragment {
         public void bindWord(Word word) {
             mWord = word;
             mTextView.setText(word.getWord());
-            mCheckBox.setChecked(mSavedViewHolderStatus[index]);
+            changeViewHolderStatus(mSavedViewHolderStatus[index]);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mCheckBox.performClick();
+        }
+
+        private void changeViewHolderStatus(boolean isChecked) {
+            if (isChecked) {
+                mWordManagerList.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                mTextView.setTextColor(getResources().getColor(R.color.colorWhite));
+                mCheckBox.setChecked(isChecked);
+                mSavedViewHolderStatus[index] = true;
+            } else {
+                mWordManagerList.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+                mTextView.setTextColor(getResources().getColor(R.color.textSecondary));
+                mCheckBox.setChecked(isChecked);
+                mSavedViewHolderStatus[index] = false;
+            }
         }
     }
 

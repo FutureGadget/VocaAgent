@@ -29,7 +29,6 @@ public class AddBookFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_add_book, container, false);
-        getDialog().setCanceledOnTouchOutside(false);
         bookTitle = (EditText) v.findViewById(R.id.edit_text_add_book);
         addButton = (Button) v.findViewById(R.id.button_add_book);
         addButton.setOnClickListener(new View.OnClickListener() {
