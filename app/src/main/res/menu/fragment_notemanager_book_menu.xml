@@ -5,7 +5,8 @@
     <item
         android:id="@+id/menu_item_add_word"
         android:title="@string/add_word"
-        app:showAsAction="never">
+        android:icon="@drawable/ic_action_add"
+        app:showAsAction="always">
     </item>
     <!--삭제-->
     <item
