@@ -152,7 +152,6 @@ public class BookFragment extends Fragment {
         private CheckBox mCheckBox;
         private TextView mTextView;
         private Word mWord;
-        private LinearLayout mWordManagerList;
 
         public int index;
 
@@ -161,7 +160,6 @@ public class BookFragment extends Fragment {
             itemView.setOnClickListener(this);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.select_word_checkbox);
             mTextView = (TextView) itemView.findViewById(R.id.word_text_view);
-            mWordManagerList = (LinearLayout) itemView.findViewById(R.id.word_manager_list);
             mCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -188,13 +186,9 @@ public class BookFragment extends Fragment {
 
         private void changeViewHolderStatus(boolean isChecked) {
             if (isChecked) {
-                mWordManagerList.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                mTextView.setTextColor(getResources().getColor(R.color.colorWhite));
                 mCheckBox.setChecked(isChecked);
                 mSavedViewHolderStatus[index] = true;
             } else {
-                mWordManagerList.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-                mTextView.setTextColor(getResources().getColor(R.color.textSecondary));
                 mCheckBox.setChecked(isChecked);
                 mSavedViewHolderStatus[index] = false;
             }

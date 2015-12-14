@@ -36,9 +36,8 @@ public class AddWordFragment extends DialogFragment {
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String wordStr = mInputWord.getText().toString().split("::")[0];
+                String wordStr = mInputWord.getText().toString().split("::")[0].trim();
                 sendResult(Activity.RESULT_OK, wordStr);
-                dismiss();
             }
         });
 
