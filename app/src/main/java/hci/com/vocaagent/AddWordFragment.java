@@ -14,11 +14,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 
 public class AddWordFragment extends DialogFragment {
     private Button mAddButton;
-    private Button mClearButton;
+    private ImageButton mClearButton;
     private CustomAutoCompleteView mInputWord;
     private ArrayAdapter<String> mArrayAdapter; // auto complete text view adapter
     public static final String EXTRA_WORD = "hci.com.vocaagent.word";
@@ -42,7 +43,7 @@ public class AddWordFragment extends DialogFragment {
         });
 
         // clear button settings
-        mClearButton = (Button) v.findViewById(R.id.dialog_add_word_button_clear);
+        mClearButton = (ImageButton) v.findViewById(R.id.dialog_add_word_button_clear);
         mClearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

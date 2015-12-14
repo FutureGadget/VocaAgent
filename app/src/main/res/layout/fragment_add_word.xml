@@ -11,38 +11,52 @@
         android:layout_margin="10dp"
         android:text="새로운 단어를 추가합니다."
         android:textSize="15dp" />
-
-    <hci.com.vocaagent.CustomAutoCompleteView
-        android:id="@+id/edit_text_add_word"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:completionThreshold="1"
-        android:hint="단어를 입력하세요"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="15dp">
+
+        <hci.com.vocaagent.CustomAutoCompleteView
+            android:id="@+id/edit_text_add_word"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:completionThreshold="1"
+            android:hint="단어를 입력하세요"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dialog_add_word_button_clear"
+            android:src="@drawable/ic_action_cancel"
+            android:background="@color/invisible"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"/>
+    </LinearLayout>
+
 
     <LinearLayout
-        android:id="@+id/insert_cancel_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/dialog_add_word_button_clear"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:background="@drawable/fragment_dialog_btn"
-            android:text="취소" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorBackground"/>
 
         <Button
             android:id="@+id/dialog_add_word_button_insert"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:background="@drawable/fragment_dialog_btn"
-            android:text="추가" />
+            android:text="단어 추가" />
     </LinearLayout>
 </LinearLayout>
