@@ -203,7 +203,18 @@ public class Phase1Fragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            mSentenceTextView.setText(mSentences.iterator().next()[0].replaceAll(mWord.getWord(), "____"));
+            String[] testStr = mSentences.iterator().next()[0].split("\\s+");
+            String test = "";
+
+            // make test sentence (insert blank to matched words)
+            for (String s : testStr) {
+                if (s.toLowerCase().equals(mWord.getWord().toLowerCase())) {
+                    test += "_____" + " ";
+                } else {
+                    test += s + " ";
+                }
+            }
+            mSentenceTextView.setText(test);
         }
     }
 

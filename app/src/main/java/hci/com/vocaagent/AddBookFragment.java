@@ -7,6 +7,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -28,7 +29,6 @@ public class AddBookFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_add_book, container, false);
-        getDialog().setCanceledOnTouchOutside(false);
         bookTitle = (EditText) v.findViewById(R.id.edit_text_add_book);
         addButton = (Button) v.findViewById(R.id.button_add_book);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -41,6 +41,16 @@ public class AddBookFragment extends DialogFragment {
 
         // 추가 부분
         getDialog().setTitle("단어장 추가");
+
+        // show soft keyboard automatically
+        bookTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+            }
+        });
         return v;
     }
 }

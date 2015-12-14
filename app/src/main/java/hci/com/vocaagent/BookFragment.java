@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -88,6 +89,10 @@ public class BookFragment extends Fragment {
             newWord.setRecentTestDate("0000-00-00");
             newWord.setPhase(0);
             newWord.setBookid(mBookId);
+
+            // DEBUG
+            Log.d("TEST", mBookId+ " onActivityResult()");
+
             newWord.setCompleted(false);
             newWord.setNumCorrect(0);
             // isnert the word to database and update recycler view adapter
@@ -121,6 +126,8 @@ public class BookFragment extends Fragment {
 
     public void updateUI() {
         List<Word> words = VocaLab.getVoca(getActivity()).getWordInBook(mBookId);
+        Log.d("TEST", mBookId+" UpdateUI()");
+
         mWordsSelected = new HashSet<>();
         mSavedViewHolderStatus = new boolean[words.size()];
         if (mAdapter == null) {
@@ -141,7 +148,7 @@ public class BookFragment extends Fragment {
         return fragment;
     }
 
-    private class WordHolder extends RecyclerView.ViewHolder {
+    private class WordHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private CheckBox mCheckBox;
         private TextView mTextView;
         private Word mWord;
@@ -151,19 +158,19 @@ public class BookFragment extends Fragment {
 
         public WordHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.select_word_checkbox);
             mTextView = (TextView) itemView.findViewById(R.id.word_text_view);
             mWordManagerList = (LinearLayout) itemView.findViewById(R.id.word_manager_list);
             mCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mSavedViewHolderStatus[index] = mCheckBox.isChecked();
                     if (mCheckBox.isChecked()) {
-
                         mWordsSelected.add(mWord);
                     } else {
                         mWordsSelected.remove(mWord);
                     }
+                    changeViewHolderStatus(mCheckBox.isChecked());
                 }
             });
         }
@@ -171,7 +178,26 @@ public class BookFragment extends Fragment {
         public void bindWord(Word word) {
             mWord = word;
             mTextView.setText(word.getWord());
-            mCheckBox.setChecked(mSavedViewHolderStatus[index]);
+            changeViewHolderStatus(mSavedViewHolderStatus[index]);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mCheckBox.performClick();
+        }
+
+        private void changeViewHolderStatus(boolean isChecked) {
+            if (isChecked) {
+                mWordManagerList.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                mTextView.setTextColor(getResources().getColor(R.color.colorWhite));
+                mCheckBox.setChecked(isChecked);
+                mSavedViewHolderStatus[index] = true;
+            } else {
+                mWordManagerList.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+                mTextView.setTextColor(getResources().getColor(R.color.textSecondary));
+                mCheckBox.setChecked(isChecked);
+                mSavedViewHolderStatus[index] = false;
+            }
         }
     }
 

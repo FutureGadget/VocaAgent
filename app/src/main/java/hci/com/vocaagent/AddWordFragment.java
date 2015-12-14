@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,7 +28,6 @@ public class AddWordFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_add_word, container, false);
-        getDialog().setCanceledOnTouchOutside(false);
         getDialog().getWindow().setGravity(Gravity.TOP | Gravity.CENTER);
         mInputWord = (CustomAutoCompleteView) v.findViewById(R.id.edit_text_add_word);
 
@@ -81,6 +81,16 @@ public class AddWordFragment extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mInputWord.setText(mInputWord.getText().toString().split("::")[0]);
+            }
+        });
+
+        // show soft keyboard automatically
+        mInputWord.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
             }
         });
 
