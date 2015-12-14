@@ -133,7 +133,7 @@ public class NoteManagerFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     mSavedViewHolderStatus[index] = mCheckBox.isChecked();
-                    if (mSavedViewHolderStatus[index])
+                    if (mCheckBox.isChecked())
                         mBooksSelected.add(mBook);
                     else
                         mBooksSelected.remove(mBook);

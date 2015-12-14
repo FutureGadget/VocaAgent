@@ -159,12 +159,12 @@ public class BookFragment extends Fragment {
             mCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mSavedViewHolderStatus[index] = mCheckBox.isChecked();
                     if (mCheckBox.isChecked()) {
                         mWordsSelected.add(mWord);
                     } else {
                         mWordsSelected.remove(mWord);
                     }
-                    changeViewHolderStatus(mCheckBox.isChecked());
                 }
             });
         }
@@ -172,22 +172,12 @@ public class BookFragment extends Fragment {
         public void bindWord(Word word) {
             mWord = word;
             mTextView.setText(word.getWord());
-            changeViewHolderStatus(mSavedViewHolderStatus[index]);
+            mCheckBox.setChecked(mSavedViewHolderStatus[index]);
         }
 
         @Override
         public void onClick(View v) {
             mCheckBox.performClick();
-        }
-
-        private void changeViewHolderStatus(boolean isChecked) {
-            if (isChecked) {
-                mCheckBox.setChecked(isChecked);
-                mSavedViewHolderStatus[index] = true;
-            } else {
-                mCheckBox.setChecked(isChecked);
-                mSavedViewHolderStatus[index] = false;
-            }
         }
     }
 

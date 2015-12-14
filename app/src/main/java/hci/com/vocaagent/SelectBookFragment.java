@@ -107,12 +107,12 @@ public class SelectBookFragment extends Fragment {
                     /*
                      * Add the book to the ExamBook List when touched.
                      */
+                    mSavedViewHolderStatus[index] = mCheckBox.isChecked();
                     if (mCheckBox.isChecked()) {
                         VocaLab.getVoca(getActivity()).addExamBook(mBook);
-                        changeViewHolderStatus(mCheckBox.isChecked());
+
                     } else {
                         VocaLab.getVoca(getActivity()).removeExamBook(mBook);
-                        changeViewHolderStatus(mCheckBox.isChecked());
                     }
                 }
             });
@@ -121,23 +121,13 @@ public class SelectBookFragment extends Fragment {
         public void bindBook(Book book) {
             mBook = book;
             mTitleTextView.setText(mBook.getBookName());
+            mCheckBox.setChecked(mSavedViewHolderStatus[index]);
             mDetailTextView.setText("단어수: " + mBook.getNumWords() + "\n수정일:" + mBook.getLastModified());
-            changeViewHolderStatus(mSavedViewHolderStatus[index]);
         }
 
         @Override
         public void onClick(View v) {
             mCheckBox.performClick();
-        }
-
-        private void changeViewHolderStatus(boolean isChecked) {
-            if (isChecked) {
-                mSavedViewHolderStatus[index] = true;
-                mCheckBox.setChecked(true);
-            } else {
-                mSavedViewHolderStatus[index] = false;
-                mCheckBox.setChecked(false);
-            }
         }
     }
 
