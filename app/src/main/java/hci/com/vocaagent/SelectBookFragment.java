@@ -43,6 +43,8 @@ public class SelectBookFragment extends Fragment {
             }
         });
         updateUI();
+
+        getActivity().setTitle("학습 시작");
         return v;
     }
 

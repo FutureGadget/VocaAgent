@@ -48,6 +48,8 @@ public class NoteManagerFragment extends Fragment {
         mBookRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
+
+        getActivity().setTitle("단어장 관리");
         return v;
     }
     @Override

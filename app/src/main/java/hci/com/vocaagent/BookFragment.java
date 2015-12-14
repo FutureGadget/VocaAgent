@@ -49,6 +49,8 @@ public class BookFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBookId = getArguments().getInt(ARG_BOOK_ID);
         updateUI();
+
+        getActivity().setTitle("단어 관리");
         return v;
     }
 

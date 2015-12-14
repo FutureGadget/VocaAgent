@@ -1,34 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="20dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:orientation="vertical"
+    android:padding="20dp">
 
-    <TextView
-        android:id="@+id/word_title_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="30dp"
-        tools:text="WORD"/>
-
-    <TextView
-        android:id="@+id/word_meaning_sentence_text_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/word_title_text_view"
-        android:padding="10dp"
-        android:textSize="20dp"
-        tools:text="Meaning"/>
+        android:background="@drawable/fragment_phase_radius"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/show_examples_button"
-        android:text="예문학습"
-        android:textSize="35dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/word_meaning_sentence_text_view"
-        android:layout_alignRight="@id/word_meaning_sentence_text_view"/>
+        <TextView
+            android:id="@+id/word_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:textSize="30dp"
+            tools:text="word" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorBackground" />
+
+        <ScrollView
+            android:scrollbarDefaultDelayBeforeFade="50000"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/word_meaning_sentence_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/word_title_text_view"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:textSize="20dp"
+                tools:text="mean" />
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorBackground" />
+
+        <Button
+            android:id="@+id/show_examples_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fragment_main_btn_wordbook"
+            android:text="예문학습"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>
