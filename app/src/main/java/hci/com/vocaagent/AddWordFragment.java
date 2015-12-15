@@ -40,7 +40,9 @@ public class AddWordFragment extends DialogFragment {
                 String wordStr = mInputWord.getText().toString().split("::")[0].trim();
                 sendResult(Activity.RESULT_OK, wordStr);
                 mInputWord.setText(""); // empty text view when a it is submitted
-                Toast.makeText(getActivity(), wordStr +" 추가 완료", Toast.LENGTH_SHORT).show();
+                Toast toast = Toast.makeText(getActivity(), wordStr +" 추가 완료", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                toast.show();
             }
         });
 
