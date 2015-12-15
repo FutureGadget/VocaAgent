@@ -1,20 +1,9 @@
 package hci.com.vocaagent.database;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-import hci.com.vocaagent.database.VocaAgentDbSchema.BookTable;
-import hci.com.vocaagent.database.VocaAgentDbSchema.DictionaryTable;
-import hci.com.vocaagent.database.VocaAgentDbSchema.WordTable;
 
 public class VocaBaseHelper extends SQLiteAssetHelper {
     private static final int VERSION = 1;

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="178dp"
+                android:background="@color/colorPrimary"
+                android:orientation="vertical"
+                android:weightSum="1">
+    <TextView
+        android:id="@+id/header_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="메뉴"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold"
+        android:textSize="50sp"/>
+
+    <TextView
+        android:id="@+id/header_sub_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_title_text_view"
+        android:text="Voca Agent"
+        android:textSize="20sp"
+        android:textColor="@color/colorWhite"/>
+</RelativeLayout>

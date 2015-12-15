@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_item_ratio"
+            android:checked="false"
+            android:icon="@drawable/ic_mood_black_48dp"
+            android:title="@string/ratio">
+        </item>
+
+        <item
+            android:id="@+id/drawer_item_streak"
+            android:checked="false"
+            android:title="@string/streak"
+            android:icon="@drawable/ic_today_black_48dp">
+        </item>
+
+        <item
+            android:id="@+id/drawer_item_study"
+            android:checked="false"
+            android:icon="@drawable/ic_school_black_48dp"
+            android:title="@string/study">
+
+        </item>
+
+        <item
+            android:id="@+id/drawer_item_edit"
+            android:title="@string/edit"
+            android:icon="@drawable/ic_edit_black_48dp"
+            android:checked="false">
+
+        </item>
+
+    </group>
+</menu>
