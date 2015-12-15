@@ -17,7 +17,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +33,7 @@ public class Phase1Fragment extends Fragment {
     private boolean isSubmitted;
     private Word mWord;
     private RandomQueue mSentences;
+    private static final String STAT_DIALOG = "STAT_DIALOG";
     private static final int[] BUTTON_ID = {R.id.choice1, R.id.choice2, R.id.choice3, R.id.choice4};
 
     @Override
@@ -54,8 +54,13 @@ public class Phase1Fragment extends Fragment {
                         if (mRadioButton[i].isChecked()) {
                             isSubmitted = true;
                             scoring(mRadioButton[i].getText().toString());
-                            ViewPager vp = (ViewPager)getActivity().findViewById(R.id.activity_exam_pager);
-                            vp.setCurrentItem(vp.getCurrentItem() + 1);
+
+                            ViewPager vp = (ViewPager) getActivity().findViewById(R.id.activity_exam_pager);
+                            if (vp.getCurrentItem() == vp.getAdapter().getCount() - 1) {
+                                StatisticsDialogFragment dialog = new StatisticsDialogFragment();
+                                dialog.show(getFragmentManager(), STAT_DIALOG);
+                            } else
+                                vp.setCurrentItem(vp.getCurrentItem() + 1);
                         }
                     }
                 }
@@ -83,7 +88,7 @@ public class Phase1Fragment extends Fragment {
     private void shuffle() {
         Random r = new Random();
         for (int i = 0; i < BUTTON_ID.length; ++i) {
-            int a = r.nextInt(i+1);
+            int a = r.nextInt(i + 1);
 
             int temp = BUTTON_ID[i];
             BUTTON_ID[i] = BUTTON_ID[a];
@@ -97,7 +102,7 @@ public class Phase1Fragment extends Fragment {
         int todayTotal = mWord.getToday();
 
         String recentTestDate = mWord.getRecentTestDate();
-        int dateDiff = getDateDiff(recentTestDate);
+        int dateDiff = Utils.getDateDiff(recentTestDate);
 
         int phaseIncrement = 0;
 
@@ -106,10 +111,13 @@ public class Phase1Fragment extends Fragment {
         if (mWord.getWord().toLowerCase().equals(userAnswer.toLowerCase())) {
             numCorrect++;
             phaseIncrement = getPhaseIncrement(testCount, dateDiff, todayTotal, true, phase);
-        }
-        else {
+        } else {
             numCorrect--;
             phaseIncrement = getPhaseIncrement(testCount, dateDiff, todayTotal, false, phase);
+        }
+
+        if (todayTotal >= 2 && phaseIncrement > 0) {
+            phaseIncrement = 0;
         }
 
         todayTotal += phaseIncrement;
@@ -126,20 +134,27 @@ public class Phase1Fragment extends Fragment {
         }
         mWord.setRecentTestDate(recentTestDate);
         mWord.setToday(todayTotal);
+
+        if (phaseIncrement < 0)
+            VocaLab.getVoca(getActivity()).addReviewWords(mWord);
+
         VocaLab.getVoca(getActivity()).updateWord(mWord);
+        VocaLab.getVoca(getActivity()).addResultWord(mWord, phaseIncrement);
     }
 
-    /**채점방식
-     Recent Test Date에 기반하여 phase +- 정도를 정한다.
-     3일 이내 다시 나온 단어를 틀렸을 시 무조건 phase 0으로
-     하루에 올라갈 수 있는 phase는 최대 2.
-     phase가 10이 되면 완료비트 설정하여 우선순위를 최하위로 한다.
-     (최소 5일은 맞춰야 완료가능)
-     * @param testCount To check this is the first time
-     * @param dateDiff recent test date - today
+    /**
+     * 채점방식
+     * Recent Test Date에 기반하여 phase +- 정도를 정한다.
+     * 3일 이내 다시 나온 단어를 틀렸을 시 무조건 phase 0으로
+     * 하루에 올라갈 수 있는 phase는 최대 2.
+     * phase가 10이 되면 완료비트 설정하여 우선순위를 최하위로 한다.
+     * (최소 5일은 맞춰야 완료가능)
+     *
+     * @param testCount  To check this is the first time
+     * @param dateDiff   recent test date - today
      * @param todayTotal to check if the phase is not exceeding daily limit
-     * @param correct is correct answer
-     * @param phase current phase of the word
+     * @param correct    is correct answer
+     * @param phase      current phase of the word
      * @return phase increment value
      */
     private int getPhaseIncrement(int testCount, int dateDiff, int todayTotal, boolean correct, int phase) {
@@ -148,48 +163,28 @@ public class Phase1Fragment extends Fragment {
             if (testCount == 0) {
                 return 1;
             } else {
-                if (dateDiff == 0) {
-                    if (todayTotal < 2) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
+                if (dateDiff > 7) {
+                    return 5;
+                } else if (dateDiff > 5) {
+                    return 3;
+                } else if (dateDiff > 3) {
+                    return 2;
                 } else {
-                    if (dateDiff > 7) {
-                        return 5;
-                    } else if (dateDiff > 5) {
-                        return 3;
-                    } else if (dateDiff > 3) {
-                        return 2;
-                    } else {
-                        return 1;
-                    }
+                    return 1;
                 }
             }
-        }else {
+        } else {
             Toast.makeText(getActivity(), "오답입니다!", Toast.LENGTH_SHORT).show();
             if (testCount == 0 || dateDiff < 3) {
                 return -phase;
             } else if (dateDiff < 5) {
-                return 2-phase;
+                return 2 - phase;
             } else if (dateDiff < 7) {
-                return 5-phase;
+                return 5 - phase;
             } else {
-                return 7-phase;
+                return 7 - phase;
             }
         }
-    }
-
-    private int getDateDiff(String recentTestDate) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date recent = null;
-        Date now = null;
-        try {
-            recent = formatter.parse(recentTestDate);
-            now = formatter.parse(VocaLab.getToday());
-        } catch(Exception e) {}
-
-        return Days.daysBetween(new DateTime(recent), new DateTime(now)).getDays();
     }
 
     private class AsyncTaskRunner extends AsyncTask<Void, Void, Void> {
@@ -197,7 +192,7 @@ public class Phase1Fragment extends Fragment {
         protected Void doInBackground(Void... params) {
             try {
                 mSentences = DictionaryParser.getSentence(mWord.getWord());
-            } catch(Throwable t) {
+            } catch (Throwable t) {
                 t.printStackTrace();
             }
             return null;

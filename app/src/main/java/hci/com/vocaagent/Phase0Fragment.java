@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ public class Phase0Fragment extends Fragment {
     private TextView mWordTitle;
     private TextView mContent; // meaning, sentence
     private static final String ARG_WORDID = "word_id";
+    private static final String STAT_DIALOG = "STAT_DIALOG";
     private Word mWord;
     private String mMeaning;
     private Iterator<String[]> mIterator;
@@ -35,7 +37,10 @@ public class Phase0Fragment extends Fragment {
         new AsyncTaskRunner().execute();
 
         mWord.setPhase(1);
+        mWord.setRecentTestDate(VocaLab.getVoca(getActivity()).getToday());
+        mWord.setToday(1);
         VocaLab.getVoca(getActivity()).updateWord(mWord);
+        VocaLab.getVoca(getActivity()).addResultWord(mWord, 1);
         return v;
     }
 
@@ -64,7 +69,11 @@ public class Phase0Fragment extends Fragment {
                     } else {
                         mShowExamplesButton.setText("끝");
                         ViewPager vp = (ViewPager)getActivity().findViewById(R.id.activity_exam_pager);
-                        vp.setCurrentItem(vp.getCurrentItem()+1);
+                        if(vp.getCurrentItem() == vp.getAdapter().getCount() - 1) {
+                            StatisticsDialogFragment dialog = new StatisticsDialogFragment();
+                            dialog.show(getFragmentManager(), STAT_DIALOG);
+                        } else
+                            vp.setCurrentItem(vp.getCurrentItem() + 1);
                     }
                 }
             });

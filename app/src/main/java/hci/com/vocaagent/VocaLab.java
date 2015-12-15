@@ -10,6 +10,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import hci.com.vocaagent.database.BookCursorWrapper;
@@ -21,14 +23,45 @@ import hci.com.vocaagent.database.WordCursorWrapper;
 
 public class VocaLab {
     public static VocaLab sVocaLab;
-    private List<Book> mExamBooks;
+    private List<Book> mExamBooks; // to select exam books
+    private List<ResultWord> mResultWords; // for saving tested words
+    private List<Word> mReviewWords;
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
     private VocaLab(Context context) {
         mExamBooks = new ArrayList<>();
+        mResultWords = new ArrayList<>();
+        mReviewWords = new ArrayList<>();
         mContext = context;
         mDatabase = new VocaBaseHelper(mContext).getWritableDatabase();
+    }
+
+    // words for review
+    public void initReviewWords() {
+        mReviewWords = new ArrayList<>();
+    }
+    public void addReviewWords(Word w) {
+        mReviewWords.add(w);
+    }
+    public List<Word> getReviewWords() {
+        return mReviewWords;
+    }
+
+    // save tested words for statistics when the exam ends.
+    public void initResultWords() {
+        mResultWords = new ArrayList<>();
+    }
+
+    public void addResultWord(Word w, int increment) {
+        ResultWord rw = new ResultWord();
+        rw.setPhaseIncrement(increment);
+        rw.setResultWord(w);
+        mResultWords.add(rw);
+    }
+
+    public List<ResultWord> getResultWords() {
+        return mResultWords;
     }
 
     /**
@@ -94,18 +127,19 @@ public class VocaLab {
 
     public List<String> getRandomWords() {
         List<String> randomWords = new ArrayList<>();
-        Cursor cursor = mDatabase.rawQuery("SELECT "+
+        Cursor cursor = mDatabase.rawQuery("SELECT " +
                 DictionaryTable.Cols.word
                 + " FROM " + DictionaryTable.NAME
                 + " ORDER BY RANDOM()"
-                + " LIMIT 3",null);
+                + " LIMIT 3", null);
         try {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 randomWords.add(cursor.getString(cursor.getColumnIndex(DictionaryTable.Cols.word)));
                 cursor.moveToNext();
             }
-        }catch(Exception e) {}
+        } catch (Exception e) {
+        }
         return randomWords;
     }
 
@@ -141,8 +175,11 @@ public class VocaLab {
         --정렬시 numCorrect가 같으면 testCount가 높은 단어가 우선순위가 높다.
         --즉, 정답률이 낮은 단어가 우선순위가 높음*/
 
-        String whereClause = "WHERE (" + WordTable.Cols.completed + " <> 1) AND (";
+        String whereClause = "WHERE (" + WordTable.Cols.completed + " <> 1)";
         for (int i = 0; i < mExamBooks.size(); ++i) {
+            if (i == 0) {
+                whereClause += " AND (";
+            }
             if (i == mExamBooks.size() - 1) {
                 whereClause += "bid = " + mExamBooks.get(i).getBookId() + ")";
             } else {
@@ -150,7 +187,7 @@ public class VocaLab {
             }
         }
 
-        String getTestWordStr = "SELECT * FROM (SELECT * FROM "+ WordTable.NAME + " " + whereClause +
+        String getTestWordStr = "SELECT * FROM (SELECT * FROM " + WordTable.NAME + " " + whereClause +
                 " ORDER BY RANDOM() LIMIT 100) as t ORDER BY " + WordTable.Cols.num_correct + " ASC," + WordTable.Cols.test_count + " DESC LIMIT 10";
 //        Cursor cursor = mDatabase.rawQuery("WITH samples(" + WordTable.Cols.word_id + "," + WordTable.Cols.word + "," +
 //                WordTable.Cols.book_id + "," + WordTable.Cols.completed + "," + WordTable.Cols.recent_test_date + "," + WordTable.Cols.test_count + "," +

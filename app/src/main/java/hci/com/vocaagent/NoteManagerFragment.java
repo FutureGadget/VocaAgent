@@ -37,12 +37,6 @@ public class NoteManagerFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        updateUI();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_note_manager, container, false);
         mBookRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);

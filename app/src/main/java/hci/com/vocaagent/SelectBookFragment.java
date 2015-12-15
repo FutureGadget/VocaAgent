@@ -1,27 +1,22 @@
 package hci.com.vocaagent;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
-
-import hci.com.vocaagent.ExamPagerActivity;
-import hci.com.vocaagent.R;
-import hci.com.vocaagent.VocaLab;
-import hci.com.vocaagent.Book;
 
 /**
  * Users can choose which books to study.
@@ -36,6 +31,7 @@ public class SelectBookFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_select_book, container, false);
@@ -76,13 +72,21 @@ public class SelectBookFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.menu_start:
-                Intent intent = new Intent(getActivity(), ExamPagerActivity.class);
-                startActivity(intent);
+                Intent intent = ExamPagerActivity.newIntent(getActivity(), 0);
+                startActivityForResult(intent, 1); // test request code = 1
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 1) {
+            Intent intent = ExamPagerActivity.newIntent(getActivity(), 1);
+            startActivityForResult(intent, 1);
         }
     }
 
