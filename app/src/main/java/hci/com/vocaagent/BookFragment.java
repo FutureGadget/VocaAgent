@@ -35,7 +35,12 @@ public class BookFragment extends Fragment {
     private static final String ARG_BOOK_ID = "book_id";
     private boolean[] mSavedViewHolderStatus;
     private Set<Word> mWordsSelected;
+
     private static final int REQUEST_ADD_WORD = 0;
+    private static final int REQUEST_REMOVE_WORD = 1;
+
+    public static final String ADD_WORD_DIALOG = "ADD_WORD_DIALOG";
+    public static final String REMOVE_WORD_DIALOG = "REMOVE_WORD_DIALOG";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,11 +71,13 @@ public class BookFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.menu_item_add_word:
                 AddWordFragment dialogFragment = new AddWordFragment();// notify which book is selected so that the word can be added accordingly.
-                dialogFragment.show(getFragmentManager(), "add_word");
+                dialogFragment.show(getFragmentManager(), ADD_WORD_DIALOG);
                 dialogFragment.setTargetFragment(BookFragment.this, REQUEST_ADD_WORD);
                 return true;
             case R.id.menu_item_del_word:
-                deleteWords();
+                RemoveConfirmDialog dialog = new RemoveConfirmDialog();
+                dialog.show(getFragmentManager(), REMOVE_WORD_DIALOG);
+                dialog.setTargetFragment(BookFragment.this, REQUEST_REMOVE_WORD);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -103,6 +110,9 @@ public class BookFragment extends Fragment {
             vocaLab.updateBook(updateBook);
             updateUI();
         }
+        else if (requestCode == REQUEST_REMOVE_WORD) {
+            deleteWords();
+        }
     }
 
     private void deleteWords() {
@@ -116,7 +126,7 @@ public class BookFragment extends Fragment {
         // update book (update number of contained words and last modified date)
         Book updateBook = vocaLab.getBookByID(mBookId);
         updateBook.setNumWords(updateBook.getNumWords()-countDeleted);
-        updateBook.setLastModified(vocaLab.getToday());
+        updateBook.setLastModified(VocaLab.getToday());
         vocaLab.updateBook(updateBook);
         updateUI();
     }

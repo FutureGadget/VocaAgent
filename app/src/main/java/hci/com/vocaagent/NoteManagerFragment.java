@@ -27,8 +27,12 @@ public class NoteManagerFragment extends Fragment {
     private RecyclerView mBookRecyclerView;
     private NoteAdapter mAdapter;
     private boolean[] mSavedViewHolderStatus;
-    private static final int REQUEST_TITLE = 0;
     private Set<Book> mBooksSelected;
+
+    public static final String DIALOG_ADD_BOOK = "DIALOG_ADD_BOOK";
+    public static final String DIALOG_REMOVE_BOOK = "DIALOG_REMOVE_BOOK";
+    private static final int REQUEST_TITLE = 0;
+    private static final int REQUEST_REMOVE = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,20 +64,26 @@ public class NoteManagerFragment extends Fragment {
         switch(item.getItemId()) {
             case R.id.menu_item_add_book:
                 AddBookFragment dialogFragment = new AddBookFragment();
-                dialogFragment.show(getFragmentManager(),"add_book");
+                dialogFragment.show(getFragmentManager(),DIALOG_ADD_BOOK);
                 dialogFragment.setTargetFragment(NoteManagerFragment.this, REQUEST_TITLE);
                 return true;
             case R.id.menu_item_del_book:
-                for (Book b : mBooksSelected) {
-                    VocaLab.getVoca(getActivity()).
-                            deleteBooks(BookTable.Cols.book_id + " = ?", new String[]{b.getBookId() + ""});
-                    VocaLab.getVoca(getActivity()).deleteWords(WordTable.Cols.book_id + " = ?", new String[]{ b.getBookId() + "" });
-                }
-                updateUI();
+                RemoveConfirmDialog dialog = new RemoveConfirmDialog();
+                dialog.show(getFragmentManager(), DIALOG_REMOVE_BOOK);
+                dialog.setTargetFragment(NoteManagerFragment.this, REQUEST_REMOVE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void deleteBooks() {
+        for (Book b : mBooksSelected) {
+            VocaLab.getVoca(getActivity()).
+                    deleteBooks(BookTable.Cols.book_id + " = ?", new String[]{b.getBookId() + ""});
+            VocaLab.getVoca(getActivity()).deleteWords(WordTable.Cols.book_id + " = ?", new String[]{ b.getBookId() + "" });
+        }
+        updateUI();
     }
     /*
      * To get result from the dialog fragments when an option is selected.
@@ -92,6 +102,8 @@ public class NoteManagerFragment extends Fragment {
 
             VocaLab.getVoca(getActivity()).addBook(book);
             updateUI();
+        } else if (requestCode == REQUEST_REMOVE) {
+            deleteBooks();
         }
     }
 

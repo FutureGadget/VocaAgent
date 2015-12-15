@@ -56,7 +56,7 @@ public class AddWordFragment extends DialogFragment {
         });
 
         // auto complete text view settings
-        mArrayAdapter = new ArrayAdapter<String>(getActivity(),
+        mArrayAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_dropdown_item_1line,
                 AutoCompleteDictionary.getAutoCompleteStrings(getActivity(),
                         mInputWord.getText().toString()));
@@ -71,7 +71,7 @@ public class AddWordFragment extends DialogFragment {
             @Override
             public void onTextChanged(CharSequence userInput, int start, int before, int count) {
                 String[] autoStrings = AutoCompleteDictionary.getAutoCompleteStrings(getActivity(), userInput.toString());
-                AddWordFragment fragment = (AddWordFragment) getActivity().getSupportFragmentManager().findFragmentByTag("add_word");
+                AddWordFragment fragment = (AddWordFragment) getActivity().getSupportFragmentManager().findFragmentByTag(BookFragment.ADD_WORD_DIALOG);
                 fragment.updateAutoCompleteAdapter(autoStrings);
             }
 
@@ -105,7 +105,7 @@ public class AddWordFragment extends DialogFragment {
 
     public void updateAutoCompleteAdapter(String[] autoStrings) {
         mArrayAdapter.notifyDataSetChanged();
-        mArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_autocomplete, autoStrings);
+        mArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_autocomplete, autoStrings);
         mInputWord.setAdapter(mArrayAdapter);
     }
 
