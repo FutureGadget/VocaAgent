@@ -1,12 +1,10 @@
 package hci.com.vocaagent;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -152,8 +150,9 @@ public class SelectBookFragment extends Fragment {
         public void bindBook(Book book) {
             mBook = book;
             mTitleTextView.setText(mBook.getBookName());
-            if (mSavedViewHolderStatus[index]) { mCheckBox.performClick(); }
-            else if(mCheckBox.isChecked() == true) {
+            if (mSavedViewHolderStatus[index] && !mCheckBox.isChecked()) {
+                mCheckBox.performClick();
+            } else if (!mSavedViewHolderStatus[index] && mCheckBox.isChecked()) {
                 mCheckBox.performClick();
             }
 //            mCheckBox.setChecked(mSavedViewHolderStatus[index]);

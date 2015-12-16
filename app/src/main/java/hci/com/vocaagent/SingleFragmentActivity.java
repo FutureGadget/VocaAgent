@@ -78,14 +78,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                 VocaLab.getVoca(SingleFragmentActivity.this).updateMetaInfo(0,0,0);
 
                 Meta meta = VocaLab.getVoca(SingleFragmentActivity.this).getLatestMeta();
-                int diff = Utils.getDateDiff(meta.getDate());
-                int streak = 0;
-                if (diff == 1) {
-                    streak = meta.getStreak()+1;
-                } else if(diff == 0) {
-                    streak = meta.getStreak();
-                }
-                text.setText(streak+"일째");
+                text.setText(meta.getStreak()+"일째");
 
                 // ratio view
                 view = menu.findItem(R.id.drawer_item_ratio);

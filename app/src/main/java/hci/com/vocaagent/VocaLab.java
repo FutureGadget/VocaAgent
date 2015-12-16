@@ -237,7 +237,6 @@ public class VocaLab {
         } finally {
             wrapper.close();
         }
-        Log.d("TEST", "numCorrect = "+numCorrect + " numTotal = " + totalTestCount);
         return numCorrect / totalTestCount;
     }
 
@@ -315,6 +314,7 @@ public class VocaLab {
             insertMetaData(getToday());
         } else {
             notLatest = false;
+            streak = latestMeta.getStreak();
         }
 
         if (notLatest)
