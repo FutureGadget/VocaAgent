@@ -18,7 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ListNotesActivity"/>
+        <activity android:name=".NoteManagerActivity"
+            android:parentActivityName=".SelectBookActivity"/>
         <activity android:name=".BookActivity"/>
         <activity android:name=".ExamPagerActivity"/>
     </application>

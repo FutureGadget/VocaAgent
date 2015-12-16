@@ -50,10 +50,9 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                                 .commit();
                         return true;
                     case R.id.drawer_item_edit:
-                        NoteManagerFragment fragment2 = new NoteManagerFragment();
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, fragment2)
-                                .commit();
+                        Intent intent = new Intent(SingleFragmentActivity.this, NoteManagerActivity.class);
+                        startActivity(intent);
+                        item.setChecked(false);
                         return true;
                     default:
                         return true;
