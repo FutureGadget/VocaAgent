@@ -2,8 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_start"
-        android:title="시작"
-        app:showAsAction="always">
+        android:id="@+id/selectbook_menu_menu_start"
+        android:title="학습 시작"
+        app:showAsAction="ifRoom">
     </item>
+    <item
+        android:id="@+id/selectbook_menu_select_all"
+        android:title="전체 선택"
+        app:showAsAction="withText">
+    </item>
+    <item
+        android:id="@+id/selectbook_menu_select_cancel"
+        android:title="선택 취소"
+        app:showAsAction="withText">
+    </item>
+
 </menu>

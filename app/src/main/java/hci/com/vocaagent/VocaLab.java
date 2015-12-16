@@ -56,6 +56,8 @@ public class VocaLab {
         return mReviewWords;
     }
 
+    public List<Book> getExamBooks() { return mExamBooks; }
+
     // save tested words for statistics when the exam ends.
     public void initResultWords() {
         mResultWords = new ArrayList<>();

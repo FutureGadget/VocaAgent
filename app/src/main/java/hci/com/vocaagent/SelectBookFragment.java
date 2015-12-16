@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class SelectBookFragment extends Fragment {
         mEmptyLinearLayout = (LinearLayout) v.findViewById(R.id.select_book_recycler_view_empty);
         updateUI();
 
-        if(mAdapter.getItemCount() == 0) {
+        if (mAdapter.getItemCount() == 0) {
             mBookRecyclerView.setVisibility(View.GONE);
             mEmptyLinearLayout.setVisibility(View.VISIBLE);
         } else {
@@ -85,9 +86,23 @@ public class SelectBookFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_start:
-                Intent intent = ExamPagerActivity.newIntent(getActivity(), 0);
-                startActivityForResult(intent, 1); // test request code = 1
+            case R.id.selectbook_menu_menu_start:
+                if (VocaLab.getVoca(getActivity()).getExamBooks().isEmpty()) {
+                    Toast.makeText(getActivity(), "단어장을 선택하세요.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = ExamPagerActivity.newIntent(getActivity(), 0);
+                    startActivityForResult(intent, 1); // test request code = 1
+                }
+                return true;
+            case R.id.selectbook_menu_select_all:
+                for (int i = 0; i < mSavedViewHolderStatus.length; ++i)
+                    mSavedViewHolderStatus[i] = true;
+                mAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.selectbook_menu_select_cancel:
+                for (int i = 0; i < mSavedViewHolderStatus.length; ++i)
+                    mSavedViewHolderStatus[i] = false;
+                mAdapter.notifyDataSetChanged();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -137,7 +152,11 @@ public class SelectBookFragment extends Fragment {
         public void bindBook(Book book) {
             mBook = book;
             mTitleTextView.setText(mBook.getBookName());
-            mCheckBox.setChecked(mSavedViewHolderStatus[index]);
+            if (mSavedViewHolderStatus[index]) { mCheckBox.performClick(); }
+            else if(mCheckBox.isChecked() == true) {
+                mCheckBox.performClick();
+            }
+//            mCheckBox.setChecked(mSavedViewHolderStatus[index]);
             mDetailTextView.setText("단어수: " + mBook.getNumWords() + "\n수정일:" + mBook.getLastModified());
         }
 
