@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ public class Phase0Fragment extends Fragment {
     private static final String STAT_DIALOG = "STAT_DIALOG";
     private Word mWord;
     private String mMeaning;
-    private Iterator<String[]> mIterator;
+    private RandomQueue mSentences;
     private Button mShowExamplesButton;
 
     @Override
@@ -32,15 +31,15 @@ public class Phase0Fragment extends Fragment {
         mWord = VocaLab.getVoca(getActivity()).getWordByID(getArguments().getInt(ARG_WORDID));
         mWordTitle = (TextView) v.findViewById(R.id.word_title_text_view);
         mContent = (TextView) v.findViewById(R.id.word_meaning_sentence_text_view);
-        mShowExamplesButton = (Button)v.findViewById(R.id.show_examples_button);
+        mShowExamplesButton = (Button) v.findViewById(R.id.show_examples_button);
         mWordTitle.setText(mWord.getWord());
         new AsyncTaskRunner().execute();
 
         mWord.setPhase(1);
         mWord.setRecentTestDate(VocaLab.getToday());
         mWord.setToday(1);
-        mWord.setNumCorrect(mWord.getNumCorrect()+1);
-        mWord.setTestCount(mWord.getTestCount()+1);
+        mWord.setNumCorrect(mWord.getNumCorrect() + 1);
+        mWord.setTestCount(mWord.getTestCount() + 1);
 
         VocaLab.getVoca(getActivity()).updateWord(mWord);
         VocaLab.getVoca(getActivity()).addResultWord(mWord, 1);
@@ -53,7 +52,7 @@ public class Phase0Fragment extends Fragment {
         protected Void doInBackground(Void... params) {
             try {
                 mMeaning = DictionaryParser.getMeanings(mWord.getWord());
-                mIterator = DictionaryParser.getSentence(mWord.getWord()).iterator();
+                mSentences = DictionaryParser.getSentence(mWord.getWord());
             } catch (Throwable t) {
                 t.printStackTrace();
             }
@@ -63,17 +62,18 @@ public class Phase0Fragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             mContent.setText(mMeaning);
+            final Iterator<String[]> it = mSentences.iterator();
             mShowExamplesButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mShowExamplesButton.setText("다음예문");
-                    if (mIterator.hasNext()) {
-                        String[] text = mIterator.next();
+                    if (it.hasNext()) {
+                        String[] text = it.next();
                         mContent.setText(text[0] + "\n\n" + text[1]);
                     } else {
                         mShowExamplesButton.setText("끝");
-                        ViewPager vp = (ViewPager)getActivity().findViewById(R.id.activity_exam_pager);
-                        if(vp.getCurrentItem() == vp.getAdapter().getCount() - 1) {
+                        ViewPager vp = (ViewPager) getActivity().findViewById(R.id.activity_exam_pager);
+                        if (vp.getCurrentItem() == vp.getAdapter().getCount() - 1) {
                             StatisticsDialogFragment dialog = new StatisticsDialogFragment();
                             dialog.show(getFragmentManager(), STAT_DIALOG);
                         } else

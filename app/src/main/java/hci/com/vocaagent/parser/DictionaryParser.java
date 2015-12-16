@@ -24,6 +24,8 @@ public class DictionaryParser {
         try {
             Document doc = Jsoup.connect(meaningUrl + word + searchEnglish + searchFirstMeaning).get();
             Element meaning = doc.select("div[class~=(clean)]>ul.list_mean").first();
+            if (meaning == null)
+                return "Sorry, we couldn't find meanings.";
             List<String> meaningList = processWordMeaning(meaning.text());
             for (String s : meaningList) {
                 meanings += s + "\n";

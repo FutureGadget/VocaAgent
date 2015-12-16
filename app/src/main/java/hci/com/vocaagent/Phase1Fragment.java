@@ -203,14 +203,21 @@ public class Phase1Fragment extends Fragment {
             Iterator<String[]> it = mSentences.iterator();
             String test = "";
             if (it.hasNext()) {
-                String[] testStr = it.next()[0].split("\\s+");
+                String original = it.next()[0];
+                String[] testStr = original.split("\\s+");
 
-                // make test sentence (insert blank to matched words)
-                for (String s : testStr) {
-                    if (s.toLowerCase().equals(mWord.getWord().toLowerCase())) {
-                        test += "_____" + " ";
-                    } else {
-                        test += s + " ";
+                // word with blanks (e.g. idioms or phrases) should be replaced with blank.
+                if (mWord.getWord().contains(" ")) {
+                    test = original.replaceAll(mWord.getWord(), "_____");
+                }
+                else {
+                    // make test sentence (insert blank to matched words)
+                    for (String s : testStr) {
+                        if (s.toLowerCase().equals(mWord.getWord().toLowerCase())) {
+                            test += "_____" + " ";
+                        } else {
+                            test += s + " ";
+                        }
                     }
                 }
             } else {
