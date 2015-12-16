@@ -110,10 +110,10 @@ public class Phase1Fragment extends Fragment {
 
         if (mWord.getWord().toLowerCase().equals(userAnswer.toLowerCase())) {
             numCorrect++;
-            phaseIncrement = getPhaseIncrement(testCount, dateDiff, todayTotal, true, phase);
+            phaseIncrement = getPhaseIncrement(testCount, dateDiff, true, phase);
         } else {
             numCorrect--;
-            phaseIncrement = getPhaseIncrement(testCount, dateDiff, todayTotal, false, phase);
+            phaseIncrement = getPhaseIncrement(testCount, dateDiff, false, phase);
         }
 
         if (todayTotal >= 2 && phaseIncrement > 0) {
@@ -152,12 +152,11 @@ public class Phase1Fragment extends Fragment {
      *
      * @param testCount  To check this is the first time
      * @param dateDiff   recent test date - today
-     * @param todayTotal to check if the phase is not exceeding daily limit
      * @param correct    is correct answer
      * @param phase      current phase of the word
      * @return phase increment value
      */
-    private int getPhaseIncrement(int testCount, int dateDiff, int todayTotal, boolean correct, int phase) {
+    private int getPhaseIncrement(int testCount, int dateDiff, boolean correct, int phase) {
         if (correct) {
             Toast.makeText(getActivity(), "정답입니다!", Toast.LENGTH_SHORT).show();
             if (testCount == 0) {
