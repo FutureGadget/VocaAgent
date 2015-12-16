@@ -37,4 +37,16 @@ public class VocaAgentDbSchema {
             public static final String meaning = "meaning";
         }
     }
+
+    public static final class MetaDataTable {
+        public static final String NAME = "MetaDataTable";
+
+        public static final class Cols {
+            public static final String date = "date";
+            public static final String count = "count";
+            public static final String correct = "correct";
+            public static final String increment = "increment";
+            public static final String streak = "streak";
+        }
+    }
 }

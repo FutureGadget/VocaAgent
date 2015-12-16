@@ -5,18 +5,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.format.DateFormat;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import hci.com.vocaagent.database.BookCursorWrapper;
+import hci.com.vocaagent.database.MetaCursorWrapper;
 import hci.com.vocaagent.database.VocaAgentDbSchema.BookTable;
 import hci.com.vocaagent.database.VocaAgentDbSchema.DictionaryTable;
+import hci.com.vocaagent.database.VocaAgentDbSchema.MetaDataTable;
 import hci.com.vocaagent.database.VocaAgentDbSchema.WordTable;
 import hci.com.vocaagent.database.VocaBaseHelper;
 import hci.com.vocaagent.database.WordCursorWrapper;
@@ -48,9 +47,11 @@ public class VocaLab {
     public void initReviewWords() {
         mReviewWords = new ArrayList<>();
     }
+
     public void addReviewWords(Word w) {
         mReviewWords.add(w);
     }
+
     public List<Word> getReviewWords() {
         return mReviewWords;
     }
@@ -102,6 +103,16 @@ public class VocaLab {
         return values;
     }
 
+    private static ContentValues getMetaDataCountentValues(Meta meta) {
+        ContentValues values = new ContentValues();
+        values.put(MetaDataTable.Cols.date, meta.getDate());
+        values.put(MetaDataTable.Cols.count, meta.getCount());
+        values.put(MetaDataTable.Cols.correct, meta.getCorrect());
+        values.put(MetaDataTable.Cols.increment, meta.getIncrement());
+        values.put(MetaDataTable.Cols.streak, meta.getStreak());
+        return values;
+    }
+
     public void addExamBook(Book book) {
         mExamBooks.add(book);
     }
@@ -145,7 +156,8 @@ public class VocaLab {
                 randomWords.add(cursor.getString(cursor.getColumnIndex(DictionaryTable.Cols.word)));
                 cursor.moveToNext();
             }
-        } catch (Exception e) {
+        } finally {
+            cursor.close();
         }
         return randomWords;
     }
@@ -167,7 +179,8 @@ public class VocaLab {
                 words.add(cursor.getWord());
                 cursor.moveToNext();
             }
-        } catch (Exception e) {
+        } finally {
+            cursor.close();
         }
         return words;
     }
@@ -213,7 +226,7 @@ public class VocaLab {
             return 0;
         try {
             wrapper.moveToFirst();
-            while(!wrapper.isAfterLast()) {
+            while (!wrapper.isAfterLast()) {
                 numCorrect += wrapper.getWord().getNumCorrect();
                 totalTestCount += wrapper.getWord().getTestCount();
                 wrapper.moveToNext();
@@ -284,6 +297,70 @@ public class VocaLab {
         }
     }
 
+    // call this method every time when the user takes a test
+    public void updateMetaInfo(int correct, int count, int increment) {
+        Meta latestMeta = getLatestMeta();
+        boolean notLatest = true;
+        int streak = 0;
+        if (latestMeta == null) {
+            insertMetaData(getToday());
+        } else if (Utils.getDateDiff(latestMeta.getDate()) != 0) {
+            if (Utils.getDateDiff(latestMeta.getDate()) == 1) {
+                streak = latestMeta.getStreak() + 1;
+            }
+            insertMetaData(getToday());
+        } else {
+            notLatest = false;
+        }
+
+        if (notLatest)
+            latestMeta = getLatestMeta();
+
+        latestMeta.setIncrement(latestMeta.getIncrement() + increment);
+        latestMeta.setCount(latestMeta.getCount() + count);
+        latestMeta.setCorrect(latestMeta.getCorrect()+correct);
+        latestMeta.setStreak(streak);
+
+        ContentValues updateValue = getMetaDataCountentValues(latestMeta);
+        mDatabase.update(MetaDataTable.NAME, updateValue, MetaDataTable.Cols.date + " = ?", new String[]{ latestMeta.getDate() });
+    }
+
+    private void insertMetaData(String date) {
+        Meta meta = new Meta();
+        meta.setCorrect(0);
+        meta.setCount(0);
+        meta.setIncrement(0);
+        meta.setStreak(0);
+        meta.setDate(date);
+
+        ContentValues value = getMetaDataCountentValues(meta);
+        mDatabase.insert(MetaDataTable.NAME, null, value);
+    }
+
+    private Meta getLatestMeta() {
+        Meta meta;
+        Cursor cursor = mDatabase.query(
+                MetaDataTable.NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                MetaDataTable.Cols.date + " DESC",
+                "1"
+        );
+        MetaCursorWrapper wrapper = new MetaCursorWrapper(cursor);
+        try {
+            if (wrapper.getCount() == 0)
+                return null;
+            wrapper.moveToFirst();
+            meta = wrapper.getMeta();
+            return meta;
+        } finally {
+            wrapper.close();
+        }
+    }
+
     private WordCursorWrapper queryWords(String whereClause, String[] whereArgs) {
         Cursor cursor = mDatabase.query(
                 WordTable.NAME,
@@ -328,16 +405,18 @@ public class VocaLab {
                         + " LIMIT 0,5";
 
         Cursor cursor = mDatabase.rawQuery(sql, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                String word = cursor.getString(cursor.getColumnIndex(DictionaryTable.Cols.word));
-                String meaning = cursor.getString(cursor.getColumnIndex(DictionaryTable.Cols.meaning));
-                AutoCompleteDictionary dict = new AutoCompleteDictionary(word, meaning);
-                autoLists.add(dict);
-            } while (cursor.moveToNext());
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    String word = cursor.getString(cursor.getColumnIndex(DictionaryTable.Cols.word));
+                    String meaning = cursor.getString(cursor.getColumnIndex(DictionaryTable.Cols.meaning));
+                    AutoCompleteDictionary dict = new AutoCompleteDictionary(word, meaning);
+                    autoLists.add(dict);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
         }
-        cursor.close();
         return autoLists;
     }
 }
