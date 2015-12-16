@@ -39,7 +39,7 @@ public class StatisticsDialogFragment extends DialogFragment {
         mReviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().setResult(1, null);
+                getActivity().setResult(SelectBookFragment.EXAM_TYPE_REVIEW, null);
                 getActivity().finish();
             }
         });

@@ -7,6 +7,11 @@
         app:showAsAction="ifRoom">
     </item>
     <item
+        android:id="@+id/selectbook_menu_test_completed_words"
+        android:title="완료단어복습"
+        app:showAsAction="withText">
+    </item>
+    <item
         android:id="@+id/selectbook_menu_select_all"
         android:title="전체 선택"
         app:showAsAction="withText">

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +27,13 @@ public class SelectBookFragment extends Fragment {
     private NoteAdapter mAdapter;
     private boolean[] mSavedViewHolderStatus;
     private LinearLayout mEmptyLinearLayout;
+
+    private static final int REQUEST_START_TEST = 0;
+
+    public static final int EXAM_TYPE_NORMAL = 0;
+    public static final int EXAM_TYPE_REVIEW = 1;
+    public static final int EXAM_TYPE_COMPLETED = 2;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,9 +96,13 @@ public class SelectBookFragment extends Fragment {
                 if (VocaLab.getVoca(getActivity()).getExamBooks().isEmpty()) {
                     Toast.makeText(getActivity(), "단어장을 선택하세요.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = ExamPagerActivity.newIntent(getActivity(), 0);
-                    startActivityForResult(intent, 1); // test request code = 1
+                    Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_NORMAL);
+                    startActivityForResult(intent, REQUEST_START_TEST); // test request code = 1
                 }
+                return true;
+            case R.id.selectbook_menu_test_completed_words:
+                Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_COMPLETED);
+                startActivityForResult(intent, REQUEST_START_TEST);
                 return true;
             case R.id.selectbook_menu_select_all:
                 for (int i = 0; i < mSavedViewHolderStatus.length; ++i)
@@ -109,9 +121,11 @@ public class SelectBookFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == 1) {
-            Intent intent = ExamPagerActivity.newIntent(getActivity(), 1);
-            startActivityForResult(intent, 1);
+        if (requestCode == REQUEST_START_TEST) {
+            if (resultCode == EXAM_TYPE_REVIEW) {
+                Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_REVIEW);
+                startActivityForResult(intent, REQUEST_START_TEST);
+            }
         }
     }
 

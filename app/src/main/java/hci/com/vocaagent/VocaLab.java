@@ -326,7 +326,7 @@ public class VocaLab {
         latestMeta.setStreak(streak);
 
         ContentValues updateValue = getMetaDataCountentValues(latestMeta);
-        mDatabase.update(MetaDataTable.NAME, updateValue, MetaDataTable.Cols.date + " = ?", new String[]{ latestMeta.getDate() });
+        mDatabase.update(MetaDataTable.NAME, updateValue, MetaDataTable.Cols.date + " = ?", new String[]{latestMeta.getDate()});
     }
 
     private void insertMetaData(String date) {
@@ -363,6 +363,24 @@ public class VocaLab {
         } finally {
             wrapper.close();
         }
+    }
+
+    public List<Word> getCompletedWords() {
+        List<Word> completed = new ArrayList<>();
+        String queryStr = "SELECT * FROM " + WordTable.NAME + " WHERE "
+                + WordTable.Cols.completed + " = 1 ORDER BY " + WordTable.Cols.num_correct
+                + " ASC," + WordTable.Cols.test_count + " DESC";
+        WordCursorWrapper cursor = new WordCursorWrapper(mDatabase.rawQuery(queryStr, null));
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                completed.add(cursor.getWord());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return completed;
     }
 
     private WordCursorWrapper queryWords(String whereClause, String[] whereArgs) {

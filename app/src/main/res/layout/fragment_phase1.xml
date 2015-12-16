@@ -68,11 +68,6 @@
             </RadioGroup>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorBackground"></LinearLayout>
-
         <Button
             android:id="@+id/submit_button"
             android:layout_width="match_parent"

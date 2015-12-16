@@ -17,7 +17,7 @@ public class ExamPagerActivity extends AppCompatActivity {
     private List<Word> mWords;
     private boolean mPageEnd;
     private static final String DIALOG_STATS = "DialogStats";
-    private static final String NEW_OR_REVIEW_OPTION = "option";
+    private static final String EXAM_TYPE_OPTION = "option";
 
     private ViewPager.OnPageChangeListener mListener = new ViewPager.OnPageChangeListener() {
         int selectedIndex;
@@ -66,17 +66,25 @@ public class ExamPagerActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.activity_exam_pager);
 
         // new exam or review test
-        int option = getIntent().getIntExtra(NEW_OR_REVIEW_OPTION, 0);
+        int option = getIntent().getIntExtra(EXAM_TYPE_OPTION, 0);
 
-        if (option == 0) {
+        if (option == SelectBookFragment.EXAM_TYPE_NORMAL) {
             // Get words for exam from the exam book list
             mWords = VocaLab.getVoca(ExamPagerActivity.this).getTestWords();
         }
-        else if (option == 1) {
+        else if (option == SelectBookFragment.EXAM_TYPE_REVIEW) {
             // get review words
             mWords = new ArrayList<>();
             for (Word w : VocaLab.getVoca(ExamPagerActivity.this).getReviewWords())
                 mWords.add(w);
+        } else if (option == SelectBookFragment.EXAM_TYPE_COMPLETED) {
+            // get completed words
+            mWords = new ArrayList<>();
+            List<Word> completedWords = VocaLab.getVoca(ExamPagerActivity.this).getCompletedWords();
+
+            for (int i = 0; i < completedWords.size() && i < 10; ++i) {
+                mWords.add(completedWords.get(i));
+            }
         }
 
         // prepare to save tested words and words to review after the test
@@ -122,7 +130,7 @@ public class ExamPagerActivity extends AppCompatActivity {
 
     public static Intent newIntent(Context context, int option) {
         Intent newIntent = new Intent(context, ExamPagerActivity.class);
-        newIntent.putExtra(NEW_OR_REVIEW_OPTION, option);
+        newIntent.putExtra(EXAM_TYPE_OPTION, option);
         return newIntent;
     }
 }
