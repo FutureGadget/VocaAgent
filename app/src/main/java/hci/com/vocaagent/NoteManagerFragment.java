@@ -56,6 +56,12 @@ public class NoteManagerFragment extends Fragment {
         inflater.inflate(R.menu.fragment_notemanager_menu, menu);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
     /*
      * Behaviors when one of the overflow menu options on Toolbar is selected.
      */
