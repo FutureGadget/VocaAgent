@@ -20,7 +20,7 @@
         <menu>
         <item
             android:id="@+id/drawer_item_ratio"
-            android:checkable="false"
+            android:checked="false"
             android:icon="@drawable/ic_mood_black_48dp"
             app:actionLayout="@layout/drawer_submenu"
             android:title="@string/ratio">
@@ -28,7 +28,7 @@
 
         <item
             android:id="@+id/drawer_item_streak"
-            android:checkable="false"
+            android:checked="false"
             android:title="@string/streak"
             android:icon="@drawable/ic_today_black_48dp">
         </item>

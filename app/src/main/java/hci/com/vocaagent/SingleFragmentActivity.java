@@ -39,7 +39,6 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem item) {
 
                 if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
 
                 mDrawer.closeDrawers();
 
