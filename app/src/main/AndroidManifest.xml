@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".NoteManagerActivity"
             android:parentActivityName=".SelectBookActivity"/>
-        <activity android:name=".BookActivity"/>
+        <activity android:name=".BookActivity"
+            android:parentActivityName=".NoteManagerActivity"/>
         <activity android:name=".ExamPagerActivity"/>
     </application>
 

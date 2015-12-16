@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 // Activity to modify the book contents. (list of words)
-public class BookActivity extends SingleFragmentActivity {
+public class BookActivity extends NoneDrawerSingleFragmentActivity {
     private static final String EXTRA_BOOK_ID = "hci.com.vocaagent.book_id";
 
     @Override
