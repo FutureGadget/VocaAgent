@@ -37,10 +37,14 @@ public class Phase0Fragment extends Fragment {
         new AsyncTaskRunner().execute();
 
         mWord.setPhase(1);
-        mWord.setRecentTestDate(VocaLab.getVoca(getActivity()).getToday());
+        mWord.setRecentTestDate(VocaLab.getToday());
         mWord.setToday(1);
+        mWord.setNumCorrect(mWord.getNumCorrect()+1);
+        mWord.setTestCount(mWord.getTestCount()+1);
+
         VocaLab.getVoca(getActivity()).updateWord(mWord);
         VocaLab.getVoca(getActivity()).addResultWord(mWord, 1);
+        VocaLab.getVoca(getActivity()).updateMetaInfo(1, 1, 1); // update meta data
         return v;
     }
 

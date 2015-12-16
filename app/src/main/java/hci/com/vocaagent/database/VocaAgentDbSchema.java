@@ -39,7 +39,7 @@ public class VocaAgentDbSchema {
     }
 
     public static final class MetaDataTable {
-        public static final String NAME = "MetaDataTable";
+        public static final String NAME = "MetaData";
 
         public static final class Cols {
             public static final String date = "date";

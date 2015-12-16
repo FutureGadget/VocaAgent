@@ -9,8 +9,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public abstract class SingleFragmentActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -51,7 +56,6 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                     case R.id.drawer_item_edit:
                         Intent intent = new Intent(SingleFragmentActivity.this, NoteManagerActivity.class);
                         startActivity(intent);
-                        item.setChecked(false);
                         return true;
                     default:
                         return true;
@@ -63,6 +67,33 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+
+                Menu menu = mNavigationView.getMenu();
+
+                // streak view
+                MenuItem view = menu.findItem(R.id.drawer_item_streak);
+                LinearLayout test = (LinearLayout)view.getActionView();
+                TextView text = (TextView) test.findViewById(R.id.drawer_streak_text_view);
+
+                VocaLab.getVoca(SingleFragmentActivity.this).updateMetaInfo(0,0,0);
+
+                Meta meta = VocaLab.getVoca(SingleFragmentActivity.this).getLatestMeta();
+                int diff = Utils.getDateDiff(meta.getDate());
+                int streak = 0;
+                if (diff == 1) {
+                    streak = meta.getStreak()+1;
+                } else if(diff == 0) {
+                    streak = meta.getStreak();
+                }
+                text.setText(streak+"일째");
+
+                // ratio view
+                view = menu.findItem(R.id.drawer_item_ratio);
+                test = (LinearLayout)view.getActionView();
+                text = (TextView)test.findViewById(R.id.drawer_ratio_text_view);
+                double ratio = VocaLab.getVoca(SingleFragmentActivity.this).getCorrectRatio();
+                ratio = (int)(ratio*100);
+                text.setText(ratio+"%");
             }
 
             @Override

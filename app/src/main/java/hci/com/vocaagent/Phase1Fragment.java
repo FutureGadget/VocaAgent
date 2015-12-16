@@ -140,6 +140,7 @@ public class Phase1Fragment extends Fragment {
 
         VocaLab.getVoca(getActivity()).updateWord(mWord);
         VocaLab.getVoca(getActivity()).addResultWord(mWord, phaseIncrement);
+        VocaLab.getVoca(getActivity()).updateMetaInfo((phaseIncrement >= 0 ? 1 : -1), 1, phaseIncrement);
     }
 
     /**

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -236,6 +237,7 @@ public class VocaLab {
         } finally {
             wrapper.close();
         }
+        Log.d("TEST", "numCorrect = "+numCorrect + " numTotal = " + totalTestCount);
         return numCorrect / totalTestCount;
     }
 
@@ -320,7 +322,7 @@ public class VocaLab {
 
         latestMeta.setIncrement(latestMeta.getIncrement() + increment);
         latestMeta.setCount(latestMeta.getCount() + count);
-        latestMeta.setCorrect(latestMeta.getCorrect()+correct);
+        latestMeta.setCorrect(latestMeta.getCorrect() + correct);
         latestMeta.setStreak(streak);
 
         ContentValues updateValue = getMetaDataCountentValues(latestMeta);
@@ -339,7 +341,7 @@ public class VocaLab {
         mDatabase.insert(MetaDataTable.NAME, null, value);
     }
 
-    private Meta getLatestMeta() {
+    public Meta getLatestMeta() {
         Meta meta;
         Cursor cursor = mDatabase.query(
                 MetaDataTable.NAME,

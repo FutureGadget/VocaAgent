@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticsDialogFragment extends DialogFragment {
@@ -50,6 +49,7 @@ public class StatisticsDialogFragment extends DialogFragment {
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mAdapter = new ResultWordAdapter(VocaLab.getVoca(getActivity()).getResultWords());
         mRecyclerView.setAdapter(mAdapter);
+
         return v;
     }
 

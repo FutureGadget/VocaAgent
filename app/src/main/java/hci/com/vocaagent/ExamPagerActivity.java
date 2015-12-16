@@ -62,6 +62,7 @@ public class ExamPagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_pager);
+
         mViewPager = (ViewPager) findViewById(R.id.activity_exam_pager);
 
         // new exam or review test

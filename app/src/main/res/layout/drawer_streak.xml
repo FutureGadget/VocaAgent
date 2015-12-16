@@ -5,10 +5,11 @@
     android:gravity="center">
 
    <TextView
+       android:id="@+id/drawer_streak_text_view"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:background="@drawable/drawer_textview_radius"
        android:padding="5dp"
        android:textColor="@color/colorWhite"
-       android:text="99.98%"/>
+       android:text="0일째"/>
 </LinearLayout>
