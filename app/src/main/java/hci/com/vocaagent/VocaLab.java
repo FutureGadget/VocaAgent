@@ -29,6 +29,13 @@ public class VocaLab {
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
+    public static VocaLab getVoca(Context context) {
+        if (sVocaLab == null) {
+            sVocaLab = new VocaLab(context);
+        }
+        return sVocaLab;
+    }
+
     private VocaLab(Context context) {
         mExamBooks = new ArrayList<>();
         mResultWords = new ArrayList<>();
@@ -198,12 +205,23 @@ public class VocaLab {
         return new WordCursorWrapper(mDatabase.rawQuery(getTestWordStr, null));
     }
 
-
-    public static VocaLab getVoca(Context context) {
-        if (sVocaLab == null) {
-            sVocaLab = new VocaLab(context);
+    // return correct ratio (num_correct / count_test)
+    public double getCorrectRatio() {
+        WordCursorWrapper wrapper = queryWords(null, null);
+        double numCorrect = 0, totalTestCount = 0;
+        if (wrapper.getCount() == 0)
+            return 0;
+        try {
+            wrapper.moveToFirst();
+            while(!wrapper.isAfterLast()) {
+                numCorrect += wrapper.getWord().getNumCorrect();
+                totalTestCount += wrapper.getWord().getTestCount();
+                wrapper.moveToNext();
+            }
+        } finally {
+            wrapper.close();
         }
-        return sVocaLab;
+        return numCorrect / totalTestCount;
     }
 
     public List<Book> getBooks() {
