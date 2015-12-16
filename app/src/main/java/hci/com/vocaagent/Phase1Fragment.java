@@ -174,14 +174,14 @@ public class Phase1Fragment extends Fragment {
             }
         } else {
             Toast.makeText(getActivity(), "오답입니다!", Toast.LENGTH_SHORT).show();
-            if (testCount == 0 || dateDiff < 3) {
+            if (testCount == 0 || dateDiff < 3 || phase < 2) {
                 return -phase;
             } else if (dateDiff < 5) {
-                return 2 - phase;
+                return -(int)(phase*0.8);
             } else if (dateDiff < 7) {
-                return 5 - phase;
+                return -(int)(phase*0.5);
             } else {
-                return 7 - phase;
+                return -(int)(phase*0.3);
             }
         }
     }
