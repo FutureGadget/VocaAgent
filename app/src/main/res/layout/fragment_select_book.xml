@@ -13,4 +13,25 @@
         android:scrollbars="vertical">
     </android.support.v7.widget.RecyclerView>
 
+    <LinearLayout
+        android:id="@+id/select_book_recycler_view_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorBackground"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_margin="30dp"
+            android:src="@drawable/ic_agent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:text="단어장이 없습니다. 단어장을 생성하세요."
+            android:layout_gravity="center"/>
+    </LinearLayout>
 </LinearLayout>

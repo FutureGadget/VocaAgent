@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class SelectBookFragment extends Fragment {
     private RecyclerView mBookRecyclerView;
     private NoteAdapter mAdapter;
     private boolean[] mSavedViewHolderStatus;
+    private LinearLayout mEmptyLinearLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,9 +39,19 @@ public class SelectBookFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_select_book, container, false);
         mBookRecyclerView = (RecyclerView) v.findViewById(R.id.select_book_recycler_view);
         mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mEmptyLinearLayout = (LinearLayout) v.findViewById(R.id.select_book_recycler_view_empty);
         updateUI();
-        getActivity().setTitle("학습 시작");
 
+        if(mAdapter.getItemCount() == 0) {
+            mBookRecyclerView.setVisibility(View.GONE);
+            mEmptyLinearLayout.setVisibility(View.VISIBLE);
+        } else {
+            mBookRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyLinearLayout.setVisibility(View.GONE);
+        }
+
+
+        getActivity().setTitle("학습 시작");
         return v;
     }
 
