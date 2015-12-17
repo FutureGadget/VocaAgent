@@ -237,6 +237,7 @@ public class VocaLab {
         } finally {
             wrapper.close();
         }
+        Log.d("TEST", numCorrect+": numCorrect, " + totalTestCount + ": TotalTestCount");
         return numCorrect / totalTestCount;
     }
 

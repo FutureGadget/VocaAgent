@@ -18,4 +18,6 @@
     <string name="settings">설정</string>
     <string name="help">도움말 및 의견</string>
     <string name="import_export">가져오기/내보내기</string>
+    <string name="meta_correct_ratio">%1$s</string>
+    <string name="meta_streak_days">%1$d일째</string>
 </resources>

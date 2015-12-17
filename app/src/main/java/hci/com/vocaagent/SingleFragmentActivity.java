@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
+
 public abstract class SingleFragmentActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
@@ -78,15 +80,17 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                 VocaLab.getVoca(SingleFragmentActivity.this).updateMetaInfo(0,0,0);
 
                 Meta meta = VocaLab.getVoca(SingleFragmentActivity.this).getLatestMeta();
-                text.setText(meta.getStreak()+"일째");
+                String streakStr = getString(R.string.meta_streak_days, meta.getStreak());
+                text.setText(streakStr);
 
                 // ratio view
                 view = menu.findItem(R.id.drawer_item_ratio);
                 test = (LinearLayout)view.getActionView();
                 text = (TextView)test.findViewById(R.id.drawer_ratio_text_view);
                 double ratio = VocaLab.getVoca(SingleFragmentActivity.this).getCorrectRatio();
-                ratio = (int)(ratio*100);
-                text.setText(ratio+"%");
+                DecimalFormat df = new DecimalFormat("#.##%");
+                String ratioStr = getString(R.string.meta_correct_ratio, df.format(ratio));
+                text.setText(ratioStr);
             }
 
             @Override

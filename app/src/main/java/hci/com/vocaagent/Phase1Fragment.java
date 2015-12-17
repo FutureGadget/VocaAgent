@@ -112,7 +112,6 @@ public class Phase1Fragment extends Fragment {
             numCorrect++;
             phaseIncrement = getPhaseIncrement(testCount, dateDiff, true, phase);
         } else {
-            numCorrect--;
             phaseIncrement = getPhaseIncrement(testCount, dateDiff, false, phase);
         }
 

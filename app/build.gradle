@@ -29,5 +29,4 @@ dependencies {
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
     compile 'com.android.support:design:23.1.0'
-    compile 'de.hdodenhof:circleimageview:1.2.1'
 }
