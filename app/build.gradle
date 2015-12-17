@@ -25,8 +25,9 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:recyclerview-v7:23.1.0'
     compile 'org.jsoup:jsoup:1.8.3'
-    compile files('libs/joda-time-2.9.1.jar')
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
     compile 'com.android.support:design:23.1.0'
+    compile 'org.apache.poi:poi:3.13'
+    compile 'joda-time:joda-time:2.9.1'
 }
