@@ -4,12 +4,31 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.widget.Toast;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import hci.com.vocaagent.database.BookCursorWrapper;
@@ -57,7 +76,9 @@ public class VocaLab {
         return mReviewWords;
     }
 
-    public List<Book> getExamBooks() { return mExamBooks; }
+    public List<Book> getExamBooks() {
+        return mExamBooks;
+    }
 
     // save tested words for statistics when the exam ends.
     public void initResultWords() {
@@ -114,6 +135,125 @@ public class VocaLab {
         values.put(MetaDataTable.Cols.increment, meta.getIncrement());
         values.put(MetaDataTable.Cols.streak, meta.getStreak());
         return values;
+    }
+
+    public Book getBookByName(String bookName) {
+        BookCursorWrapper cursor = new BookCursorWrapper(mDatabase.rawQuery("SELECT * FROM Book WHERE name =  '"+ bookName +"'", null));
+        cursor.moveToFirst();
+        try {
+            if (!cursor.isAfterLast())
+                return cursor.getBook();
+        } finally {
+            cursor.close();
+        }
+        return null;
+    }
+
+    public void importNote(String fileName, String bookName) {
+        File f = new File(Environment.getExternalStorageDirectory() + "/VocaAgent/", fileName);
+        try {
+            FileInputStream input = new FileInputStream(f);
+
+            POIFSFileSystem poifsFileSystem = new POIFSFileSystem(input);
+
+            HSSFWorkbook wb = new HSSFWorkbook(poifsFileSystem);
+
+            Sheet sheet = wb.getSheetAt(0);
+
+            Book book = getBookByName(bookName);
+
+            // transaction
+            mDatabase.beginTransaction();
+            if (book == null) { // no such book with the name provided
+                addNewBook(bookName);
+                book = getBookByName(bookName);
+            }
+
+            int bookId = book.getBookId();
+
+            Log.d("TEST", "BOOKID: "+bookId);
+            for (Row myRow : sheet) {
+                for (Cell myCell : myRow) {
+                    addNewWord(myCell.toString(), bookId);
+                    Log.d("TEST", myCell.toString() + " CELL");
+                }
+            }
+            mDatabase.setTransactionSuccessful();
+            mDatabase.endTransaction();
+        } catch (Exception e) {
+            Log.e("TEST", "File read error", e);
+        }
+    }
+
+    public boolean exportNote(String fileName, int bookId) {
+        if (Utils.isExternalStorageWritable()) {
+            Workbook wb = new HSSFWorkbook();
+
+            // new sheet
+            Sheet sheet1 = null;
+            sheet1 = wb.createSheet("단어목록");
+
+            CellStyle cs = wb.createCellStyle();
+            cs.setFillForegroundColor(HSSFColor.LIME.index);
+            cs.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+
+            // get words to export and write them to the workbook
+            List<Word> words = getWordInBook(bookId);
+            for (int i = 0; i < words.size(); ++i) {
+                Row row = sheet1.createRow(i);
+                Cell c = row.createCell(0);
+                c.setCellValue(words.get(i).getWord());
+                if ((i & 1) == 0) {
+                    c.setCellStyle(cs);
+                }
+            }
+            File file = new File(Environment.getExternalStorageDirectory() + "/VocaAgent/", fileName + ".xls");
+            FileOutputStream os = null;
+            try {
+                os = new FileOutputStream(file);
+                wb.write(os);
+
+            } catch (IOException e) {
+                Log.w("TEST", "Error writting "+file, e);
+            } catch (Exception e) {
+                Log.w("TEST", "Failed to save file", e);
+            } finally {
+                try {
+                    if (os != null) os.close();
+                } catch(Exception e){}
+            }
+        }
+        return false;
+    }
+
+    public void addNewWord(String wordString, int bookId) {
+        Word newWord = new Word();
+        newWord.setTestCount(0);
+        newWord.setWord(wordString);
+        newWord.setRecentTestDate("0000-00-00");
+        newWord.setPhase(0);
+        newWord.setBookid(bookId);
+
+        newWord.setCompleted(false);
+        newWord.setNumCorrect(0);
+
+        addWord(newWord);
+
+        // update book (update number of contained words and last modified date)
+        Book updateBook = getBookByID(bookId);
+        updateBook.setNumWords(updateBook.getNumWords() + 1);
+        updateBook.setLastModified(VocaLab.getToday());
+        updateBook(updateBook);
+    }
+
+    public void addNewBook(String bookTitle) {
+        Book book = new Book();
+        String lastModified = VocaLab.getToday();
+        book.setBookName(bookTitle);
+        book.setLastModified(lastModified);
+        book.setNumWords(0);
+
+        addBook(book);
     }
 
     public void addExamBook(Book book) {
@@ -237,7 +377,7 @@ public class VocaLab {
         } finally {
             wrapper.close();
         }
-        Log.d("TEST", numCorrect+": numCorrect, " + totalTestCount + ": TotalTestCount");
+        Log.d("TEST", numCorrect + ": numCorrect, " + totalTestCount + ": TotalTestCount");
         return numCorrect / totalTestCount;
     }
 

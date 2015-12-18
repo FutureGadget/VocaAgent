@@ -3,6 +3,7 @@ package hci.com.vocaagent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -58,7 +59,7 @@ public class SelectBookFragment extends Fragment {
         }
 
 
-        getActivity().setTitle("학습 시작");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("학습 시작");
         return v;
     }
 

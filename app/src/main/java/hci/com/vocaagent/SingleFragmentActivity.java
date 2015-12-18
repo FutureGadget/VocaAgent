@@ -26,6 +26,9 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     ActionBarDrawerToggle mDrawerToggle;
     NavigationView mNavigationView;
 
+    private static final String DIALOG_IMPORT = "DIALOG_IMPORT";
+    private static final String DIALOG_EXPORT = "DIALOG_EXPORT";
+
     protected abstract Fragment createFragment();
 
     @Override
@@ -43,7 +46,6 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-
                 if (item.isChecked()) item.setChecked(false);
 
                 mDrawer.closeDrawers();
@@ -56,8 +58,22 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                                 .commit();
                         return true;
                     case R.id.drawer_item_edit:
-                        Intent intent = new Intent(SingleFragmentActivity.this, NoteManagerActivity.class);
-                        startActivity(intent);
+                        NoteManagerFragment managerFragment = NoteManagerFragment.newInstance(NoteManagerFragment.NOTE_MANAGER_MODE);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, managerFragment)
+                                .commit();
+                        return true;
+                    case R.id.drawer_item_import:
+                        ExternalStorageListFragment importList = new ExternalStorageListFragment();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, importList)
+                                .commit();
+                        return true;
+                    case R.id.drawer_item_export:
+                        NoteManagerFragment exportFragment = NoteManagerFragment.newInstance(NoteManagerFragment.EXPORT_BOOK_MODE);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, exportFragment)
+                                .commit();
                         return true;
                     default:
                         return true;
