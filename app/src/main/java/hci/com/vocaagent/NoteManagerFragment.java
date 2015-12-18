@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,21 +16,25 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import hci.com.vocaagent.database.VocaAgentDbSchema.*;
+import hci.com.vocaagent.database.VocaAgentDbSchema.BookTable;
+import hci.com.vocaagent.database.VocaAgentDbSchema.WordTable;
 
 public class NoteManagerFragment extends Fragment {
     private RecyclerView mBookRecyclerView;
     private NoteAdapter mAdapter;
     private boolean[] mSavedViewHolderStatus;
     private Set<Book> mBooksSelected;
+    private int mMode;
 
     public static final String DIALOG_ADD_BOOK = "DIALOG_ADD_BOOK";
     public static final String DIALOG_REMOVE_BOOK = "DIALOG_REMOVE_BOOK";
+    public static final int EXPORT_BOOK_MODE = 1;
+    public static final int NOTE_MANAGER_MODE = 0;
+    private static final String ARG_MODE = "ARG_MODE";
     private static final int REQUEST_TITLE = 0;
     private static final int REQUEST_REMOVE = 1;
 
@@ -43,17 +47,24 @@ public class NoteManagerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_note_manager, container, false);
+
+        mMode = getArguments().getInt(ARG_MODE);
         mBookRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
 
-        getActivity().setTitle("단어장 관리");
+        if (mMode == NOTE_MANAGER_MODE)
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("단어장 관리");
+        else if (mMode == EXPORT_BOOK_MODE)
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("단어장 내보내기");
         return v;
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_notemanager_menu, menu);
+        if (mMode == NOTE_MANAGER_MODE) // manage books mode (add, delete books)
+            inflater.inflate(R.menu.fragment_notemanager_menu, menu);
     }
 
     @Override
@@ -62,15 +73,24 @@ public class NoteManagerFragment extends Fragment {
         updateUI();
     }
 
+    public static NoteManagerFragment newInstance(int option) {
+        NoteManagerFragment fragment = new NoteManagerFragment();
+        Bundle arg = new Bundle();
+        arg.putInt(ARG_MODE, option);
+
+        fragment.setArguments(arg);
+        return fragment;
+    }
+
     /*
      * Behaviors when one of the overflow menu options on Toolbar is selected.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.menu_item_add_book:
                 AddBookFragment dialogFragment = new AddBookFragment();
-                dialogFragment.show(getFragmentManager(),DIALOG_ADD_BOOK);
+                dialogFragment.show(getFragmentManager(), DIALOG_ADD_BOOK);
                 dialogFragment.setTargetFragment(NoteManagerFragment.this, REQUEST_TITLE);
                 return true;
             case R.id.menu_item_del_book:
@@ -87,10 +107,10 @@ public class NoteManagerFragment extends Fragment {
         for (Book b : mBooksSelected) {
             VocaLab.getVoca(getActivity()).
                     deleteBooks(BookTable.Cols.book_id + " = ?", new String[]{b.getBookId() + ""});
-            VocaLab.getVoca(getActivity()).deleteWords(WordTable.Cols.book_id + " = ?", new String[]{ b.getBookId() + "" });
         }
         updateUI();
     }
+
     /*
      * To get result from the dialog fragments when an option is selected.
      */
@@ -100,13 +120,7 @@ public class NoteManagerFragment extends Fragment {
             return;
         if (requestCode == REQUEST_TITLE) {
             String title = data.getStringExtra(AddBookFragment.EXTRA_TITLE);
-            Book book = new Book();
-            String lastModified = VocaLab.getToday();
-            book.setBookName(title);
-            book.setLastModified(lastModified);
-            book.setNumWords(0);
-
-            VocaLab.getVoca(getActivity()).addBook(book);
+            VocaLab.getVoca(getActivity()).addNewBook(title); // add a new book
             updateUI();
         } else if (requestCode == REQUEST_REMOVE) {
             deleteBooks();
@@ -121,8 +135,7 @@ public class NoteManagerFragment extends Fragment {
         if (mAdapter == null) {
             mAdapter = new NoteAdapter(books);
             mBookRecyclerView.setAdapter(mAdapter);
-        }
-        else {
+        } else {
             mAdapter.setBooks(books);
             mAdapter.notifyDataSetChanged();
         }

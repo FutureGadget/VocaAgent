@@ -4,9 +4,17 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -114,6 +122,51 @@ public class VocaLab {
         values.put(MetaDataTable.Cols.increment, meta.getIncrement());
         values.put(MetaDataTable.Cols.streak, meta.getStreak());
         return values;
+    }
+
+    public void importNote(String fileName) {
+        try {
+            File f = new File(Environment.getExternalStorageDirectory() + "/VocaAgent/", fileName);
+            FileInputStream input = new FileInputStream(f);
+
+            POIFSFileSystem poifsFileSystem = new POIFSFileSystem(input);
+
+            HSSFWorkbook wb = new HSSFWorkbook(poifsFileSystem);
+
+            Sheet sheet = wb.getSheetAt(0);
+
+            mDatabase.beginTransaction();
+            for (Row r : sheet) {
+
+            }
+            mDatabase.endTransaction();
+        } catch (Exception e) {
+            Log.e("TEST", "File read error");
+        }
+    }
+
+    public void addNewWord(String wordString, int bookId) {
+        Word newWord = new Word();
+        newWord.setTestCount(0);
+        newWord.setWord(wordString);
+        newWord.setRecentTestDate("0000-00-00");
+        newWord.setPhase(0);
+        newWord.setBookid(bookId);
+
+        newWord.setCompleted(false);
+        newWord.setNumCorrect(0);
+
+        addWord(newWord);
+    }
+
+    public void addNewBook(String bookTitle) {
+        Book book = new Book();
+        String lastModified = VocaLab.getToday();
+        book.setBookName(bookTitle);
+        book.setLastModified(lastModified);
+        book.setNumWords(0);
+
+        addBook(book);
     }
 
     public void addExamBook(Book book) {

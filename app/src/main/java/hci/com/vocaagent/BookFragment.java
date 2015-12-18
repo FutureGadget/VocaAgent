@@ -90,18 +90,9 @@ public class BookFragment extends Fragment {
             return;
         if (requestCode == REQUEST_ADD_WORD) {
             String wordString = data.getStringExtra(AddWordFragment.EXTRA_WORD);
-            Word newWord = new Word();
-            newWord.setTestCount(0);
-            newWord.setWord(wordString);
-            newWord.setRecentTestDate("0000-00-00");
-            newWord.setPhase(0);
-            newWord.setBookid(mBookId);
-
-            newWord.setCompleted(false);
-            newWord.setNumCorrect(0);
-            // isnert the word to database and update recycler view adapter
             VocaLab vocaLab = VocaLab.getVoca(getActivity());
-            vocaLab.addWord(newWord);
+            // add new word
+            vocaLab.addNewWord(wordString, mBookId);
 
             // update book (update number of contained words and last modified date)
             Book updateBook = vocaLab.getBookByID(mBookId);

@@ -1,14 +1,17 @@
 package hci.com.vocaagent;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
@@ -24,6 +27,8 @@ public class ExternalStorageListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_list_import, container, false);
 
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("단어장 가져오기");
+
         mRecyclerView = (RecyclerView) v.findViewById(R.id.import_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), android.support.v7.widget.LinearLayoutManager.VERTICAL, false));
 
@@ -33,16 +38,32 @@ public class ExternalStorageListFragment extends Fragment {
         return v;
     }
 
-    private class FileHolder extends RecyclerView.ViewHolder {
+    private class FileHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView mTextView;
 
         public FileHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             mTextView = (TextView) itemView.findViewById(R.id.import_list_text_view);
         }
 
         public void bind(String fileName) {
             mTextView.setText(fileName);
+        }
+
+        @Override
+        public void onClick(View v) {
+            AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.import_confirm, mTextView.getText().toString()))
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create();
+            dialog.show();
         }
     }
 

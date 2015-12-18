@@ -58,8 +58,10 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                                 .commit();
                         return true;
                     case R.id.drawer_item_edit:
-                        Intent intent = new Intent(SingleFragmentActivity.this, NoteManagerActivity.class);
-                        startActivity(intent);
+                        NoteManagerFragment managerFragment = NoteManagerFragment.newInstance(NoteManagerFragment.NOTE_MANAGER_MODE);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, managerFragment)
+                                .commit();
                         return true;
                     case R.id.drawer_item_import:
                         ExternalStorageListFragment importList = new ExternalStorageListFragment();
@@ -68,6 +70,10 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                                 .commit();
                         return true;
                     case R.id.drawer_item_export:
+                        NoteManagerFragment exportFragment = NoteManagerFragment.newInstance(NoteManagerFragment.EXPORT_BOOK_MODE);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, exportFragment)
+                                .commit();
                         return true;
                     default:
                         return true;
