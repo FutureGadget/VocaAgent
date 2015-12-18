@@ -12,6 +12,11 @@
             android:title="@string/edit"
             android:icon="@drawable/ic_edit_black_48dp"
             android:checked="false"/>
+        <item
+            android:id="@+id/drawer_item_import_export"
+            android:title="@string/import_export"
+            android:icon="@drawable/ic_swap_vert_black_48dp"
+            android:checked="false"/>
     </group>
 
     <item

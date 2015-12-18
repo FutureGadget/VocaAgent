@@ -14,16 +14,4 @@
         android:title="@string/del_book"
         app:showAsAction="never">
     </item>
-    <!--가져오기-->
-    <item
-        android:id="@+id/menu_item_import_book"
-        android:title="@string/import_book"
-        app:showAsAction="never">
-    </item>
-    <!--내보내기-->
-    <item
-        android:id="@+id/menu_item_export_book"
-        android:title="@string/export_book"
-        app:showAsAction="never">
-    </item>
 </menu>

@@ -26,6 +26,8 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     ActionBarDrawerToggle mDrawerToggle;
     NavigationView mNavigationView;
 
+    private static final String DIALOG_IMPORT_EXPORT = "DIALOG_IMPORT_EXPORT";
+
     protected abstract Fragment createFragment();
 
     @Override
@@ -58,6 +60,10 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                     case R.id.drawer_item_edit:
                         Intent intent = new Intent(SingleFragmentActivity.this, NoteManagerActivity.class);
                         startActivity(intent);
+                        return true;
+                    case R.id.drawer_item_import_export:
+                        ImportExportDialog dialog = new ImportExportDialog();
+                        dialog.show(getSupportFragmentManager(), DIALOG_IMPORT_EXPORT);
                         return true;
                     default:
                         return true;

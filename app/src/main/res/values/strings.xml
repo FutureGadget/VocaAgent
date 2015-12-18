@@ -5,8 +5,6 @@
     <string name="del_word">선택 단어 삭제</string>
     <string name="add_book">단어장 추가</string>
     <string name="del_book">선택 단어장 삭제</string>
-    <string name="import_book">가져오기</string>
-    <string name="export_book">선택 내보내기</string>
     <string name="end_of_test">시험 종료</string>
     <string name="confirm_delete">삭제 확인</string>
     <string name="openDrawer">메뉴 열기</string>
@@ -20,4 +18,6 @@
     <string name="import_export">가져오기/내보내기</string>
     <string name="meta_correct_ratio">%1$s</string>
     <string name="meta_streak_days">%1$d일째</string>
+    <string name="importBook">가져오기</string>
+    <string name="exportBook">내보내기</string>
 </resources>
