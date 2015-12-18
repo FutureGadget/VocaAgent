@@ -2,16 +2,16 @@ package hci.com.vocaagent;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
@@ -53,16 +53,22 @@ public class ExternalStorageListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            View exportView = inflater.inflate(R.layout.dialog_import_file_name, null);
+            final EditText inBookName = (EditText) exportView.findViewById(R.id.import_book_name);
+
             AlertDialog dialog = new AlertDialog.Builder(getActivity())
                     .setMessage(getString(R.string.import_confirm, mTextView.getText().toString()))
+                    .setView(exportView)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            
+                            VocaLab.getVoca(getActivity()).importNote(mTextView.getText().toString(), inBookName.getText().toString());
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, null)
                     .create();
+
             dialog.show();
         }
     }

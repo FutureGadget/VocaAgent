@@ -94,11 +94,6 @@ public class BookFragment extends Fragment {
             // add new word
             vocaLab.addNewWord(wordString, mBookId);
 
-            // update book (update number of contained words and last modified date)
-            Book updateBook = vocaLab.getBookByID(mBookId);
-            updateBook.setNumWords(updateBook.getNumWords()+1);
-            updateBook.setLastModified(VocaLab.getToday());
-            vocaLab.updateBook(updateBook);
             updateUI();
         }
         else if (requestCode == REQUEST_REMOVE_WORD) {

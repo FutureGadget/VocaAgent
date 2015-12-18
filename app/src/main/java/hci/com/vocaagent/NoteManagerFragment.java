@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import hci.com.vocaagent.database.VocaAgentDbSchema.BookTable;
-import hci.com.vocaagent.database.VocaAgentDbSchema.WordTable;
 
 public class NoteManagerFragment extends Fragment {
     private RecyclerView mBookRecyclerView;
