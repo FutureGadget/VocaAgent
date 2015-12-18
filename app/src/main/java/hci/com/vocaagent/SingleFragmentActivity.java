@@ -26,9 +26,6 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     ActionBarDrawerToggle mDrawerToggle;
     NavigationView mNavigationView;
 
-    private static final String DIALOG_IMPORT = "DIALOG_IMPORT";
-    private static final String DIALOG_EXPORT = "DIALOG_EXPORT";
-
     protected abstract Fragment createFragment();
 
     @Override

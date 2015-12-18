@@ -222,6 +222,7 @@ public class VocaLab {
             try {
                 os = new FileOutputStream(file);
                 wb.write(os);
+                return true;
             } catch (IOException e) {
                 Log.w("TEST", "Error writting " + file, e);
             } catch (Exception e) {
