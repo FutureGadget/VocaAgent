@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
     public static int getDateDiff(String recentTestDate) {
@@ -45,6 +47,9 @@ public class Utils {
     }
 
     public static List<String> getListFiles() {
+        String pattern = ".*\\.xls"; // only shows .xls files
+        Pattern r = Pattern.compile(pattern);
+        Matcher m;
         File file;
         List<String> list = new ArrayList<>();
         File[] files;
@@ -52,7 +57,9 @@ public class Utils {
             file = getExternalDir("VocaAgent");
             files = file.listFiles();
             for (File f : files) {
-                list.add(f.getName());
+                String fName = f.getName();
+                if (r.matcher(fName).matches())
+                    list.add(f.getName());
             }
         }
         return list;

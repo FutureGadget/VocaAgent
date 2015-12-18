@@ -2,6 +2,7 @@ package hci.com.vocaagent;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,15 +17,12 @@ import java.util.List;
 /*
  * Fragment which shows external storage contents.
  */
-public class ExternalStorageListFragment extends DialogFragment {
+public class ExternalStorageListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private FileListAdapter mAdapter;
 
-    public AlertDialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();
-
-        View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_list_import, dialog.getListView());
-        dialog.setView(v);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_list_import, container, false);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.import_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), android.support.v7.widget.LinearLayoutManager.VERTICAL, false));
@@ -32,7 +30,7 @@ public class ExternalStorageListFragment extends DialogFragment {
         mAdapter = new FileListAdapter(Utils.getListFiles());
         mRecyclerView.setAdapter(mAdapter);
 
-        return dialog;
+        return v;
     }
 
     private class FileHolder extends RecyclerView.ViewHolder {
@@ -72,5 +70,4 @@ public class ExternalStorageListFragment extends DialogFragment {
             return new FileHolder(view);
         }
     }
-
 }

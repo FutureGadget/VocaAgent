@@ -26,7 +26,8 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     ActionBarDrawerToggle mDrawerToggle;
     NavigationView mNavigationView;
 
-    private static final String DIALOG_IMPORT_EXPORT = "DIALOG_IMPORT_EXPORT";
+    private static final String DIALOG_IMPORT = "DIALOG_IMPORT";
+    private static final String DIALOG_EXPORT = "DIALOG_EXPORT";
 
     protected abstract Fragment createFragment();
 
@@ -45,7 +46,6 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-
                 if (item.isChecked()) item.setChecked(false);
 
                 mDrawer.closeDrawers();
@@ -61,9 +61,13 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                         Intent intent = new Intent(SingleFragmentActivity.this, NoteManagerActivity.class);
                         startActivity(intent);
                         return true;
-                    case R.id.drawer_item_import_export:
-                        ImportExportDialog dialog = new ImportExportDialog();
-                        dialog.show(getSupportFragmentManager(), DIALOG_IMPORT_EXPORT);
+                    case R.id.drawer_item_import:
+                        ExternalStorageListFragment importList = new ExternalStorageListFragment();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, importList)
+                                .commit();
+                        return true;
+                    case R.id.drawer_item_export:
                         return true;
                     default:
                         return true;
