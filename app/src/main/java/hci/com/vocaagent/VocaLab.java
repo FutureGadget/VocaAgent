@@ -7,11 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.widget.Toast;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -28,8 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import hci.com.vocaagent.database.BookCursorWrapper;
 import hci.com.vocaagent.database.MetaCursorWrapper;
@@ -138,7 +135,7 @@ public class VocaLab {
     }
 
     public Book getBookByName(String bookName) {
-        BookCursorWrapper cursor = new BookCursorWrapper(mDatabase.rawQuery("SELECT * FROM Book WHERE name =  '"+ bookName +"'", null));
+        BookCursorWrapper cursor = new BookCursorWrapper(mDatabase.rawQuery("SELECT * FROM Book WHERE name =  '" + bookName + "'", null));
         cursor.moveToFirst();
         try {
             if (!cursor.isAfterLast())
@@ -171,7 +168,7 @@ public class VocaLab {
 
             int bookId = book.getBookId();
 
-            Log.d("TEST", "BOOKID: "+bookId);
+            Log.d("TEST", "BOOKID: " + bookId);
             for (Row myRow : sheet) {
                 for (Cell myCell : myRow) {
                     addNewWord(myCell.toString(), bookId);
@@ -185,7 +182,16 @@ public class VocaLab {
         }
     }
 
-    public boolean exportNote(String fileName, int bookId) {
+    public boolean exportNote(String fileName, Set<Book> exportBooks) {
+        List<Word> words = new ArrayList<>();
+
+        // gather all the words to be exported into one long list.
+        for (Book b : exportBooks) {
+            for (Word w : getWordInBook(b.getBookId())) {
+                words.add(w);
+            }
+        }
+
         if (Utils.isExternalStorageWritable()) {
             Workbook wb = new HSSFWorkbook();
 
@@ -197,8 +203,7 @@ public class VocaLab {
             cs.setFillForegroundColor(HSSFColor.LIME.index);
             cs.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 
-            // get words to export and write them to the workbook
-            List<Word> words = getWordInBook(bookId);
+            // write to xls work book (on memory)
             for (int i = 0; i < words.size(); ++i) {
                 Row row = sheet1.createRow(i);
                 Cell c = row.createCell(0);
@@ -207,20 +212,25 @@ public class VocaLab {
                     c.setCellStyle(cs);
                 }
             }
+
+            // no words -> return false
+            if (words.isEmpty()) return false;
+
+            // write them to the SD card (/sdcard/VocaAgent/fileName.xls)
             File file = new File(Environment.getExternalStorageDirectory() + "/VocaAgent/", fileName + ".xls");
             FileOutputStream os = null;
             try {
                 os = new FileOutputStream(file);
                 wb.write(os);
-
             } catch (IOException e) {
-                Log.w("TEST", "Error writting "+file, e);
+                Log.w("TEST", "Error writting " + file, e);
             } catch (Exception e) {
                 Log.w("TEST", "Failed to save file", e);
             } finally {
                 try {
                     if (os != null) os.close();
-                } catch(Exception e){}
+                } catch (Exception e) {
+                }
             }
         }
         return false;

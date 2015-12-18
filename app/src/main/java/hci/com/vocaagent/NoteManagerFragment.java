@@ -1,9 +1,11 @@
 package hci.com.vocaagent;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashSet;
 import java.util.List;
@@ -64,6 +68,9 @@ public class NoteManagerFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         if (mMode == NOTE_MANAGER_MODE) // manage books mode (add, delete books)
             inflater.inflate(R.menu.fragment_notemanager_menu, menu);
+        else if (mMode == EXPORT_BOOK_MODE) {
+            inflater.inflate(R.menu.fragment_notemanager_export_menu, menu);
+        }
     }
 
     @Override
@@ -96,6 +103,29 @@ public class NoteManagerFragment extends Fragment {
                 RemoveConfirmDialog dialog = new RemoveConfirmDialog();
                 dialog.show(getFragmentManager(), DIALOG_REMOVE_BOOK);
                 dialog.setTargetFragment(NoteManagerFragment.this, REQUEST_REMOVE);
+                return true;
+            case R.id.menu_item_export_book:
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
+                View exportFile = inflater.inflate(R.layout.dialog_export_file_name, null);
+                final EditText exportFileName = (EditText)exportFile.findViewById(R.id.export_file_name);
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String exFileName = exportFileName.getText().toString();
+                                boolean success = VocaLab.getVoca(getActivity()).exportNote(exFileName, mBooksSelected);
+                                if (success)
+                                    Toast.makeText(getActivity(), exFileName+".xls 로 내보내기 완료.", Toast.LENGTH_SHORT).show();
+                                else {
+                                    Toast.makeText(getActivity(), "내보낼 단어가 없습니다", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .create();
+                alertDialog.setView(exportFile);
+
+                alertDialog.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -149,7 +179,9 @@ public class NoteManagerFragment extends Fragment {
 
         public BookHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
+            if (mMode == NOTE_MANAGER_MODE)
+                itemView.setOnClickListener(this); // enable clicking when note manager mode (edit book mode)
+
             mTitleTextView = (TextView) itemView.findViewById(R.id.title_text_view);
             mDetailTextView = (TextView) itemView.findViewById(R.id.detail_text_view);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.select_check_box);
