@@ -46,6 +46,11 @@ public class Phase1Fragment extends Fragment {
         mSubmitButton = (Button) v.findViewById(R.id.submit_button);
         mRadioButton = new RadioButton[4];
 
+        shuffle(); // shuffle buttons
+        for (int i = 0; i < 4; ++i) {
+            mRadioButton[i] = (RadioButton) v.findViewById(BUTTON_ID[i]);
+        }
+
         new AsyncTaskRunner().execute();
         return v;
     }
@@ -74,11 +79,6 @@ public class Phase1Fragment extends Fragment {
     }
 
     private void buildSelects(View v, String answer) {
-        shuffle(); // shuffle buttons
-        for (int i = 0; i < 4; ++i) {
-            mRadioButton[i] = (RadioButton) v.findViewById(BUTTON_ID[i]);
-        }
-
         List<String> randomWords = VocaLab.getVoca(getActivity()).getRandomWords();
         for (int i = 0; i < 3; ++i) {
             mRadioButton[i].setText(randomWords.get(i));
