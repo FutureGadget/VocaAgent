@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +13,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import hci.com.vocaagent.datastructure.RandomQueue;
 import hci.com.vocaagent.parser.DictionaryParser;
@@ -154,10 +146,10 @@ public class Phase1Fragment extends Fragment {
      * phase가 10이 되면 완료비트 설정하여 우선순위를 최하위로 한다.
      * (최소 5일은 맞춰야 완료가능)
      *
-     * @param testCount  To check this is the first time
-     * @param dateDiff   recent test date - today
-     * @param correct    is correct answer
-     * @param phase      current phase of the word
+     * @param testCount To check this is the first time
+     * @param dateDiff  recent test date - today
+     * @param correct   is correct answer
+     * @param phase     current phase of the word
      * @return phase increment value
      */
     private int getPhaseIncrement(int testCount, int dateDiff, boolean correct, int phase) {
@@ -185,11 +177,11 @@ public class Phase1Fragment extends Fragment {
             if (testCount == 0 || dateDiff < 3 || phase < 2) {
                 return -phase;
             } else if (dateDiff < 5) {
-                return -(int)(phase*0.8);
+                return -(int) (phase * 0.8);
             } else if (dateDiff < 7) {
-                return -(int)(phase*0.5);
+                return -(int) (phase * 0.5);
             } else {
-                return -(int)(phase*0.3);
+                return -(int) (phase * 0.3);
             }
         }
     }
@@ -213,31 +205,20 @@ public class Phase1Fragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            // Intentionally left blank
-            findAndReplace();
-        }
-
-        private void findAndReplace() {
+            boolean hasExampleSentence = false;
             Iterator<String[]> it = mSentences.iterator();
-            String word = mWord.getWord();
-            String test = "";
-            Pattern p = Pattern.compile("("+word+"[^\\s]*" + ")", Pattern.CASE_INSENSITIVE);
-            Matcher m = null;
-            boolean found = false;
             while (it.hasNext()) {
-                String original = it.next()[0];
-                if ((m = p.matcher(original)).find()) {
-                    test = original.replaceAll("(?i)"+m.group(), "_____");
-                    buildSelects(getView(), m.group().replaceAll("[^a-zA-Z]", " ").toLowerCase());
-                    found = true;
+                String[] contents = it.next();
+                if (contents[2] != null) {
+                    hasExampleSentence = true;
+                    mSentenceTextView.setText(contents[0].replaceAll("(?i)"+contents[2], "_____"));
+                    buildSelects(getView(), contents[2]);
                     break;
                 }
             }
-
-            if (!found) {
-                test = "Sorry, There is no example sentence.";
+            if (!hasExampleSentence) {
+                mSentenceTextView.setText("Sorry, There is no example sentence.");
             }
-            mSentenceTextView.setText(test);
         }
     }
 

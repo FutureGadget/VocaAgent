@@ -16,7 +16,9 @@ public class ExamPagerActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private List<Word> mWords;
     private boolean mPageEnd;
+    private boolean alreadySeen;
     private static final String DIALOG_STATS = "DialogStats";
+    private static final String SAVE_STATE = "SAVE_STATE";
     private static final String EXAM_TYPE_OPTION = "option";
 
     private ViewPager.OnPageChangeListener mListener = new ViewPager.OnPageChangeListener() {
@@ -53,6 +55,12 @@ public class ExamPagerActivity extends AppCompatActivity {
     };
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(SAVE_STATE, alreadySeen);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onBackPressed() {
         StatisticsDialogFragment dialog = new StatisticsDialogFragment();
         dialog.show(getSupportFragmentManager(), DIALOG_STATS);
@@ -62,6 +70,10 @@ public class ExamPagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_pager);
+
+        if (savedInstanceState != null) {
+            alreadySeen = savedInstanceState.getBoolean(SAVE_STATE);
+        }
 
         mViewPager = (ViewPager) findViewById(R.id.activity_exam_pager);
 
@@ -87,9 +99,12 @@ public class ExamPagerActivity extends AppCompatActivity {
             }
         }
 
-        // prepare to save tested words and words to review after the test
-        VocaLab.getVoca(ExamPagerActivity.this).initResultWords();
-        VocaLab.getVoca(ExamPagerActivity.this).initReviewWords();
+        if (!alreadySeen) {
+            alreadySeen = true;
+            // prepare to save tested words and words to review after the test
+            VocaLab.getVoca(ExamPagerActivity.this).initResultWords();
+            VocaLab.getVoca(ExamPagerActivity.this).initReviewWords();
+        }
 
         // Exception : No words in the list.
         if (mWords.size() == 0) {

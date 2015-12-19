@@ -24,10 +24,27 @@ public class Phase0Fragment extends Fragment {
     private TextView mContent; // meaning, sentence
     private static final String ARG_WORDID = "word_id";
     private static final String STAT_DIALOG = "STAT_DIALOG";
+    private static String SAVE_STATE = "SAVE_STATE";
+    private static boolean already_seen;
     private Word mWord;
     private String mMeaning;
     private RandomQueue mSentences;
     private Button mShowExamplesButton;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        already_seen = false;
+        if (savedInstanceState != null) {
+            already_seen = savedInstanceState.getBoolean(SAVE_STATE);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(SAVE_STATE, already_seen);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,19 +56,28 @@ public class Phase0Fragment extends Fragment {
         mWordTitle.setText(mWord.getWord());
         new AsyncTaskRunner().execute();
 
-        mWord.setPhase(1);
-        mWord.setRecentTestDate(VocaLab.getToday());
-        mWord.setToday(1);
+        if (!already_seen) {
+            already_seen = true;
+            mWord.setPhase(1);
+            mWord.setRecentTestDate(VocaLab.getToday());
+            mWord.setToday(1);
 //        mWord.setNumCorrect(mWord.getNumCorrect() + 1);
 //        mWord.setTestCount(mWord.getTestCount() + 1);
 
-        VocaLab.getVoca(getActivity()).updateWord(mWord);
-        VocaLab.getVoca(getActivity()).addResultWord(mWord, 1);
-        VocaLab.getVoca(getActivity()).updateMetaInfo(1, 1, 1); // update meta data
+            VocaLab.getVoca(getActivity()).updateWord(mWord);
+            VocaLab.getVoca(getActivity()).addResultWord(mWord, 1);
+            VocaLab.getVoca(getActivity()).updateMetaInfo(1, 1, 1); // update meta data
+        }
         return v;
     }
 
     private class AsyncTaskRunner extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mContent.setText("단어를 불러오고 있습니다.");
+        }
+
         @Override
         protected Void doInBackground(Void... params) {
             try {
@@ -73,7 +99,7 @@ public class Phase0Fragment extends Fragment {
                     mShowExamplesButton.setText("다음예문");
                     if (it.hasNext()) {
                         String[] text = it.next();
-                        mContent.setText(Html.fromHtml(getWordEmphasizedSentenceHTMLFormat(text[0]) + "<p>"+text[1]+"</p>"));
+                        mContent.setText(Html.fromHtml(emphasizeWord(text[0], text[2]) + "<p>" + text[1] + "</p>"));
                     } else {
                         mShowExamplesButton.setText("끝");
                         ViewPager vp = (ViewPager) getActivity().findViewById(R.id.activity_exam_pager);
@@ -89,13 +115,10 @@ public class Phase0Fragment extends Fragment {
     }
 
     // set bold, color to the matching word
-    private String getWordEmphasizedSentenceHTMLFormat(String sentence) {
-        String pattern = "("+mWord.getWord()+"[^\\s]*)";
-        Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
-        Matcher m = p.matcher(sentence);
-        if (m.find()) {
-            String processed = sentence.replaceAll("(?i)"+m.group(), "<b><font color=#EC407A>"+m.group()+"</font></b>");
-            return "<p>"+processed+"</p>";
+    private String emphasizeWord(String sentence, String empWord) {
+        if (empWord != null) {
+            String processed = sentence.replaceAll("(?i)" + empWord, "<b><font color=#EC407A>" + empWord + "</font></b>");
+            return "<p>" + processed + "</p>";
         }
         return sentence;
     }

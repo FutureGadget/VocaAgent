@@ -14,8 +14,8 @@ public class RandomQueue implements Iterable {
         list = new ArrayList<>();
         count = 0;
     }
-    public void add(String sentence, String trans) {
-        Node node = new Node(sentence, trans);
+    public void add(String sentence, String trans, String answer) {
+        Node node = new Node(sentence, trans, answer);
         list.add(node);
         ++count;
         Collections.swap(list, count-1, random.nextInt(count));
@@ -35,9 +35,10 @@ public class RandomQueue implements Iterable {
 
         @Override
         public String[] next() {
-            String[] item = new String[2];
+            String[] item = new String[3];
             item[0] = list.get(cursor).sentence;
             item[1] = list.get(cursor).translation;
+            item[2] = list.get(cursor).answer;
             ++cursor;
             return item;
         }
@@ -51,9 +52,11 @@ public class RandomQueue implements Iterable {
     class Node {
         private String sentence;
         private String translation;
-        public Node(String s, String t) {
+        private String answer;
+        public Node(String s, String t, String answer) {
             sentence = s;
             translation = t;
+            this.answer = answer;
         }
     }
 }

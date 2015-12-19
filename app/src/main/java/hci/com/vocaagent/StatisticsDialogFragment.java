@@ -5,7 +5,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +24,8 @@ public class StatisticsDialogFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.dialog_statistics, container, false);
         getDialog().setCanceledOnTouchOutside(false); // not modal
         getDialog().setTitle(R.string.end_of_test);
-        mQuitButton = (Button)v.findViewById(R.id.quit_test_button);
-        mReviewButton = (Button)v.findViewById(R.id.review_button);
+        mQuitButton = (Button) v.findViewById(R.id.quit_test_button);
+        mReviewButton = (Button) v.findViewById(R.id.review_button);
         mRecyclerView = (RecyclerView) v.findViewById(R.id.statistics_recycler_view);
 
         mQuitButton.setOnClickListener(new View.OnClickListener() {
@@ -66,10 +65,10 @@ public class StatisticsDialogFragment extends DialogFragment {
         public void bind(ResultWord rw) {
             mWordTextView.setText(rw.getResultWord().getWord());
             if (rw.getPhaseIncrement() < 0) {
-                mPhaseDiffTextView.setText("-"+rw.getPhaseIncrement());
+                mPhaseDiffTextView.setText("-" + rw.getPhaseIncrement());
                 mPhaseDiffTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
             } else {
-                mPhaseDiffTextView.setText("+"+rw.getPhaseIncrement());
+                mPhaseDiffTextView.setText("+" + rw.getPhaseIncrement());
                 mPhaseDiffTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
             }
         }

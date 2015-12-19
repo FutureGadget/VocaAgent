@@ -168,11 +168,9 @@ public class VocaLab {
 
             int bookId = book.getBookId();
 
-            Log.d("TEST", "BOOKID: " + bookId);
             for (Row myRow : sheet) {
                 for (Cell myCell : myRow) {
                     addNewWord(myCell.toString(), bookId);
-                    Log.d("TEST", myCell.toString() + " CELL");
                 }
             }
             mDatabase.setTransactionSuccessful();
@@ -388,7 +386,6 @@ public class VocaLab {
         } finally {
             wrapper.close();
         }
-        Log.d("TEST", numCorrect + ": numCorrect, " + totalTestCount + ": TotalTestCount");
         return numCorrect / totalTestCount;
     }
 
