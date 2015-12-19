@@ -4,9 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorBackground">
-    <TextView
-        style="@style/fragment_comment"
-        android:text="수정할 항목을 선택하세요."/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

@@ -1,48 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group android:checkableBehavior="single">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group
+        android:id="@+id/group_study"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/drawer_item_study"
             android:checked="false"
             android:icon="@drawable/ic_school_black_48dp"
-            android:title="@string/study"/>
+            android:title="@string/study" />
         <item
             android:id="@+id/drawer_item_edit"
-            android:title="@string/edit"
+            android:checked="false"
             android:icon="@drawable/ic_edit_black_48dp"
-            android:checked="false"/>
+            android:title="@string/edit" />
         <item
             android:id="@+id/drawer_item_import"
-            android:title="@string/importBook"
+            android:checked="false"
             android:icon="@drawable/ic_swap_vert_black_48dp"
-            android:checked="false"/>
+            android:title="@string/importBook" />
         <item
             android:id="@+id/drawer_item_export"
-            android:title="@string/exportBook"
+            android:checked="false"
             android:icon="@drawable/ic_swap_vert_black_48dp"
-            android:checked="false"/>
+            android:title="@string/exportBook" />
     </group>
 
-    <item
-        android:icon="@drawable/ic_mood_black_48dp"
-        android:title="The early bird catches the warm.">
-        <menu>
+    <group
+        android:id="@+id/group_fun"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/drawer_item_ratio"
             android:checked="false"
             android:icon="@drawable/ic_mood_black_48dp"
-            app:actionLayout="@layout/drawer_correct_ratio"
-            android:title="@string/ratio">
-        </item>
+            android:title="@string/ratio"
+            app:actionLayout="@layout/drawer_correct_ratio"></item>
 
         <item
             android:id="@+id/drawer_item_streak"
             android:checked="false"
+            android:icon="@drawable/ic_today_black_48dp"
             android:title="@string/streak"
-            app:actionLayout="@layout/drawer_streak"
-            android:icon="@drawable/ic_today_black_48dp">
-        </item>
-    </menu>
-    </item>
+            app:actionLayout="@layout/drawer_streak"></item>
+    </group>
+
+    <group
+        android:id="@+id/group_setting"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_item_setting"
+            android:checked="false"
+            android:icon="@drawable/ic_settings_black_48dp"
+            android:title="설정"/>
+
+        <item
+            android:id="@+id/drawer_item_help"
+            android:checked="false"
+            android:icon="@drawable/ic_help_outline_black_48dp"
+            android:title="도움말"/>
+
+        <item
+            android:id="@+id/drawer_item_info"
+            android:checked="false"
+            android:icon="@drawable/ic_info_outline_black_48dp"
+            android:title="정보"/>
+    </group>
 </menu>

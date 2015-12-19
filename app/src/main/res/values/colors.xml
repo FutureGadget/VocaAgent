@@ -6,6 +6,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorItemBackground">#F5F5F5</color>
     <color name="colorBackground">#E3E3E3</color>
     <color name="textPrimary">#212121</color>
     <color name="textSecondary">#727272</color>

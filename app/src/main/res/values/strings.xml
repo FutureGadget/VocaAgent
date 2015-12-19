@@ -10,7 +10,7 @@
     <string name="openDrawer">메뉴 열기</string>
     <string name="closeDrawer">메뉴 닫기</string>
     <string name="ratio">정답률</string>
-    <string name="streak">연속일</string>
+    <string name="streak">출석일</string>
     <string name="study">학습 시작</string>
     <string name="edit">단어장 관리</string>
     <string name="settings">설정</string>
