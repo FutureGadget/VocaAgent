@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import hci.com.vocaagent.datastructure.RandomQueue;
 import hci.com.vocaagent.parser.DictionaryParser;
@@ -44,8 +46,11 @@ public class Phase1Fragment extends Fragment {
         mSubmitButton = (Button) v.findViewById(R.id.submit_button);
         mRadioButton = new RadioButton[4];
 
-        buildSelects(v);
+        new AsyncTaskRunner().execute();
+        return v;
+    }
 
+    private void attachButtonListener(final String answer) {
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +58,7 @@ public class Phase1Fragment extends Fragment {
                     for (int i = 0; i < 4; ++i) {
                         if (mRadioButton[i].isChecked()) {
                             isSubmitted = true;
-                            scoring(mRadioButton[i].getText().toString());
+                            scoring(mRadioButton[i].getText().toString(), answer);
 
                             ViewPager vp = (ViewPager) getActivity().findViewById(R.id.activity_exam_pager);
                             if (vp.getCurrentItem() == vp.getAdapter().getCount() - 1) {
@@ -66,12 +71,9 @@ public class Phase1Fragment extends Fragment {
                 }
             }
         });
-
-        new AsyncTaskRunner().execute();
-        return v;
     }
 
-    private void buildSelects(View v) {
+    private void buildSelects(View v, String answer) {
         shuffle(); // shuffle buttons
         for (int i = 0; i < 4; ++i) {
             mRadioButton[i] = (RadioButton) v.findViewById(BUTTON_ID[i]);
@@ -81,7 +83,8 @@ public class Phase1Fragment extends Fragment {
         for (int i = 0; i < 3; ++i) {
             mRadioButton[i].setText(randomWords.get(i));
         }
-        mRadioButton[3].setText(mWord.getWord());
+        mRadioButton[3].setText(answer.replaceAll("[^a-zA-Z]", " ").toLowerCase());
+        attachButtonListener(answer);
     }
 
     // shuffle buttons
@@ -96,7 +99,7 @@ public class Phase1Fragment extends Fragment {
         }
     }
 
-    private void scoring(String userAnswer) {
+    private void scoring(String userAnswer, String answer) {
         int testCount = mWord.getTestCount();
         int numCorrect = mWord.getNumCorrect();
         int todayTotal = mWord.getToday();
@@ -108,7 +111,7 @@ public class Phase1Fragment extends Fragment {
 
         int phase = mWord.getPhase();
 
-        if (mWord.getWord().toLowerCase().equals(userAnswer.toLowerCase())) {
+        if (userAnswer.equals(answer)) {
             numCorrect++;
             phaseIncrement = getPhaseIncrement(testCount, dateDiff, true, phase);
         } else {
@@ -188,6 +191,12 @@ public class Phase1Fragment extends Fragment {
 
     private class AsyncTaskRunner extends AsyncTask<Void, Void, Void> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mSentenceTextView.setText("문제를 구성하고 있습니다.");
+        }
+
+        @Override
         protected Void doInBackground(Void... params) {
             try {
                 mSentences = DictionaryParser.getSentence(mWord.getWord());
@@ -199,17 +208,28 @@ public class Phase1Fragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            // Intentionally left blank
+            findAndReplace();
+        }
+
+        private void findAndReplace() {
             Iterator<String[]> it = mSentences.iterator();
             String word = mWord.getWord();
             String test = "";
-            String capitalizedWord = (word.charAt(0)+"").toUpperCase()+word.substring(1, word.length());
-            if (it.hasNext()) {
+            Pattern p = Pattern.compile("("+word+"[^\\s]*" + ")", Pattern.CASE_INSENSITIVE);
+            Matcher m = null;
+            boolean found = false;
+            while (it.hasNext()) {
                 String original = it.next()[0];
-                test = original.replaceAll(word+"[^\\s]*", "_____");
-                if (!test.contains("_____")) {
-                    test = original.replaceAll(capitalizedWord+"[^\\s]*", "_____");
+                if ((m = p.matcher(original)).find()) {
+                    test = original.replaceAll("(?i)"+m.group(), "_____");
+                    buildSelects(getView(), m.group());
+                    found = true;
+                    break;
                 }
-            } else {
+            }
+
+            if (!found) {
                 test = "Sorry, There is no example sentence.";
             }
             mSentenceTextView.setText(test);

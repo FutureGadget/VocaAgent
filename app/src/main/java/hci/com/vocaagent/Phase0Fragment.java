@@ -38,8 +38,8 @@ public class Phase0Fragment extends Fragment {
         mWord.setPhase(1);
         mWord.setRecentTestDate(VocaLab.getToday());
         mWord.setToday(1);
-        mWord.setNumCorrect(mWord.getNumCorrect() + 1);
-        mWord.setTestCount(mWord.getTestCount() + 1);
+//        mWord.setNumCorrect(mWord.getNumCorrect() + 1);
+//        mWord.setTestCount(mWord.getTestCount() + 1);
 
         VocaLab.getVoca(getActivity()).updateWord(mWord);
         VocaLab.getVoca(getActivity()).addResultWord(mWord, 1);
