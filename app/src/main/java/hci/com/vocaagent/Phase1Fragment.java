@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,7 +84,7 @@ public class Phase1Fragment extends Fragment {
         for (int i = 0; i < 3; ++i) {
             mRadioButton[i].setText(randomWords.get(i));
         }
-        mRadioButton[3].setText(answer.replaceAll("[^a-zA-Z]", " ").toLowerCase());
+        mRadioButton[3].setText(answer);
         attachButtonListener(answer);
     }
 
@@ -161,7 +162,9 @@ public class Phase1Fragment extends Fragment {
      */
     private int getPhaseIncrement(int testCount, int dateDiff, boolean correct, int phase) {
         if (correct) {
-            Toast.makeText(getActivity(), "정답입니다!", Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(getActivity(), "정답입니다!", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+            toast.show();
             if (testCount == 0) {
                 return 1;
             } else {
@@ -176,7 +179,9 @@ public class Phase1Fragment extends Fragment {
                 }
             }
         } else {
-            Toast.makeText(getActivity(), "오답입니다!", Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(getActivity(), "오답입니다!", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+            toast.show();
             if (testCount == 0 || dateDiff < 3 || phase < 2) {
                 return -phase;
             } else if (dateDiff < 5) {
@@ -223,7 +228,7 @@ public class Phase1Fragment extends Fragment {
                 String original = it.next()[0];
                 if ((m = p.matcher(original)).find()) {
                     test = original.replaceAll("(?i)"+m.group(), "_____");
-                    buildSelects(getView(), m.group());
+                    buildSelects(getView(), m.group().replaceAll("[^a-zA-Z]", " ").toLowerCase());
                     found = true;
                     break;
                 }

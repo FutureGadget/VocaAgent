@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import hci.com.vocaagent.datastructure.RandomQueue;
 import hci.com.vocaagent.parser.DictionaryParser;
@@ -69,7 +73,7 @@ public class Phase0Fragment extends Fragment {
                     mShowExamplesButton.setText("다음예문");
                     if (it.hasNext()) {
                         String[] text = it.next();
-                        mContent.setText(text[0] + "\n\n" + text[1]);
+                        mContent.setText(Html.fromHtml(getWordEmphasizedSentenceHTMLFormat(text[0]) + "<p>"+text[1]+"</p>"));
                     } else {
                         mShowExamplesButton.setText("끝");
                         ViewPager vp = (ViewPager) getActivity().findViewById(R.id.activity_exam_pager);
@@ -82,6 +86,18 @@ public class Phase0Fragment extends Fragment {
                 }
             });
         }
+    }
+
+    // set bold, color to the matching word
+    private String getWordEmphasizedSentenceHTMLFormat(String sentence) {
+        String pattern = "("+mWord.getWord()+"[^\\s]*)";
+        Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(sentence);
+        if (m.find()) {
+            String processed = sentence.replaceAll("(?i)"+m.group(), "<b><font color=#EC407A>"+m.group()+"</font></b>");
+            return "<p>"+processed+"</p>";
+        }
+        return sentence;
     }
 
     public static Phase0Fragment newInstance(int wordId) {
