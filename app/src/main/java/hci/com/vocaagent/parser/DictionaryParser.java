@@ -78,8 +78,8 @@ public class DictionaryParser {
                         MatchResult result = m.toMatchResult();
                         answer = result.group(2);
                     }
+                    sentences.add(example, trans, answer);
                 }
-                sentences.add(example, trans, answer);
             }
         } catch (IOException ex) {
             return sentences;

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import hci.com.vocaagent.datastructure.RandomQueue;
 import hci.com.vocaagent.parser.DictionaryParser;
@@ -24,8 +21,8 @@ public class Phase0Fragment extends Fragment {
     private TextView mContent; // meaning, sentence
     private static final String ARG_WORDID = "word_id";
     private static final String STAT_DIALOG = "STAT_DIALOG";
-    private static String SAVE_STATE = "SAVE_STATE";
-    private static boolean already_seen;
+    //    private static String SAVE_STATE = "SAVE_STATE";
+//    private static boolean already_seen;
     private Word mWord;
     private String mMeaning;
     private RandomQueue mSentences;
@@ -34,17 +31,17 @@ public class Phase0Fragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        already_seen = false;
-        if (savedInstanceState != null) {
-            already_seen = savedInstanceState.getBoolean(SAVE_STATE);
-        }
+//        already_seen = false;
+//        if (savedInstanceState != null) {
+//            already_seen = savedInstanceState.getBoolean(SAVE_STATE);
+//        }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(SAVE_STATE, already_seen);
-        super.onSaveInstanceState(outState);
-    }
+//    @Override
+//    public void onSaveInstanceState(Bundle outState) {
+//        outState.putBoolean(SAVE_STATE, already_seen);
+//        super.onSaveInstanceState(outState);
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,8 +53,8 @@ public class Phase0Fragment extends Fragment {
         mWordTitle.setText(mWord.getWord());
         new AsyncTaskRunner().execute();
 
-        if (!already_seen) {
-            already_seen = true;
+//        if (!already_seen) {
+//            already_seen = true;
             mWord.setPhase(1);
             mWord.setRecentTestDate(VocaLab.getToday());
             mWord.setToday(1);
@@ -67,7 +64,7 @@ public class Phase0Fragment extends Fragment {
             VocaLab.getVoca(getActivity()).updateWord(mWord);
             VocaLab.getVoca(getActivity()).addResultWord(mWord, 1);
             VocaLab.getVoca(getActivity()).updateMetaInfo(1, 1, 1); // update meta data
-        }
+//        }
         return v;
     }
 
