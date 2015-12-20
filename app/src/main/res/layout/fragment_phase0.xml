@@ -42,7 +42,7 @@
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
                 android:textSize="20dp"
-                tools:text="mean" />
+                tools:text="잠시만 기다려주세요." />
         </ScrollView>
 
         <LinearLayout

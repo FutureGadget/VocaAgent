@@ -28,7 +28,7 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:textSize="20dp"
-                tools:text="SENTENCE" />
+                tools:text="잠시만 기다려주세요." />
 
         </ScrollView>
 

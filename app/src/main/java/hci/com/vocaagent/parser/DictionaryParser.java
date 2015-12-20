@@ -41,9 +41,7 @@ public class DictionaryParser {
     // get sentences along with translations of them
     public static RandomQueue getSentence(final String word) {
         RandomQueue sentences = new RandomQueue();
-        String trans = null;
-        String example = null;
-        String answer = null;
+        String trans, example, answer;
         try {
             Document d = Jsoup.connect(searchHeader + optionSearch + word + searchEnglish).get();
             Elements e = d.select("div.clean_word>strong>a");
@@ -55,9 +53,9 @@ public class DictionaryParser {
             e = d.select("div#variant_div");
 
             // build regex pattern
-            String p = null;
-            Pattern pattern = null;
-            Matcher m = null;
+            String p;
+            Pattern pattern;
+            Matcher m;
             p = getCandidateWordsPattern(e.text(), word);
             pattern = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
 
@@ -68,6 +66,7 @@ public class DictionaryParser {
             for (Element element : e) {
                 Elements listExams = element.select("div.desc");
                 for (Element text : listExams) {
+                    answer = null;
                     Element sentence = text.select("div.txt>span.inner").first();
                     Element translation = text.select("div.trans>span.inner").first();
                     example = sentence.text();

@@ -27,8 +27,7 @@
     </group>
 
     <group
-        android:id="@+id/group_fun"
-        android:checkableBehavior="single">
+        android:id="@+id/group_fun">
         <item
             android:id="@+id/drawer_item_ratio"
             android:checked="false"

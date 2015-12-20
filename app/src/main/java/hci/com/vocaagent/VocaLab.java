@@ -36,6 +36,7 @@ import hci.com.vocaagent.database.VocaAgentDbSchema.MetaDataTable;
 import hci.com.vocaagent.database.VocaAgentDbSchema.WordTable;
 import hci.com.vocaagent.database.VocaBaseHelper;
 import hci.com.vocaagent.database.WordCursorWrapper;
+import hci.com.vocaagent.datastructure.RandomQueue;
 
 public class VocaLab {
     public static VocaLab sVocaLab;

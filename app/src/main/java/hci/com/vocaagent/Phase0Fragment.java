@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,50 +22,76 @@ public class Phase0Fragment extends Fragment {
     private TextView mContent; // meaning, sentence
     private static final String ARG_WORDID = "word_id";
     private static final String STAT_DIALOG = "STAT_DIALOG";
-    //    private static String SAVE_STATE = "SAVE_STATE";
-//    private static boolean already_seen;
+
     private Word mWord;
     private String mMeaning;
     private RandomQueue mSentences;
     private Button mShowExamplesButton;
 
+    private Iterator<String[]> mSentencesIterator;
+    private Spanned mSavedSentence;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        already_seen = false;
-//        if (savedInstanceState != null) {
-//            already_seen = savedInstanceState.getBoolean(SAVE_STATE);
-//        }
-    }
+        // set retain true. onCreate() will not be called again.
+        setRetainInstance(true);
+        mWord = VocaLab.getVoca(getActivity()).getWordByID(getArguments().getInt(ARG_WORDID));
 
-//    @Override
-//    public void onSaveInstanceState(Bundle outState) {
-//        outState.putBoolean(SAVE_STATE, already_seen);
-//        super.onSaveInstanceState(outState);
-//    }
+        new AsyncTaskRunner().execute();
+        mWord.setPhase(1);
+        mWord.setRecentTestDate(VocaLab.getToday());
+        mWord.setToday(1);
+
+        VocaLab.getVoca(getActivity()).updateWord(mWord);
+        VocaLab.getVoca(getActivity()).addResultWord(mWord, 1);
+        VocaLab.getVoca(getActivity()).updateMetaInfo(1, 1, 1); // update the mete Data
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_phase0, container, false);
-        mWord = VocaLab.getVoca(getActivity()).getWordByID(getArguments().getInt(ARG_WORDID));
         mWordTitle = (TextView) v.findViewById(R.id.word_title_text_view);
         mContent = (TextView) v.findViewById(R.id.word_meaning_sentence_text_view);
         mShowExamplesButton = (Button) v.findViewById(R.id.show_examples_button);
         mWordTitle.setText(mWord.getWord());
-        new AsyncTaskRunner().execute();
 
-//        if (!already_seen) {
-//            already_seen = true;
-            mWord.setPhase(1);
-            mWord.setRecentTestDate(VocaLab.getToday());
-            mWord.setToday(1);
-//        mWord.setNumCorrect(mWord.getNumCorrect() + 1);
-//        mWord.setTestCount(mWord.getTestCount() + 1);
+        // if this is a retained fragment
+        if (mSentences != null) {
 
-            VocaLab.getVoca(getActivity()).updateWord(mWord);
-            VocaLab.getVoca(getActivity()).addResultWord(mWord, 1);
-            VocaLab.getVoca(getActivity()).updateMetaInfo(1, 1, 1); // update meta data
-//        }
+            if (mSavedSentence != null) {
+                mContent.setText(mSavedSentence);
+                if (mSentencesIterator.hasNext()) {
+                    mShowExamplesButton.setText("다음예문");
+                } else {
+                    mShowExamplesButton.setText("끝");
+                }
+            }
+
+            else {
+                mContent.setText(mMeaning);
+            }
+
+            mShowExamplesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mShowExamplesButton.setText("다음예문");
+                    if (mSentencesIterator.hasNext()) {
+                        String[] text = mSentencesIterator.next();
+                        mSavedSentence = Html.fromHtml(emphasizeWord(text[0], text[2]) + "<p>" + text[1] + "</p>");
+                        mContent.setText(mSavedSentence);
+                    } else {
+                        mShowExamplesButton.setText("끝");
+                        ViewPager vp = (ViewPager) getActivity().findViewById(R.id.activity_exam_pager);
+                        if (vp.getCurrentItem() == vp.getAdapter().getCount() - 1) {
+                            StatisticsDialogFragment dialog = new StatisticsDialogFragment();
+                            dialog.show(getFragmentManager(), STAT_DIALOG);
+                        } else
+                            vp.setCurrentItem(vp.getCurrentItem() + 1);
+                    }
+                }
+            });
+        }
         return v;
     }
 
@@ -72,7 +99,6 @@ public class Phase0Fragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mContent.setText("단어를 불러오고 있습니다.");
         }
 
         @Override
@@ -89,14 +115,16 @@ public class Phase0Fragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             mContent.setText(mMeaning);
-            final Iterator<String[]> it = mSentences.iterator();
+            mSentencesIterator = mSentences.iterator();
+
             mShowExamplesButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mShowExamplesButton.setText("다음예문");
-                    if (it.hasNext()) {
-                        String[] text = it.next();
-                        mContent.setText(Html.fromHtml(emphasizeWord(text[0], text[2]) + "<p>" + text[1] + "</p>"));
+                    if (mSentencesIterator.hasNext()) {
+                        String[] text = mSentencesIterator.next();
+                        mSavedSentence = Html.fromHtml(emphasizeWord(text[0], text[2]) + "<p>" + text[1] + "</p>");
+                        mContent.setText(mSavedSentence);
                     } else {
                         mShowExamplesButton.setText("끝");
                         ViewPager vp = (ViewPager) getActivity().findViewById(R.id.activity_exam_pager);

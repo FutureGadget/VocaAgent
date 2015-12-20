@@ -31,20 +31,43 @@ public class Phase1Fragment extends Fragment {
     private static final String STAT_DIALOG = "STAT_DIALOG";
     private static final int[] BUTTON_ID = {R.id.choice1, R.id.choice2, R.id.choice3, R.id.choice4};
 
+    private List<String> mRandomWords;
+    private String[] mSavedTestSet;
+    private boolean mHasExampleSentence;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mWord = VocaLab.getVoca(getActivity()).getWordByID(getArguments().getInt(ARG_WORDID));
+        mRadioButton = new RadioButton[4];
+        mRandomWords = VocaLab.getVoca(getActivity()).getRandomWords();
+
+        shuffle(); // shuffle buttons
+
+        new AsyncTaskRunner().execute();
+        setRetainInstance(true);
+    }
+
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
         View v = layoutInflater.inflate(R.layout.fragment_phase1, container, false);
-        mWord = VocaLab.getVoca(getActivity()).getWordByID(getArguments().getInt(ARG_WORDID));
         mSentenceTextView = (TextView) v.findViewById(R.id.sentence_text_view);
         mSubmitButton = (Button) v.findViewById(R.id.submit_button);
-        mRadioButton = new RadioButton[4];
 
-        shuffle(); // shuffle buttons
         for (int i = 0; i < 4; ++i) {
             mRadioButton[i] = (RadioButton) v.findViewById(BUTTON_ID[i]);
         }
 
-        new AsyncTaskRunner().execute();
+        if (mSentences != null) {
+            if (mHasExampleSentence) {
+                mSentenceTextView.setText(mSavedTestSet[0]);
+                buildSelects(mSavedTestSet[2]);
+            }
+            else {
+                mSentenceTextView.setText("Sorry, There is no example sentence.");
+            }
+        }
+
         return v;
     }
 
@@ -71,10 +94,9 @@ public class Phase1Fragment extends Fragment {
         });
     }
 
-    private void buildSelects(View v, String answer) {
-        List<String> randomWords = VocaLab.getVoca(getActivity()).getRandomWords();
+    private void buildSelects(String answer) {
         for (int i = 0; i < 3; ++i) {
-            mRadioButton[i].setText(randomWords.get(i));
+            mRadioButton[i].setText(mRandomWords.get(i));
         }
         mRadioButton[3].setText(answer);
         attachButtonListener(answer);
@@ -190,7 +212,6 @@ public class Phase1Fragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mSentenceTextView.setText("문제를 구성하고 있습니다.");
         }
 
         @Override
@@ -205,18 +226,19 @@ public class Phase1Fragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            boolean hasExampleSentence = false;
+            mHasExampleSentence = false;
             Iterator<String[]> it = mSentences.iterator();
             while (it.hasNext()) {
-                String[] contents = it.next();
-                if (contents[2] != null) {
-                    hasExampleSentence = true;
-                    mSentenceTextView.setText(contents[0].replaceAll("(?i)"+contents[2], "_____"));
-                    buildSelects(getView(), contents[2]);
+                mSavedTestSet = it.next();
+                if (mSavedTestSet[2] != null) {
+                    mHasExampleSentence = true;
+                    mSavedTestSet[0] = mSavedTestSet[0].replaceAll("(?i)"+mSavedTestSet[2], "_____");
+                    mSentenceTextView.setText(mSavedTestSet[0]);
+                    buildSelects(mSavedTestSet[2]);
                     break;
                 }
             }
-            if (!hasExampleSentence) {
+            if (!mHasExampleSentence) {
                 mSentenceTextView.setText("Sorry, There is no example sentence.");
             }
         }
