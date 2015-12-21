@@ -18,6 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.List;
 
 /**
@@ -48,6 +51,11 @@ public class SelectBookFragment extends Fragment {
         mBookRecyclerView = (RecyclerView) v.findViewById(R.id.select_book_recycler_view);
         mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mEmptyLinearLayout = (LinearLayout) v.findViewById(R.id.select_book_recycler_view_empty);
+
+        AdView mAdView = (AdView) v.findViewById(R.id.select_book_adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("00192ec53de66e").build();
+        mAdView.loadAd(adRequest);
+
         updateUI();
 
         if (mAdapter.getItemCount() == 0) {

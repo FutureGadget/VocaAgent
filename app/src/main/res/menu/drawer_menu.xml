@@ -17,12 +17,12 @@
         <item
             android:id="@+id/drawer_item_import"
             android:checked="false"
-            android:icon="@drawable/ic_swap_vert_black_48dp"
+            android:icon="@drawable/ic_arrow_downward_black_48dp"
             android:title="@string/importBook" />
         <item
             android:id="@+id/drawer_item_export"
             android:checked="false"
-            android:icon="@drawable/ic_swap_vert_black_48dp"
+            android:icon="@drawable/ic_arrow_upward_black_48dp"
             android:title="@string/exportBook" />
     </group>
 

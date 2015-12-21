@@ -4,11 +4,12 @@
     <item
         android:id="@+id/selectbook_menu_menu_start"
         android:title="학습 시작"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always"
+        android:icon="@drawable/ic_school_white_48dp">
     </item>
     <item
         android:id="@+id/selectbook_menu_test_completed_words"
-        android:title="완료단어복습"
+        android:title="완료 단어 복습"
         app:showAsAction="withText">
     </item>
     <item
