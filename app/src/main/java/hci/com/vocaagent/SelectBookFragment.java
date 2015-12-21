@@ -53,7 +53,7 @@ public class SelectBookFragment extends Fragment {
         mEmptyLinearLayout = (LinearLayout) v.findViewById(R.id.select_book_recycler_view_empty);
 
         AdView mAdView = (AdView) v.findViewById(R.id.select_book_adView);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("00192ec53de66e").build();
+        AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
         updateUI();
