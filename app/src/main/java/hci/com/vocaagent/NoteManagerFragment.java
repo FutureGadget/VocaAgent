@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,6 +46,7 @@ public class NoteManagerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initState(VocaLab.getVoca(getActivity()).getBooks().size());
         setHasOptionsMenu(true);
     }
 
@@ -121,7 +123,7 @@ public class NoteManagerFragment extends Fragment {
                 } else {
                     View titleChange = LayoutInflater.from(getActivity()).
                             inflate(R.layout.dialog_change_book_title, null);
-                    final EditText newTitle = (EditText)titleChange.findViewById(R.id.change_book_title_edit_text);
+                    final EditText newTitle = (EditText) titleChange.findViewById(R.id.change_book_title_edit_text);
                     new AlertDialog.Builder(getActivity())
                             .setTitle("단어장 이름 변경")
                             .setView(titleChange)
@@ -141,7 +143,7 @@ public class NoteManagerFragment extends Fragment {
             case R.id.menu_item_export_book:
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
                 View exportFile = inflater.inflate(R.layout.dialog_export_file_name, null);
-                final EditText exportFileName = (EditText)exportFile.findViewById(R.id.export_file_name);
+                final EditText exportFileName = (EditText) exportFile.findViewById(R.id.export_file_name);
                 AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                         .setNegativeButton(android.R.string.cancel, null)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -150,7 +152,7 @@ public class NoteManagerFragment extends Fragment {
                                 String exFileName = exportFileName.getText().toString();
                                 boolean success = VocaLab.getVoca(getActivity()).exportNote(exFileName, mBooksSelected);
                                 if (success)
-                                    Toast.makeText(getActivity(), exFileName+".xls 로 내보내기 완료.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), exFileName + ".xls 로 내보내기 완료.", Toast.LENGTH_SHORT).show();
                                 else {
                                     Toast.makeText(getActivity(), "내보낼 단어가 없습니다", Toast.LENGTH_SHORT).show();
                                 }
@@ -171,6 +173,7 @@ public class NoteManagerFragment extends Fragment {
             VocaLab.getVoca(getActivity()).
                     deleteBooks(BookTable.Cols.book_id + " = ?", new String[]{b.getBookId() + ""});
         }
+        initState(VocaLab.getVoca(getActivity()).getBooks().size());
         updateUI();
     }
 
@@ -184,6 +187,7 @@ public class NoteManagerFragment extends Fragment {
         if (requestCode == REQUEST_TITLE) {
             String title = data.getStringExtra(AddBookFragment.EXTRA_TITLE);
             VocaLab.getVoca(getActivity()).addNewBook(title); // add a new book
+            initState(VocaLab.getVoca(getActivity()).getBooks().size());
             updateUI();
         } else if (requestCode == REQUEST_REMOVE) {
             deleteBooks();
@@ -193,8 +197,6 @@ public class NoteManagerFragment extends Fragment {
     private void updateUI() {
         VocaLab vocaLab = VocaLab.getVoca(getActivity());
         List<Book> books = vocaLab.getBooks();
-        mBooksSelected = new HashSet<>();
-        mSavedViewHolderStatus = new boolean[books.size()];
         if (mAdapter == null) {
             mAdapter = new NoteAdapter(books);
             mBookRecyclerView.setAdapter(mAdapter);
@@ -202,6 +204,12 @@ public class NoteManagerFragment extends Fragment {
             mAdapter.setBooks(books);
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    // initialize selection status
+    private void initState(int size) {
+        mBooksSelected = new HashSet<>();
+        mSavedViewHolderStatus = new boolean[size];
     }
 
     private class BookHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -223,8 +231,9 @@ public class NoteManagerFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     mSavedViewHolderStatus[index] = mCheckBox.isChecked();
-                    if (mCheckBox.isChecked())
+                    if (mCheckBox.isChecked()) {
                         mBooksSelected.add(mBook);
+                    }
                     else
                         mBooksSelected.remove(mBook);
                 }
@@ -235,7 +244,11 @@ public class NoteManagerFragment extends Fragment {
             mBook = book;
             mTitleTextView.setText(mBook.getBookName());
             mDetailTextView.setText("단어수: " + mBook.getNumWords() + "\n수정일:" + mBook.getLastModified());
-            mCheckBox.setChecked(mSavedViewHolderStatus[index]);
+            if (mSavedViewHolderStatus[index] && !mCheckBox.isChecked()) {
+                mCheckBox.performClick();
+            } else if (!mSavedViewHolderStatus[index] && mCheckBox.isChecked()) {
+                mCheckBox.performClick();
+            }
         }
 
         @Override
