@@ -104,6 +104,32 @@ public class NoteManagerFragment extends Fragment {
                 dialog.show(getFragmentManager(), DIALOG_REMOVE_BOOK);
                 dialog.setTargetFragment(NoteManagerFragment.this, REQUEST_REMOVE);
                 return true;
+            case R.id.menu_item_edit_book:
+                if (mBooksSelected.size() != 1) {
+                    new AlertDialog.Builder(getActivity())
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .setMessage("하나의 단어장을 선택해 주세요.")
+                            .show();
+                } else {
+                    View titleChange = LayoutInflater.from(getActivity()).
+                            inflate(R.layout.dialog_change_book_title, null);
+                    final EditText newTitle = (EditText)titleChange.findViewById(R.id.change_book_title_edit_text);
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("단어장 이름 변경")
+                            .setView(titleChange)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Book newBook = mBooksSelected.iterator().next();
+                                    newBook.setBookName(newTitle.getText().toString());
+                                    VocaLab.getVoca(getActivity()).updateBook(newBook);
+                                    updateUI();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .show();
+                }
+                return true;
             case R.id.menu_item_export_book:
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
                 View exportFile = inflater.inflate(R.layout.dialog_export_file_name, null);

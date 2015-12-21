@@ -14,4 +14,9 @@
         android:title="@string/del_book"
         app:showAsAction="never">
     </item>
+    <item
+        android:id="@+id/menu_item_edit_book"
+        android:title="단어장 이름 변경"
+        app:showAsAction="never">
+    </item>
 </menu>
