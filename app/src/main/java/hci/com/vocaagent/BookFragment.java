@@ -3,6 +3,7 @@ package hci.com.vocaagent;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -54,6 +55,17 @@ public class BookFragment extends Fragment {
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBookId = getArguments().getInt(ARG_BOOK_ID);
+
+        FloatingActionButton FAB = (FloatingActionButton) v.findViewById(R.id.fab);
+        FAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddWordFragment dialogFragment = new AddWordFragment();// notify which book is selected so that the word can be added accordingly.
+                dialogFragment.show(getFragmentManager(), ADD_WORD_DIALOG);
+                dialogFragment.setTargetFragment(BookFragment.this, REQUEST_ADD_WORD);
+            }
+        });
+
         updateUI();
 
         getActivity().setTitle("단어 관리");
@@ -69,11 +81,6 @@ public class BookFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_add_word:
-                AddWordFragment dialogFragment = new AddWordFragment();// notify which book is selected so that the word can be added accordingly.
-                dialogFragment.show(getFragmentManager(), ADD_WORD_DIALOG);
-                dialogFragment.setTargetFragment(BookFragment.this, REQUEST_ADD_WORD);
-                return true;
             case R.id.menu_item_del_word:
                 RemoveConfirmDialog dialog = new RemoveConfirmDialog();
                 dialog.show(getFragmentManager(), REMOVE_WORD_DIALOG);

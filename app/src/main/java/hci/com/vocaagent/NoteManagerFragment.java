@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -56,10 +57,22 @@ public class NoteManagerFragment extends Fragment {
         mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
 
+        FloatingActionButton FAB = (FloatingActionButton) v.findViewById(R.id.fab);
+        FAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddBookFragment dialogFragment = new AddBookFragment();
+                dialogFragment.show(getFragmentManager(), DIALOG_ADD_BOOK);
+                dialogFragment.setTargetFragment(NoteManagerFragment.this, REQUEST_TITLE);
+            }
+        });
+
         if (mMode == NOTE_MANAGER_MODE)
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("단어장 관리");
-        else if (mMode == EXPORT_BOOK_MODE)
+        else if (mMode == EXPORT_BOOK_MODE) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("단어장 내보내기");
+            FAB.hide();
+        }
         return v;
     }
 
@@ -94,11 +107,6 @@ public class NoteManagerFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_add_book:
-                AddBookFragment dialogFragment = new AddBookFragment();
-                dialogFragment.show(getFragmentManager(), DIALOG_ADD_BOOK);
-                dialogFragment.setTargetFragment(NoteManagerFragment.this, REQUEST_TITLE);
-                return true;
             case R.id.menu_item_del_book:
                 RemoveConfirmDialog dialog = new RemoveConfirmDialog();
                 dialog.show(getFragmentManager(), DIALOG_REMOVE_BOOK);
