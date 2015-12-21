@@ -23,7 +23,7 @@ public class ExamPagerActivity extends AppCompatActivity {
     private static final String SAVE_STATE_SEEN = "SAVE_STATE_SEEN";
     private static final String SAVE_STATE_OPTION = "SAVE_STATE_OPTION";
     private static final String EXAM_TYPE_OPTION = "option";
-    private static final int offScreenPageLimit = 10;
+    private static final int offScreenPageLimit = 1;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -73,16 +73,20 @@ public class ExamPagerActivity extends AppCompatActivity {
             }
         }
 
-        if (!alreadySeen) {
-            alreadySeen = true;
-            // prepare to save tested words and words to review after the test
-            VocaLab.getVoca(ExamPagerActivity.this).initResultWords();
-            VocaLab.getVoca(ExamPagerActivity.this).initReviewWords();
-        }
-
         // Exception : No words in the list.
         if (mWords.size() == 0) {
             finish();
+        }
+
+        if (!alreadySeen) {
+            alreadySeen = true;
+            // init words today Count
+            for (Word w : mWords) {
+                initTodayCount(w);
+            }
+            // prepare to save tested words and words to review after the test
+            VocaLab.getVoca(ExamPagerActivity.this).initResultWords();
+            VocaLab.getVoca(ExamPagerActivity.this).initReviewWords();
         }
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -92,11 +96,6 @@ public class ExamPagerActivity extends AppCompatActivity {
             public Fragment getItem(int position) {
                 // get a word
                 Word word = mWords.get(position);
-
-                if (!alreadySeen) {
-                    // init today count
-                    initTodayCount(word);
-                }
 
                 // find if there is a retained fragment.
                 //Fragment fragment = getActiveFragment(position);
