@@ -181,6 +181,26 @@ public class VocaLab {
         }
     }
 
+    public int getNumberOfCompletedWordsInBook(int bookId) {
+        String queryStr = "SELECT COUNT(*) FROM "+WordTable.NAME + " WHERE "+WordTable.Cols.book_id +" = " + bookId
+                + " AND " + WordTable.Cols.completed + " = 1";
+        Cursor cursor = mDatabase.rawQuery(queryStr, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        return count;
+    }
+
+    public int getNumberOfNotCompletedWordsInBook(int bookId) {
+        String queryStr = "SELECT COUNT(*) FROM "+WordTable.NAME + " WHERE "+WordTable.Cols.book_id +" = " + bookId
+                + " AND " + WordTable.Cols.completed + " = 0";
+        Cursor cursor = mDatabase.rawQuery(queryStr, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        return count;
+    }
+
     public boolean exportNote(String fileName, Set<Book> exportBooks) {
         List<Word> words = new ArrayList<>();
 
