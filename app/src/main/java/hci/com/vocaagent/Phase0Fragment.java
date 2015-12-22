@@ -45,7 +45,7 @@ public class Phase0Fragment extends Fragment {
 
         VocaLab.getVoca(getActivity()).updateWord(mWord);
         VocaLab.getVoca(getActivity()).addResultWord(mWord, 1);
-        VocaLab.getVoca(getActivity()).updateMetaInfo(1, 1, 1); // update the mete Data
+        VocaLab.getVoca(getActivity()).updateMetaInfo(0, 0, 1); // update the mete Data
     }
 
     @Override

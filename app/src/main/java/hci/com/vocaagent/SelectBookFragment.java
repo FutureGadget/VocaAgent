@@ -178,7 +178,6 @@ public class SelectBookFragment extends Fragment {
             } else if (!mSavedViewHolderStatus[index] && mCheckBox.isChecked()) {
                 mCheckBox.performClick();
             }
-//            mCheckBox.setChecked(mSavedViewHolderStatus[index]);
             mDetailTextView.setText("단어수: " + mBook.getNumWords() + "\n수정일:" + mBook.getLastModified());
         }
 
