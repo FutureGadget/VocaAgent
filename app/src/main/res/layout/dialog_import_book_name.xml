@@ -7,5 +7,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/import_book_name"
-        android:hint="단어장 이름을 입력하세요"/>
+        android:hint="단어장의 이름을 입력하세요"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"/>
 </LinearLayout>

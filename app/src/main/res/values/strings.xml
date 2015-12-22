@@ -21,4 +21,8 @@
     <string name="exportBook">내보내기</string>
     <string name="import_confirm">%1$s 를 가져오시겠습니까?</string>
     <string name="banner_ad_unit_id">ca-app-pub-3279610686680425/9967953596</string>
+    <string name="title_activity_help_import">HelpImportActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
