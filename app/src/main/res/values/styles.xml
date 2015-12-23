@@ -9,8 +9,6 @@
     </style>
 
     <style name="toolbarStyle" parent="AppTheme">
-        <item name="android:foreground">@color/colorWhite</item>
-        <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textColorPrimary">@color/colorWhite</item>
         <item name="android:textColorSecondary">@color/colorWhite</item>
     </style>
