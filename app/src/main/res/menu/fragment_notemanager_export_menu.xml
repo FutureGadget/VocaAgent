@@ -4,5 +4,6 @@
     <item
         android:id="@+id/menu_item_export_book"
         android:title="@string/exportBook"
-        app:showAsAction="always"/>
+        android:icon="@drawable/ic_arrow_upward_white_48dp"
+        app:showAsAction="always" />
 </menu>

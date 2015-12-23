@@ -1,8 +1,11 @@
 package hci.com.vocaagent;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,6 +73,7 @@ public class SelectBookFragment extends Fragment {
         }
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("학습 시작");
+
         return v;
     }
 
@@ -95,8 +100,8 @@ public class SelectBookFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_selectbook_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

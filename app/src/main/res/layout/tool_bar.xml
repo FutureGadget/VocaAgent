@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:elevation="4dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+    android:theme="@style/toolbarStyle"
+    app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar">
 
 </android.support.v7.widget.Toolbar>
