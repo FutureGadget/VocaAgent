@@ -46,4 +46,16 @@
             android:text="학습종료"
             android:textColor="@android:color/holo_red_light" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorBackground"/>
+
+    <Button
+        android:id="@+id/continue_test_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/fragment_dialog_btn"
+        android:text="이어하기" />
 </LinearLayout>

@@ -41,7 +41,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="- 가져오기를 할수 있는 파일은 전부 xls 파일입니다."/>
+                android:text="- 확장자가 .xls인 파일만 불러오기가 가능합니다. (.xlsx인 경우 엑셀에서 .xls로 변환 가능합니다.)"/>
 
 
             <TextView
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="- 단어장 이름을 입력하실 때 기존에 존재하는 단어장의 이름을 입력하시면, 그 단어장 안으로 불러와집니다."/>
+                android:text="- 단어장 이름을 입력하실 때 기존에 존재하는 단어장의 이름을 입력하시면, 그 단어장으로 단어들이 들어갑니다."/>
 
         </LinearLayout>
     </RelativeLayout>
