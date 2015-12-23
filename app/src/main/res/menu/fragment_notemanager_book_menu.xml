@@ -7,4 +7,15 @@
         android:title="@string/del_word"
         app:showAsAction="never">
     </item>
+    <item
+        android:id="@+id/manager_menu_item_set_completed"
+        android:title="완료 설정"
+        app:showAsAction="never">
+    </item>
+    <item
+        android:id="@+id/manager_menu_item_set_not_completed"
+        android:title="완료 해제"
+        app:showAsAction="never">
+
+    </item>
 </menu>
