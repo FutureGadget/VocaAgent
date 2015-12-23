@@ -41,20 +41,45 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="- 확장자가 .xls인 파일만 불러오기가 가능합니다. (.xlsx인 경우 엑셀에서 .xls로 변환 가능합니다.)"/>
+                android:text="- 확장자가 .xls인 파일만 불러오기가 가능합니다. \n(.xlsx인 경우 엑셀에서 .xls로 변환 가능합니다.)" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="- 가져오기를 사용하시려면 xls파일을 sd카드안의 폴더 'VocaAgent'에 넣어주세요."/>
+                android:layout_marginTop="10dp"
+                android:text="- 가져오기를 사용하시려면 xls파일을 sd카드 혹은 내장메모리 안의 폴더 'VocaAgent'에 넣어주세요." />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="- xls 파일안에 단어를 넣으실 때 단어만 넣어주시면 됩니다." />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="- 단어장 이름을 입력하실 때 기존에 존재하는 단어장의 이름을 입력하시면, 그 단어장으로 단어들이 들어갑니다."/>
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="예시)"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/screenshot" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="- 단어장 이름을 입력하실 때 기존에 존재하는 단어장의 이름을 입력하시면, 그 단어장으로 단어들이 들어갑니다." />
 
         </LinearLayout>
     </RelativeLayout>
