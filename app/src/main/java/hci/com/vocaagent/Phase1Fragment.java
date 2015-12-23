@@ -3,6 +3,7 @@ package hci.com.vocaagent;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import hci.com.vocaagent.datastructure.RandomQueue;
@@ -39,6 +41,7 @@ public class Phase1Fragment extends Fragment {
     private List<String> mRandomWords;
     private String[] mSavedTestSet;
     private boolean mHasExampleSentence;
+    private TextToSpeech mTextToSpeech;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,16 @@ public class Phase1Fragment extends Fragment {
         mWord = VocaLab.getVoca(getActivity()).getWordByID(getArguments().getInt(ARG_WORDID));
         mRadioButton = new RadioButton[4];
         mRandomWords = VocaLab.getVoca(getActivity()).getRandomWords();
+
+        // init tts object
+        mTextToSpeech = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    mTextToSpeech.setLanguage(Locale.US);
+                }
+            }
+        });
 
         shuffle(); // shuffle buttons
 
