@@ -41,7 +41,7 @@ public class Phase1Fragment extends Fragment {
     private List<String> mRandomWords;
     private String[] mSavedTestSet;
     private boolean mHasExampleSentence;
-    private TextToSpeech mTextToSpeech;
+//    private TextToSpeech mTextToSpeech; // function to be added
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,14 +51,14 @@ public class Phase1Fragment extends Fragment {
         mRandomWords = VocaLab.getVoca(getActivity()).getRandomWords();
 
         // init tts object
-        mTextToSpeech = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status != TextToSpeech.ERROR) {
-                    mTextToSpeech.setLanguage(Locale.US);
-                }
-            }
-        });
+//        mTextToSpeech = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+//            @Override
+//            public void onInit(int status) {
+//                if (status != TextToSpeech.ERROR) {
+//                    mTextToSpeech.setLanguage(Locale.US);
+//                }
+//            }
+//        });
 
         shuffle(); // shuffle buttons
 
