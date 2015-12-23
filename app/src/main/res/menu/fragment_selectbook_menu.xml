@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/selectbook_menu_search"
+        android:title="단어장 검색"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_search_white_48dp"
+        />
+    <item
         android:id="@+id/selectbook_menu_menu_start"
         android:title="학습 시작"
         app:showAsAction="always"
