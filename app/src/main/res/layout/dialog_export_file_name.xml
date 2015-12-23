@@ -8,5 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/export_file_name"
-        android:hint="내보낼 파일명을 입력하세요"/>
+        android:hint="내보낼 파일명을 입력하세요"
+        android:layout_margin="20dp"
+        android:padding="10dp" />
 </LinearLayout>

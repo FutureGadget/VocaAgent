@@ -8,5 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/change_book_title_edit_text"
-        android:hint="변경할 단어장 이름을 입력하세요."/>
+        android:hint="변경할 단어장 이름을 입력하세요."
+        android:layout_margin="20dp"
+        android:padding="10dp" />
 </LinearLayout>
