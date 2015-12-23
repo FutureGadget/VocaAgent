@@ -102,19 +102,11 @@ public class ExamPagerActivity extends AppCompatActivity {
                 // get a word
                 Word word = mWords.get(position);
 
-                // find if there is a retained fragment.
-                //Fragment fragment = getActiveFragment(position);
-
-                //if (fragment != null) {
-                //return fragment;
-//                } else {
-                // return a fragment based on the phase of the word
                 if (word.getPhase() == 0) {
                     return Phase0Fragment.newInstance(word.getWordId());
                 } else {
                     return Phase1Fragment.newInstance(word.getWordId());
                 }
-//                }
             }
 
             @Override

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,6 +38,7 @@ public class SelectBookFragment extends Fragment {
     public static final int EXAM_TYPE_NORMAL = 0;
     public static final int EXAM_TYPE_REVIEW = 1;
     public static final int EXAM_TYPE_COMPLETED = 2;
+    public static final int EXAM_TYPE_CONTINUE = 3;
 
 
     @Override
@@ -65,7 +67,6 @@ public class SelectBookFragment extends Fragment {
             mBookRecyclerView.setVisibility(View.VISIBLE);
             mEmptyLinearLayout.setVisibility(View.GONE);
         }
-
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("학습 시작");
         return v;
@@ -133,6 +134,10 @@ public class SelectBookFragment extends Fragment {
         if (requestCode == REQUEST_START_TEST) {
             if (resultCode == EXAM_TYPE_REVIEW) {
                 Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_REVIEW);
+                startActivityForResult(intent, REQUEST_START_TEST);
+            }
+            else if (resultCode == EXAM_TYPE_CONTINUE) {
+                Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_NORMAL);
                 startActivityForResult(intent, REQUEST_START_TEST);
             }
         }

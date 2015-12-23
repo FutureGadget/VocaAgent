@@ -18,6 +18,7 @@ public class StatisticsDialogFragment extends DialogFragment {
     private ResultWordAdapter mAdapter;
     private Button mQuitButton;
     private Button mReviewButton;
+    private Button mContinueButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,6 +40,15 @@ public class StatisticsDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 getActivity().setResult(SelectBookFragment.EXAM_TYPE_REVIEW, null);
+                getActivity().finish();
+            }
+        });
+
+        mContinueButton = (Button) v.findViewById(R.id.continue_test_button);
+        mContinueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().setResult(SelectBookFragment.EXAM_TYPE_CONTINUE, null);
                 getActivity().finish();
             }
         });
