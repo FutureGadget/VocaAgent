@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.Iterator;
@@ -35,6 +36,7 @@ public class Phase0Fragment extends Fragment {
     private String mMeaning;
     private RandomQueue mSentences;
     private Button mShowExamplesButton;
+    private ImageButton mWordVoiceButton;
     private TextToSpeech mTextToSpeech;
 
     private Iterator<String[]> mSentencesIterator;
@@ -61,6 +63,9 @@ public class Phase0Fragment extends Fragment {
                 }
             }
         });
+
+        mTextToSpeech.setSpeechRate(0.9f);
+        mTextToSpeech.setPitch(0.8f);
 
         VocaLab.getVoca(getActivity()).updateWord(mWord);
         VocaLab.getVoca(getActivity()).addResultWord(mWord, 1);
@@ -105,6 +110,15 @@ public class Phase0Fragment extends Fragment {
         mContent = (TextView) v.findViewById(R.id.word_meaning_sentence_text_view);
         mShowExamplesButton = (Button) v.findViewById(R.id.show_examples_button);
         mWordTitle.setText(mWord.getWord());
+        mWordVoiceButton = (ImageButton)v.findViewById(R.id.voice_word);
+        mWordVoiceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String toSpeak = mWordTitle.getText().toString();
+                mTextToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+            }
+        });
+
 
         // if this is a retained fragment
         if (mSentences != null) {
