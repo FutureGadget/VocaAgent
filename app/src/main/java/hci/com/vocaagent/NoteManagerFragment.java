@@ -243,7 +243,9 @@ public class NoteManagerFragment extends Fragment {
         public void bindBook(Book book) {
             mBook = book;
             mTitleTextView.setText(mBook.getBookName());
-            mDetailTextView.setText("완료 단어 수: " + VocaLab.getVoca(getActivity()).getNumberOfCompletedWordsInBook(mBook.getBookId()) + "\n수정일:" + mBook.getLastModified()); // Book DB에서 단어수 지우기
+            mDetailTextView.setText("완료 단어 수: " + VocaLab.getVoca(getActivity()).getNumberOfCompletedWordsInBook(mBook.getBookId()) +
+                    "\n미 완료 단어 수: " + VocaLab.getVoca(getActivity()).getNumberOfNotCompletedWordsInBook(mBook.getBookId()) +
+                    "\n수정일:" + mBook.getLastModified()); // Book DB에서 단어수 지우기
             if (mSavedViewHolderStatus[index] && !mCheckBox.isChecked()) {
                 mCheckBox.performClick();
             } else if (!mSavedViewHolderStatus[index] && mCheckBox.isChecked()) {

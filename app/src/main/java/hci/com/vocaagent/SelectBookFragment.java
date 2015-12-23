@@ -188,7 +188,9 @@ public class SelectBookFragment extends Fragment {
             } else if (!mSavedViewHolderStatus[index] && mCheckBox.isChecked()) {
                 mCheckBox.performClick();
             }
-            mDetailTextView.setText("단어수: " + mBook.getNumWords() + "\n수정일:" + mBook.getLastModified());
+            mDetailTextView.setText("완료 단어 수: " + VocaLab.getVoca(getActivity()).getNumberOfCompletedWordsInBook(mBook.getBookId()) +
+                    "\n미 완료 단어 수: " + VocaLab.getVoca(getActivity()).getNumberOfNotCompletedWordsInBook(mBook.getBookId()) +
+                    "\n수정일:" + mBook.getLastModified());
         }
 
         @Override

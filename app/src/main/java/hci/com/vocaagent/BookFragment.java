@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -85,6 +86,20 @@ public class BookFragment extends Fragment {
                 RemoveConfirmDialog dialog = new RemoveConfirmDialog();
                 dialog.show(getFragmentManager(), REMOVE_WORD_DIALOG);
                 dialog.setTargetFragment(BookFragment.this, REQUEST_REMOVE_WORD);
+                return true;
+            case R.id.manager_menu_item_set_completed:
+                for (Word w : mWordsSelected) {
+                    w.setCompleted(true);
+                    VocaLab.getVoca(getActivity()).updateWord(w);
+                }
+                updateUI();
+                return true;
+            case R.id.manager_menu_item_set_not_completed:
+                for (Word w : mWordsSelected) {
+                    w.setCompleted(false);
+                    VocaLab.getVoca(getActivity()).updateWord(w);
+                }
+                updateUI();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -174,7 +189,12 @@ public class BookFragment extends Fragment {
 
         public void bindWord(Word word) {
             mWord = word;
-            mTextView.setText(word.getWord());
+
+            // coloring if completed
+            if (mWord.isCompleted()) {
+                mTextView.setText(Html.fromHtml("<font color=#009688>" + mWord.getWord() + "</font>"));
+            } else
+                mTextView.setText(word.getWord());
             mCheckBox.setChecked(mSavedViewHolderStatus[index]);
         }
 
