@@ -33,7 +33,8 @@
         <activity
             android:name=".BookActivity"
             android:parentActivityName=".NoteManagerActivity" />
-        <activity android:name=".ExamPagerActivity" />
+        <activity android:name=".ExamPagerActivity"
+            android:parentActivityName=".SelectBookActivity"/>
         <activity
             android:name=".HelpImportActivity"
             android:label="@string/title_activity_help_import"
