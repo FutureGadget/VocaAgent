@@ -96,7 +96,7 @@ public class DictionaryParser {
                 skip = true;
         }
 
-        String pattern = "(\\W)(";
+        String pattern = "(\\W|^)(";
 
         if (!skip) {
             Pattern p = Pattern.compile("[A-Za-z]+( [A-Za-z]+)*");
