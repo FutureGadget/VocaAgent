@@ -22,6 +22,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +61,10 @@ public class NoteManagerFragment extends Fragment {
         mBookRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
+
+        AdView mAdView = (AdView) v.findViewById(R.id.note_manager_adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         FloatingActionButton FAB = (FloatingActionButton) v.findViewById(R.id.fab);
         FAB.setOnClickListener(new View.OnClickListener() {

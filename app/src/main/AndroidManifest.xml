@@ -29,12 +29,25 @@
             android:theme="@android:style/Theme.Translucent" />
         <activity
             android:name=".NoteManagerActivity"
-            android:parentActivityName=".SelectBookActivity" />
+            android:parentActivityName=".SelectBookActivity">
+            <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version" />
+        </activity>
         <activity
             android:name=".BookActivity"
-            android:parentActivityName=".NoteManagerActivity" />
-        <activity android:name=".ExamPagerActivity"
-            android:parentActivityName=".SelectBookActivity"/>
+            android:parentActivityName=".NoteManagerActivity">
+            <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version" />
+        </activity>
+        <activity
+            android:name=".ExamPagerActivity"
+            android:parentActivityName=".SelectBookActivity">
+            <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version" />
+        </activity>
         <activity
             android:name=".HelpImportActivity"
             android:label="@string/title_activity_help_import"

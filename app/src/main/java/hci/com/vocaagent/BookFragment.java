@@ -20,6 +20,9 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -66,6 +69,10 @@ public class BookFragment extends Fragment {
                 dialogFragment.setTargetFragment(BookFragment.this, REQUEST_ADD_WORD);
             }
         });
+
+        AdView mAdView = (AdView) v.findViewById(R.id.note_manager_adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         updateUI();
 
