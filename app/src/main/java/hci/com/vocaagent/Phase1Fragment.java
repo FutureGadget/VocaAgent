@@ -3,7 +3,6 @@ package hci.com.vocaagent;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -21,7 +20,6 @@ import android.widget.Toast;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
 import hci.com.vocaagent.datastructure.RandomQueue;
@@ -76,7 +74,7 @@ public class Phase1Fragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.menu_item_set_completed:
                 new AlertDialog.Builder(getActivity())
                         .setTitle("완료단어 설정")
@@ -111,8 +109,7 @@ public class Phase1Fragment extends Fragment {
             if (mHasExampleSentence) {
                 mSentenceTextView.setText(mSavedTestSet[0]);
                 buildSelects(mSavedTestSet[2]);
-            }
-            else {
+            } else {
                 mSentenceTextView.setText("Sorry, There is no example sentence.");
             }
         }
@@ -281,7 +278,7 @@ public class Phase1Fragment extends Fragment {
                 mSavedTestSet = it.next();
                 if (mSavedTestSet[2] != null) {
                     mHasExampleSentence = true;
-                    mSavedTestSet[0] = mSavedTestSet[0].replaceAll("(?i)"+mSavedTestSet[2], "_____");
+                    mSavedTestSet[0] = mSavedTestSet[0].replaceAll("(?i)" + mSavedTestSet[2], "_____");
                     mSentenceTextView.setText(mSavedTestSet[0]);
                     buildSelects(mSavedTestSet[2]);
                     break;

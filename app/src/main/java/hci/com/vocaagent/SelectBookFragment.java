@@ -1,16 +1,11 @@
 package hci.com.vocaagent;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,23 +14,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Users can choose which books to study.
  */
 public class SelectBookFragment extends Fragment {
-    private RecyclerView mBookRecyclerView;
+    //    private RecyclerView mBookRecyclerView;
     private NoteAdapter mAdapter;
     private boolean[] mSavedViewHolderStatus;
-    private LinearLayout mEmptyLinearLayout;
+    private List<Book> mBooks;
+    private ArrayList<Book> mExamBooks;
 
     private static final int REQUEST_START_TEST = 0;
 
@@ -48,54 +44,48 @@ public class SelectBookFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        init();
         setHasOptionsMenu(true);
+        setRetainInstance(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_select_book, container, false);
-        mBookRecyclerView = (RecyclerView) v.findViewById(R.id.select_book_recycler_view);
-        mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mEmptyLinearLayout = (LinearLayout) v.findViewById(R.id.select_book_recycler_view_empty);
+        RecyclerView bookRecyclerView = (RecyclerView) v.findViewById(R.id.select_book_recycler_view);
+        bookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayout emptyLinearLayout = (LinearLayout) v.findViewById(R.id.select_book_recycler_view_empty);
 
         AdView mAdView = (AdView) v.findViewById(R.id.select_book_adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        updateUI();
+        updateUI(bookRecyclerView);
 
         if (mAdapter.getItemCount() == 0) {
-            mBookRecyclerView.setVisibility(View.GONE);
-            mEmptyLinearLayout.setVisibility(View.VISIBLE);
+            bookRecyclerView.setVisibility(View.GONE);
+            emptyLinearLayout.setVisibility(View.VISIBLE);
         } else {
-            mBookRecyclerView.setVisibility(View.VISIBLE);
-            mEmptyLinearLayout.setVisibility(View.GONE);
+            bookRecyclerView.setVisibility(View.VISIBLE);
+            emptyLinearLayout.setVisibility(View.GONE);
         }
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("학습 시작");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("학습 시작");
 
         return v;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Landscape -> vertical -> landscape..
-        VocaLab.getVoca(getActivity()).resetExamBooks();
-        updateUI();
+    private void updateUI(RecyclerView recyclerView) {
+        if (mAdapter == null)
+            mAdapter = new NoteAdapter();
+        recyclerView.setAdapter(mAdapter);
     }
 
-    private void updateUI() {
-        VocaLab vocaLab = VocaLab.getVoca(getActivity());
-        List<Book> books = vocaLab.getBooks();
-        mSavedViewHolderStatus = new boolean[books.size()];
-        if (mAdapter == null) {
-            mAdapter = new NoteAdapter(books);
-            mBookRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setBooks(books);
-            mAdapter.notifyDataSetChanged();
-        }
+    private void init() {
+        mBooks = VocaLab.getVoca(getActivity()).getBooks();
+        int size = mBooks.size();
+        mSavedViewHolderStatus = new boolean[size];
+        mExamBooks = new ArrayList<>();
     }
 
     @Override
@@ -108,15 +98,15 @@ public class SelectBookFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.selectbook_menu_menu_start:
-                if (VocaLab.getVoca(getActivity()).getExamBooks().isEmpty()) {
+                if (mExamBooks.isEmpty()) {
                     Toast.makeText(getActivity(), "단어장을 선택하세요.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_NORMAL);
+                    Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_NORMAL, mExamBooks);
                     startActivityForResult(intent, REQUEST_START_TEST); // test request code = 1
                 }
                 return true;
             case R.id.selectbook_menu_test_completed_words:
-                Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_COMPLETED);
+                Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_COMPLETED, mExamBooks);
                 startActivityForResult(intent, REQUEST_START_TEST);
                 return true;
             case R.id.selectbook_menu_select_all:
@@ -138,11 +128,10 @@ public class SelectBookFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_START_TEST) {
             if (resultCode == EXAM_TYPE_REVIEW) {
-                Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_REVIEW);
+                Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_REVIEW, mExamBooks);
                 startActivityForResult(intent, REQUEST_START_TEST);
-            }
-            else if (resultCode == EXAM_TYPE_CONTINUE) {
-                Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_NORMAL);
+            } else if (resultCode == EXAM_TYPE_CONTINUE) {
+                Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_NORMAL, mExamBooks);
                 startActivityForResult(intent, REQUEST_START_TEST);
             }
         }
@@ -171,10 +160,10 @@ public class SelectBookFragment extends Fragment {
                      */
                     mSavedViewHolderStatus[index] = mCheckBox.isChecked();
                     if (mCheckBox.isChecked()) {
-                        VocaLab.getVoca(getActivity()).addExamBook(mBook);
+                        mExamBooks.add(mBook);
 
                     } else {
-                        VocaLab.getVoca(getActivity()).removeExamBook(mBook);
+                        mExamBooks.remove(mBook);
                     }
                 }
             });
@@ -183,9 +172,7 @@ public class SelectBookFragment extends Fragment {
         public void bindBook(Book book) {
             mBook = book;
             mTitleTextView.setText(mBook.getBookName());
-            if (mSavedViewHolderStatus[index] && !mCheckBox.isChecked()) {
-                mCheckBox.performClick();
-            } else if (!mSavedViewHolderStatus[index] && mCheckBox.isChecked()) {
+            if (mSavedViewHolderStatus[index] ^ mCheckBox.isChecked()) {
                 mCheckBox.performClick();
             }
             mDetailTextView.setText("완료 단어 수: " + VocaLab.getVoca(getActivity()).getNumberOfCompletedWordsInBook(mBook.getBookId()) +
@@ -200,16 +187,6 @@ public class SelectBookFragment extends Fragment {
     }
 
     private class NoteAdapter extends RecyclerView.Adapter<BookHolder> {
-        private List<Book> mBooks;
-
-        public NoteAdapter(List<Book> books) {
-            mBooks = books;
-        }
-
-        public void setBooks(List<Book> books) {
-            mBooks = books;
-        }
-
         @Override
         public BookHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());

@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.gms.ads.AdRequest;
@@ -21,6 +20,7 @@ import java.util.List;
 public class ExamPagerActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private List<Word> mWords;
+    private ArrayList<Book> mExamBooks;
     private boolean mPageEnd;
     private boolean alreadySeen;
     private int saveOption;
@@ -28,12 +28,14 @@ public class ExamPagerActivity extends AppCompatActivity {
     private static final String SAVE_STATE_SEEN = "SAVE_STATE_SEEN";
     private static final String SAVE_STATE_OPTION = "SAVE_STATE_OPTION";
     private static final String EXAM_TYPE_OPTION = "option";
+    private static final String EXAM_BOOKS = "exam_books";
     private static final int offScreenPageLimit = 1;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(SAVE_STATE_SEEN, alreadySeen);
         outState.putInt(SAVE_STATE_OPTION, saveOption);
+        outState.putParcelableArrayList(EXAM_BOOKS, mExamBooks);
         super.onSaveInstanceState(outState);
     }
 
@@ -45,7 +47,7 @@ public class ExamPagerActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -59,7 +61,7 @@ public class ExamPagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_exam_pager);
 
         // set toolbar
-        Toolbar toolbar = (Toolbar)findViewById(R.id.tool_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -71,18 +73,18 @@ public class ExamPagerActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             alreadySeen = savedInstanceState.getBoolean(SAVE_STATE_SEEN);
             saveOption = savedInstanceState.getInt(SAVE_STATE_OPTION);
+            mExamBooks = savedInstanceState.getParcelableArrayList(EXAM_BOOKS);
+        } else {
+            // new exam or review test
+            saveOption = getIntent().getIntExtra(EXAM_TYPE_OPTION, 0);
+            mExamBooks = getIntent().getParcelableArrayListExtra(EXAM_BOOKS);
         }
 
         mViewPager = (ViewPager) findViewById(R.id.activity_exam_pager);
 
-        if (savedInstanceState == null) {
-            // new exam or review test
-            saveOption = getIntent().getIntExtra(EXAM_TYPE_OPTION, 0);
-        }
-
         if (saveOption == SelectBookFragment.EXAM_TYPE_NORMAL) {
             // Get words for exam from the exam book list
-            mWords = VocaLab.getVoca(ExamPagerActivity.this).getTestWords();
+            mWords = VocaLab.getVoca(ExamPagerActivity.this).getTestWords(mExamBooks);
         } else if (saveOption == SelectBookFragment.EXAM_TYPE_REVIEW) {
             // get review words
             mWords = new ArrayList<>();
@@ -146,8 +148,9 @@ public class ExamPagerActivity extends AppCompatActivity {
         }
     }
 
-    public static Intent newIntent(Context context, int option) {
+    public static Intent newIntent(Context context, int option, ArrayList<Book> examBooks) {
         Intent newIntent = new Intent(context, ExamPagerActivity.class);
+        newIntent.putParcelableArrayListExtra(EXAM_BOOKS, examBooks);
         newIntent.putExtra(EXAM_TYPE_OPTION, option);
         return newIntent;
     }

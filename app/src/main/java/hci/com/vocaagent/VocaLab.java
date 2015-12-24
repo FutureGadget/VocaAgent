@@ -40,7 +40,6 @@ import hci.com.vocaagent.datastructure.RandomQueue;
 
 public class VocaLab {
     public static VocaLab sVocaLab;
-    private List<Book> mExamBooks; // to select exam books
     private List<ResultWord> mResultWords; // for saving tested words
     private List<Word> mReviewWords;
     private Context mContext;
@@ -54,7 +53,6 @@ public class VocaLab {
     }
 
     private VocaLab(Context context) {
-        mExamBooks = new ArrayList<>();
         mResultWords = new ArrayList<>();
         mReviewWords = new ArrayList<>();
         mContext = context;
@@ -72,10 +70,6 @@ public class VocaLab {
 
     public List<Word> getReviewWords() {
         return mReviewWords;
-    }
-
-    public List<Book> getExamBooks() {
-        return mExamBooks;
     }
 
     // save tested words for statistics when the exam ends.
@@ -171,7 +165,11 @@ public class VocaLab {
 
             for (Row myRow : sheet) {
                 for (Cell myCell : myRow) {
-                    addNewWord(myCell.toString(), bookId);
+                    if (myCell.toString().matches("^[A-Za-z].*[A-Za-z]$"))
+                        addNewWord(myCell.toString(), bookId);
+                    else {
+                        Log.d("TEST", myCell.toString()+ "ERROR");
+                    }
                 }
             }
             mDatabase.setTransactionSuccessful();
@@ -286,18 +284,6 @@ public class VocaLab {
         addBook(book);
     }
 
-    public void addExamBook(Book book) {
-        mExamBooks.add(book);
-    }
-
-    public void removeExamBook(Book book) {
-        mExamBooks.remove(book);
-    }
-
-    public void resetExamBooks() {
-        mExamBooks = new ArrayList<>();
-    }
-
     public void addBook(Book book) {
         ContentValues values = getBookContentValues(book);
         mDatabase.insert(BookTable.NAME, null, values);
@@ -343,8 +329,8 @@ public class VocaLab {
                 new String[]{word_id});
     }
 
-    public List<Word> getTestWords() {
-        WordCursorWrapper cursor = queryTestWords();
+    public List<Word> getTestWords(ArrayList<Book> examBooks) {
+        WordCursorWrapper cursor = queryTestWords(examBooks);
         List<Word> words = new ArrayList<>();
         try {
             cursor.moveToFirst();
@@ -358,7 +344,7 @@ public class VocaLab {
         return words;
     }
 
-    public WordCursorWrapper queryTestWords() {
+    public WordCursorWrapper queryTestWords(ArrayList<Book> examBooks) {
         // select words from mExamBooks based on the algorithm below.
         /*
         --Random알고리즘 적용
@@ -369,14 +355,14 @@ public class VocaLab {
         --즉, 정답률이 낮은 단어가 우선순위가 높음*/
 
         String whereClause = "WHERE (" + WordTable.Cols.completed + " <> 1)";
-        for (int i = 0; i < mExamBooks.size(); ++i) {
+        for (int i = 0; i < examBooks.size(); ++i) {
             if (i == 0) {
                 whereClause += " AND (";
             }
-            if (i == mExamBooks.size() - 1) {
-                whereClause += "bid = " + mExamBooks.get(i).getBookId() + ")";
+            if (i == examBooks.size() - 1) {
+                whereClause += "bid = " + examBooks.get(i).getBookId() + ")";
             } else {
-                whereClause += "bid = " + mExamBooks.get(i).getBookId() + " OR ";
+                whereClause += "bid = " + examBooks.get(i).getBookId() + " OR ";
             }
         }
 
