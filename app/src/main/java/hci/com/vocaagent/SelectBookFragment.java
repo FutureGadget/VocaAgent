@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -73,6 +74,15 @@ public class SelectBookFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("학습 시작");
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdapter != null) {
+            mBooks = VocaLab.getVoca(getActivity()).getBooks();
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private void updateUI(RecyclerView recyclerView) {
