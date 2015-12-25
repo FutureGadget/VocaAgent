@@ -20,6 +20,7 @@ public class DictionaryParser {
     private static final String searchHeader = "http://alldic.daum.net";
     private static final String optionSearch = "/search.do?q=";
     private static final String searchEnglish = "&dic=eng&search_first=Y";
+    private static final String backupExampleRoute = "&t=example&dic=eng";
 
     // get a meaning list
     public static String getMeanings(final String word) {
@@ -42,6 +43,7 @@ public class DictionaryParser {
     public static RandomQueue getSentence(final String word) {
         RandomQueue sentences = new RandomQueue();
         String trans, example, answer;
+        boolean matched = false;
         try {
             Document d = Jsoup.connect(searchHeader + optionSearch + word + searchEnglish).get();
             Elements e = d.select("div.clean_word>strong>a");
@@ -74,10 +76,36 @@ public class DictionaryParser {
                     // replace matched
                     m = pattern.matcher(example);
                     if (m.find()) {
+                        matched = true;
                         MatchResult result = m.toMatchResult();
                         answer = result.group(2);
                     }
                     sentences.add(example, trans, answer);
+                }
+            }
+
+            // try backup route
+            if (sentences.size() < 5 || !matched) {
+                newUrl = searchHeader + optionSearch + "\""+ word + "\"" + backupExampleRoute;
+                d = Jsoup.connect(newUrl).get();
+                e = d.select("div.list_exam");
+
+                for (Element element : e) {
+                    Elements listExams = element.select("div.desc");
+                    for (Element text : listExams) {
+                        answer = null;
+                        Element sentence = text.select("div.txt>span.inner").first();
+                        Element translation = text.select("div.trans>span.inner").first();
+                        example = sentence.text();
+                        trans = translation.text();
+                        // replace matched
+                        m = pattern.matcher(example);
+                        if (m.find()) {
+                            MatchResult result = m.toMatchResult();
+                            answer = result.group(2);
+                        }
+                        sentences.add(example, trans, answer);
+                    }
                 }
             }
         } catch (IOException ex) {
