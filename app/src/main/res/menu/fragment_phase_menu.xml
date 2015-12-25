@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_item_word_info"
+        android:icon="@drawable/ic_info_outline_white_48dp"
+        android:title="단어정보"
+        app:showAsAction="ifRoom">
+    </item>
     <item
         android:id="@+id/menu_item_set_completed"
         android:icon="@drawable/ic_done_white_48dp"
         android:title="완료설정"
-        app:showAsAction="always"
-        ></item>
+        app:showAsAction="ifRoom"></item>
 </menu>

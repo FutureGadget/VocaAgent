@@ -25,6 +25,10 @@
     <string name="set_complete">완료 설정</string>
     <string name="set_incomplete">완료 해제</string>
 
+    <!-- word info strings -->
+    <string name="word_correct_ratio">정답률: %1$s</string>
+    <string name="phase_info">페이즈: %1$d/10</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

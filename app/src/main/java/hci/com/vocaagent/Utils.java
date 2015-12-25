@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -48,7 +47,6 @@ public class Utils {
     public static List<String> getListFiles() {
         String pattern = ".*\\.xls"; // only shows .xls files
         Pattern r = Pattern.compile(pattern);
-        Matcher m;
         File file;
         List<String> list = new ArrayList<>();
         File[] files;

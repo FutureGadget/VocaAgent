@@ -18,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -47,6 +48,7 @@ public class Phase1Fragment extends Fragment {
         mWord = VocaLab.getVoca(getActivity()).getWordByID(getArguments().getInt(ARG_WORDID));
         mRadioButton = new RadioButton[4];
         mRandomWords = VocaLab.getVoca(getActivity()).getRandomWords();
+
 
         // init tts object
 //        mTextToSpeech = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
@@ -90,6 +92,16 @@ public class Phase1Fragment extends Fragment {
                         .create()
                         .show();
                 return true;
+            case R.id.menu_item_word_info:
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Information")
+                        .setMessage(getString(R.string.word_correct_ratio,
+                                new DecimalFormat("#.##").format((double) mWord.getNumCorrect() / mWord.getTestCount()))
+                                + '\n' + getString(R.string.phase_info, mWord.getPhase()))
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create()
+                        .show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -110,7 +122,9 @@ public class Phase1Fragment extends Fragment {
                 mSentenceTextView.setText(mSavedTestSet[0]);
                 buildSelects(mSavedTestSet[2]);
             } else {
-                mSentenceTextView.setText("Sorry, There is no example sentence.");
+                mSentenceTextView.setText("Sorry, There is no example sentence for " + mWord.getWord());
+                mWord.setPhase(0);
+                VocaLab.getVoca(getActivity()).updateWord(mWord);
             }
         }
 
@@ -285,7 +299,7 @@ public class Phase1Fragment extends Fragment {
                 }
             }
             if (!mHasExampleSentence) {
-                mSentenceTextView.setText("Sorry, There is no example sentence.");
+                mSentenceTextView.setText("Sorry, There is no example sentence for " + mWord.getWord());
             }
         }
     }

@@ -9,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -82,7 +82,7 @@ public class Phase0Fragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.menu_item_set_completed:
                 new AlertDialog.Builder(getActivity())
                         .setTitle("완료단어 설정")
@@ -98,6 +98,16 @@ public class Phase0Fragment extends Fragment {
                         .create()
                         .show();
                 return true;
+            case R.id.menu_item_word_info:
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Information")
+                        .setMessage(getString(R.string.word_correct_ratio,
+                                new DecimalFormat("#.##").format((double) mWord.getNumCorrect() / mWord.getTestCount()))
+                                + '\n' + getString(R.string.phase_info, mWord.getPhase()))
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create()
+                        .show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -110,7 +120,7 @@ public class Phase0Fragment extends Fragment {
         mContent = (TextView) v.findViewById(R.id.word_meaning_sentence_text_view);
         mShowExamplesButton = (Button) v.findViewById(R.id.show_examples_button);
         mWordTitle.setText(mWord.getWord());
-        mWordVoiceButton = (ImageButton)v.findViewById(R.id.voice_word);
+        mWordVoiceButton = (ImageButton) v.findViewById(R.id.voice_word);
         mWordVoiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,7 +128,6 @@ public class Phase0Fragment extends Fragment {
                 mTextToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
             }
         });
-
 
         // if this is a retained fragment
         if (mSentences != null) {
@@ -130,9 +139,7 @@ public class Phase0Fragment extends Fragment {
                 } else {
                     mShowExamplesButton.setText("끝");
                 }
-            }
-
-            else {
+            } else {
                 mContent.setText(mMeaning);
             }
 
