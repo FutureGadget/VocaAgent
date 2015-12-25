@@ -28,15 +28,8 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
         <activity
-            android:name=".NoteManagerActivity"
-            android:parentActivityName=".SelectBookActivity">
-            <meta-data
-                android:name="com.google.android.gms.version"
-                android:value="@integer/google_play_services_version" />
-        </activity>
-        <activity
             android:name=".BookActivity"
-            android:parentActivityName=".NoteManagerActivity">
+            android:parentActivityName=".SelectBookActivity">
             <meta-data
                 android:name="com.google.android.gms.version"
                 android:value="@integer/google_play_services_version" />

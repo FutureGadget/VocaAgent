@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     android:padding="10dp"
     android:layout_marginBottom="0.5dp"
-    android:background="@drawable/fragment_list_item_background">
+    android:background="@drawable/fragment_list_item_background"
+    android:orientation="horizontal">
 
     <CheckBox
         android:id="@+id/select_check_box"
@@ -36,4 +37,12 @@
             tools:text="DETAILS" />
 
     </LinearLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_list_black_48dp"
+        android:layout_gravity="center"
+        android:background="@color/invisible"
+        android:scaleType="fitCenter"
+        android:layout_marginLeft="100dp"/>
 </LinearLayout>

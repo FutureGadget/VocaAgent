@@ -3,32 +3,44 @@
     <!--menu item strings-->
     <string name="add_word">단어 추가</string>
     <string name="del_word">선택 단어 삭제</string>
+    <string name="study">학습 시작</string>
+    <string name="set_complete">완료 설정</string>
+    <string name="set_incomplete">완료 해제</string>
+
+    <!-- floating action -->
     <string name="add_book">단어장 추가</string>
-    <string name="del_book">선택 단어장 삭제</string>
-    <string name="end_of_test">시험 종료</string>
+
+    <!-- dialogs -->
     <string name="confirm_delete">삭제 확인</string>
+    <string name="end_of_test">시험 종료</string>
+    <string name="import_confirm">%1$s 를 가져오시겠습니까?</string>
+
+    <!-- navigation drawer menu -->
     <string name="openDrawer">메뉴 열기</string>
     <string name="closeDrawer">메뉴 닫기</string>
     <string name="ratio">정답률</string>
     <string name="streak">출석일</string>
-    <string name="study">학습 시작</string>
-    <string name="edit">단어장 관리</string>
-    <string name="settings">설정</string>
-    <string name="help">도움말 및 의견</string>
-    <string name="meta_correct_ratio">%1$s</string>
-    <string name="meta_streak_days">%1$d일째</string>
     <string name="importBook">가져오기</string>
     <string name="exportBook">내보내기</string>
-    <string name="import_confirm">%1$s 를 가져오시겠습니까?</string>
+
+    <!-- navigation view -->
+    <string name="meta_correct_ratio">%1$s</string>
+    <string name="meta_streak_days">%1$d일째</string>
+
+    <!-- for advertisement -->
     <string name="banner_ad_unit_id">ca-app-pub-6712519187125282/9858042655</string>
+
+    <!-- Activity Name -->
     <string name="title_activity_help_import">HelpImportActivity</string>
-    <string name="set_complete">완료 설정</string>
-    <string name="set_incomplete">완료 해제</string>
 
     <!-- word info strings -->
     <string name="word_correct_ratio">정답률: %1$s</string>
     <string name="phase_info">페이즈: %1$d/10</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- options to manage a note -->
+    <string-array name="manage_note_arr">
+        <item>단어관리</item>
+        <item>노트삭제</item>
+        <item>이름변경</item>
+    </string-array>
 </resources>

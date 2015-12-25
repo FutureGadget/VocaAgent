@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/note_manager_coordinator"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/book_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground">
@@ -12,7 +13,7 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/book_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -20,12 +21,25 @@
             android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
 
         <com.google.android.gms.ads.AdView
-            android:id="@+id/note_manager_adView"
+            android:id="@+id/book_adView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             ads:adSize="BANNER"
             ads:adUnitId="@string/banner_ad_unit_id"></com.google.android.gms.ads.AdView>
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/book_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="60dp"
+        android:layout_marginRight="16dp"
+        android:clickable="true"
+        android:src="@drawable/ic_add_white_48dp"
+        app:layout_anchor="@id/book_recycler_view"
+        app:layout_anchorGravity="bottom|right|end"
+        app:layout_behavior="hci.com.vocaagent.Animation.ScrollAwareFABBehavior" />
 
 </android.support.design.widget.CoordinatorLayout>

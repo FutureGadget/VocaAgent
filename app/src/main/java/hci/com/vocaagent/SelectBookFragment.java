@@ -2,11 +2,13 @@ package hci.com.vocaagent;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,13 +35,23 @@ public class SelectBookFragment extends Fragment {
     private boolean[] mSavedViewHolderStatus;
     private List<Book> mBooks;
     private ArrayList<Book> mExamBooks;
+    private RecyclerView mBookRecyclerView;
+    private LinearLayout mEmptyLinearLayout;
+    private FloatingActionButton fab;
 
+    // request codes
     private static final int REQUEST_START_TEST = 0;
+    private static final int REQUEST_TITLE = 1;
+    private static final int REQUEST_REFRESH = 2;
 
+    // options
     public static final int EXAM_TYPE_NORMAL = 0;
     public static final int EXAM_TYPE_REVIEW = 1;
     public static final int EXAM_TYPE_COMPLETED = 2;
     public static final int EXAM_TYPE_CONTINUE = 3;
+
+    public static final String DIALOG_ADD_BOOK = "DIALOG_ADD_BOOK";
+    public static final String NOTE_MANAGE_OPTIONS_DIALOG = "NOTE_MANAGE_OPTIONS_DIALOG";
 
 
     @Override
@@ -53,23 +65,29 @@ public class SelectBookFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_select_book, container, false);
-        RecyclerView bookRecyclerView = (RecyclerView) v.findViewById(R.id.select_book_recycler_view);
-        bookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        LinearLayout emptyLinearLayout = (LinearLayout) v.findViewById(R.id.select_book_recycler_view_empty);
+        mBookRecyclerView = (RecyclerView) v.findViewById(R.id.select_book_recycler_view);
+        mBookRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mEmptyLinearLayout = (LinearLayout) v.findViewById(R.id.select_book_recycler_view_empty);
 
         AdView mAdView = (AdView) v.findViewById(R.id.select_book_adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        updateUI(bookRecyclerView);
+        fab = (FloatingActionButton) v.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddBookFragment dialogFragment = new AddBookFragment();
+                dialogFragment.show(getFragmentManager(), DIALOG_ADD_BOOK);
+                dialogFragment.setTargetFragment(SelectBookFragment.this, REQUEST_TITLE);
+            }
+        });
 
-        if (mAdapter.getItemCount() == 0) {
-            bookRecyclerView.setVisibility(View.GONE);
-            emptyLinearLayout.setVisibility(View.VISIBLE);
-        } else {
-            bookRecyclerView.setVisibility(View.VISIBLE);
-            emptyLinearLayout.setVisibility(View.GONE);
-        }
+        if (mAdapter == null)
+            mAdapter = new NoteAdapter();
+        mBookRecyclerView.setAdapter(mAdapter);
+
+        updateUI();
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("학습 시작");
 
@@ -79,16 +97,29 @@ public class SelectBookFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        updateUI();
+    }
+
+    private void updateUI() {
         if (mAdapter != null) {
             mBooks = VocaLab.getVoca(getActivity()).getBooks();
             mAdapter.notifyDataSetChanged();
+            if (mAdapter.getItemCount() == 0) {
+                mBookRecyclerView.setVisibility(View.GONE);
+                mEmptyLinearLayout.setVisibility(View.VISIBLE);
+                setFABAnchorID(R.id.select_book_recycler_view_empty);
+            } else {
+                mBookRecyclerView.setVisibility(View.VISIBLE);
+                mEmptyLinearLayout.setVisibility(View.GONE);
+                setFABAnchorID(R.id.select_book_recycler_view);
+            }
         }
     }
 
-    private void updateUI(RecyclerView recyclerView) {
-        if (mAdapter == null)
-            mAdapter = new NoteAdapter();
-        recyclerView.setAdapter(mAdapter);
+    private void setFABAnchorID(int id) {
+        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+        p.setAnchorId(id);
+        fab.setLayoutParams(p);
     }
 
     private void init() {
@@ -145,6 +176,17 @@ public class SelectBookFragment extends Fragment {
                 startActivityForResult(intent, REQUEST_START_TEST);
             }
         }
+
+        else if (requestCode == REQUEST_TITLE) {
+            String title = data.getStringExtra(AddBookFragment.EXTRA_TITLE);
+            VocaLab.getVoca(getActivity()).addNewBook(title); // add a new book
+            init();
+            updateUI();
+        }
+        else if (requestCode == REQUEST_REFRESH) {
+            init();
+            updateUI();
+        }
     }
 
     private class BookHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -192,7 +234,10 @@ public class SelectBookFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            mCheckBox.performClick();
+            NoteManageOptionsDialog optionsDialog = NoteManageOptionsDialog.newDialogInstance(mBook.getBookId());
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            optionsDialog.setTargetFragment(SelectBookFragment.this, REQUEST_REFRESH);
+            optionsDialog.show(fm, NOTE_MANAGE_OPTIONS_DIALOG);
         }
     }
 

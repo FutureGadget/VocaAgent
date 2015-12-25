@@ -565,7 +565,7 @@ public class VocaLab {
         return new BookCursorWrapper(cursor);
     }
 
-    public int deleteBooks(String whereClause, String[] whereArgs) {
+    public int deleteBook(String whereClause, String[] whereArgs) {
         return mDatabase.delete(BookTable.NAME,
                 whereClause, whereArgs);
     }

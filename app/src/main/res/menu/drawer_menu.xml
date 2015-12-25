@@ -10,11 +10,6 @@
             android:icon="@drawable/ic_school_black_48dp"
             android:title="@string/study" />
         <item
-            android:id="@+id/drawer_item_edit"
-            android:checked="false"
-            android:icon="@drawable/ic_edit_black_48dp"
-            android:title="@string/edit" />
-        <item
             android:id="@+id/drawer_item_import"
             android:checked="false"
             android:icon="@drawable/ic_arrow_downward_black_48dp"
