@@ -6,6 +6,6 @@
     android:background="@color/colorPrimary"
     android:elevation="4dp"
     android:theme="@style/toolbarStyle"
-    app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar">
+    app:popupTheme="@style/popupStyle">
 
 </android.support.v7.widget.Toolbar>
