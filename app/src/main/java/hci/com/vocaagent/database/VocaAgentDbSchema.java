@@ -49,4 +49,22 @@ public class VocaAgentDbSchema {
             public static final String streak = "streak";
         }
     }
+
+    // This schema supports adding various meanings and sentences per word in a book.
+    // (two same words cannot exist in one book)
+    public static final class Meaning {
+        public static final String NAME = "Meaning";
+        public static final class Cols {
+            public static final String wordId = "wid";
+            public static final String meaning = "meaning";
+        }
+    }
+
+    public static final class Sentence {
+        public static final String NAME = "Sentence";
+        public static final class Cols {
+            public static final String wordId = "wid";
+            public static final String sentence = "sentence";
+        }
+    }
 }
