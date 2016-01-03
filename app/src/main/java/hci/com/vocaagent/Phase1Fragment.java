@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +41,9 @@ public class Phase1Fragment extends Fragment {
     private List<String> mRandomWords;
     private String[] mSavedTestSet;
     private boolean mHasExampleSentence;
-//    private TextToSpeech mTextToSpeech; // function to be added
+    //    private TextToSpeech mTextToSpeech; // function to be added
+    private ImageButton mLeftChevron;
+    private ImageButton mRightChevron;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -127,6 +130,28 @@ public class Phase1Fragment extends Fragment {
                 VocaLab.getVoca(getActivity()).updateWord(mWord);
             }
         }
+        mRightChevron = (ImageButton) v.findViewById(R.id.phase1_rightChevron);
+        mRightChevron.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewPager vp = (ViewPager) getActivity().findViewById(R.id.activity_exam_pager);
+                if (vp.getCurrentItem() == vp.getAdapter().getCount() - 1) {
+                    StatisticsDialogFragment dialog = new StatisticsDialogFragment();
+                    dialog.show(getFragmentManager(), STAT_DIALOG);
+                } else
+                    vp.setCurrentItem(vp.getCurrentItem() + 1);
+            }
+        });
+
+        mLeftChevron = (ImageButton) v.findViewById(R.id.phase1_leftChevron);
+        mLeftChevron.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewPager vp = (ViewPager) getActivity().findViewById(R.id.activity_exam_pager);
+                vp.setCurrentItem(vp.getCurrentItem() - 1);
+            }
+        });
+
 
         return v;
     }

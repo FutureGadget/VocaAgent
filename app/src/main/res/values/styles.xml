@@ -56,8 +56,12 @@
         <item name="android:paddingLeft">5dp</item>
         <item name="android:layout_margin">5dp</item>
     </style>
+    
+    <style name="fragment_phase0_chevron">
+        <item name="android:background">@color/invisible</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

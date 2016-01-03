@@ -1,6 +1,7 @@
 package hci.com.vocaagent;
 
 import android.content.DialogInterface;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -38,6 +39,9 @@ public class Phase0Fragment extends Fragment {
     private Button mShowExamplesButton;
     private ImageButton mWordVoiceButton;
     private TextToSpeech mTextToSpeech;
+
+    private ImageButton mLeftChevron;
+    private ImageButton mRightChevron;
 
     private Iterator<String[]> mSentencesIterator;
     private Spanned mSavedSentence;
@@ -163,6 +167,30 @@ public class Phase0Fragment extends Fragment {
                 }
             });
         }
+
+        mRightChevron = (ImageButton) v.findViewById(R.id.phase0_rightChevron);
+        mRightChevron.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewPager vp = (ViewPager) getActivity().findViewById(R.id.activity_exam_pager);
+                if (vp.getCurrentItem() == vp.getAdapter().getCount() - 1) {
+                    StatisticsDialogFragment dialog = new StatisticsDialogFragment();
+                    dialog.show(getFragmentManager(), STAT_DIALOG);
+                } else
+                    vp.setCurrentItem(vp.getCurrentItem() + 1);
+            }
+        });
+
+        mLeftChevron = (ImageButton) v.findViewById(R.id.phase0_leftChevron);
+
+        mLeftChevron.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewPager vp = (ViewPager) getActivity().findViewById(R.id.activity_exam_pager);
+                vp.setCurrentItem(vp.getCurrentItem() - 1);
+            }
+        });
+
         return v;
     }
 
