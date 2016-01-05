@@ -23,7 +23,7 @@ import java.util.List;
 
 public class ExamPagerActivity extends AppCompatActivity {
     private ViewPager mViewPager;
-    private List<Word> mWords;
+    private ArrayList<Word> mWords;
     private ArrayList<Book> mExamBooks;
     private boolean mPageEnd;
     private boolean alreadySeen;
@@ -33,13 +33,14 @@ public class ExamPagerActivity extends AppCompatActivity {
     private static final String SAVE_STATE_OPTION = "SAVE_STATE_OPTION";
     private static final String EXAM_TYPE_OPTION = "option";
     private static final String EXAM_BOOKS = "exam_books";
+    private static final String EXAM_WORDS = "exam_words";
     private static final int offScreenPageLimit = 1;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(SAVE_STATE_SEEN, alreadySeen);
         outState.putInt(SAVE_STATE_OPTION, saveOption);
-        outState.putParcelableArrayList(EXAM_BOOKS, mExamBooks);
+        outState.putParcelableArrayList(EXAM_WORDS, mWords);
         super.onSaveInstanceState(outState);
     }
 
@@ -88,38 +89,36 @@ public class ExamPagerActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // set ads
         AdView mAdView = (AdView) findViewById(R.id.exam_pager_adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        if (savedInstanceState != null) {
-            alreadySeen = savedInstanceState.getBoolean(SAVE_STATE_SEEN);
-            saveOption = savedInstanceState.getInt(SAVE_STATE_OPTION);
-            mExamBooks = savedInstanceState.getParcelableArrayList(EXAM_BOOKS);
-        } else {
-            // new exam or review test
+        if (savedInstanceState == null) {
             saveOption = getIntent().getIntExtra(EXAM_TYPE_OPTION, 0);
             mExamBooks = getIntent().getParcelableArrayListExtra(EXAM_BOOKS);
-        }
+            // GET WORDS FOR THE TEST
+            if (saveOption == SelectBookFragment.EXAM_TYPE_NORMAL) {
+                // Get words for exam from the exam book list
+                mWords = VocaLab.getVoca(ExamPagerActivity.this).getTestWords(mExamBooks);
+            } else if (saveOption == SelectBookFragment.EXAM_TYPE_REVIEW) {
+                // get review words
+                mWords = new ArrayList<>();
+                for (Word w : VocaLab.getVoca(ExamPagerActivity.this).getReviewWords())
+                    mWords.add(w);
+            } else if (saveOption == SelectBookFragment.EXAM_TYPE_COMPLETED) {
+                // get completed words
+                mWords = new ArrayList<>();
+                List<Word> completedWords = VocaLab.getVoca(ExamPagerActivity.this).getCompletedWords();
 
-        mViewPager = (ViewPager) findViewById(R.id.activity_exam_pager);
-
-        if (saveOption == SelectBookFragment.EXAM_TYPE_NORMAL) {
-            // Get words for exam from the exam book list
-            mWords = VocaLab.getVoca(ExamPagerActivity.this).getTestWords(mExamBooks);
-        } else if (saveOption == SelectBookFragment.EXAM_TYPE_REVIEW) {
-            // get review words
-            mWords = new ArrayList<>();
-            for (Word w : VocaLab.getVoca(ExamPagerActivity.this).getReviewWords())
-                mWords.add(w);
-        } else if (saveOption == SelectBookFragment.EXAM_TYPE_COMPLETED) {
-            // get completed words
-            mWords = new ArrayList<>();
-            List<Word> completedWords = VocaLab.getVoca(ExamPagerActivity.this).getCompletedWords();
-
-            for (int i = 0; i < completedWords.size() && i < 10; ++i) {
-                mWords.add(completedWords.get(i));
+                for (int i = 0; i < completedWords.size() && i < 10; ++i) {
+                    mWords.add(completedWords.get(i));
+                }
             }
+        } else {
+            alreadySeen = savedInstanceState.getBoolean(SAVE_STATE_SEEN);
+            saveOption = savedInstanceState.getInt(SAVE_STATE_OPTION);
+            mWords = savedInstanceState.getParcelableArrayList(EXAM_WORDS);
         }
 
         // Exception : No words in the list.
@@ -137,6 +136,8 @@ public class ExamPagerActivity extends AppCompatActivity {
             VocaLab.getVoca(ExamPagerActivity.this).initResultWords();
             VocaLab.getVoca(ExamPagerActivity.this).initReviewWords();
         }
+
+        mViewPager = (ViewPager) findViewById(R.id.activity_exam_pager);
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
         mViewPager.setAdapter(new FragmentPagerAdapter(fragmentManager) {

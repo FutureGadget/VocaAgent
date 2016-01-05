@@ -8,12 +8,9 @@ import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
 
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -25,18 +22,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import hci.com.vocaagent.database.BookCursorWrapper;
+import hci.com.vocaagent.database.MeaningCursorWrapper;
 import hci.com.vocaagent.database.MetaCursorWrapper;
 import hci.com.vocaagent.database.VocaAgentDbSchema.BookTable;
 import hci.com.vocaagent.database.VocaAgentDbSchema.DictionaryTable;
+import hci.com.vocaagent.database.VocaAgentDbSchema.MeaningTable;
 import hci.com.vocaagent.database.VocaAgentDbSchema.MetaDataTable;
 import hci.com.vocaagent.database.VocaAgentDbSchema.WordTable;
 import hci.com.vocaagent.database.VocaBaseHelper;
 import hci.com.vocaagent.database.WordCursorWrapper;
-import hci.com.vocaagent.datastructure.RandomQueue;
 
 public class VocaLab {
     public static VocaLab sVocaLab;
@@ -100,7 +99,6 @@ public class VocaLab {
         ContentValues values = new ContentValues();
         // omit book_id since it is an autoincrement(identity) attribute.
         values.put(BookTable.Cols.name, book.getBookName());
-        values.put(BookTable.Cols.num_word, book.getNumWords());
         values.put(BookTable.Cols.last_modified, book.getLastModified());
         return values;
     }
@@ -128,6 +126,55 @@ public class VocaLab {
         values.put(MetaDataTable.Cols.streak, meta.getStreak());
         return values;
     }
+
+    private static ContentValues getMeaningContentValues(Meaning meaning) {
+        ContentValues values = new ContentValues();
+        values.put(MeaningTable.Cols.wordId, meaning.getWordId());
+        values.put(MeaningTable.Cols.meaning, meaning.getMeaning());
+        return values;
+    }
+
+    // Methods related to Meaning table
+    public void insertMeaning(Meaning meaning) {
+        ContentValues values = getMeaningContentValues(meaning);
+        mDatabase.insert(MeaningTable.NAME, null, values);
+    }
+
+    public void updateMeaning(Meaning meaning) {
+        ContentValues values = getMeaningContentValues(meaning);
+        mDatabase.update(MeaningTable.NAME, values, MeaningTable.Cols.id + " = ?",
+                new String[]{meaning.getId() + ""});
+    }
+
+    public void deleteMeaning(Meaning meaning) {
+        mDatabase.delete(MeaningTable.NAME, MeaningTable.Cols.id + " = ?",
+                new String[]{meaning.getId() + ""});
+    }
+
+    public List<Meaning> getMeaning(int wordId) {
+        MeaningCursorWrapper cursor = queryMeaning(wordId);
+        List<Meaning> m = new ArrayList<>();
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                m.add(cursor.getMeaning());
+                cursor.moveToNext();
+            }
+        } finally {
+            try {
+                if (cursor != null) cursor.close();
+            } catch (Exception e) {
+            }
+        }
+        return m;
+    }
+
+    public MeaningCursorWrapper queryMeaning(int wordId) {
+        Cursor cursor = mDatabase.query(MeaningTable.NAME, null, MeaningTable.Cols.wordId
+                + " = ?", new String[]{wordId + ""}, null, null, null);
+        return new MeaningCursorWrapper(cursor);
+    }
+
 
     public Book getBookByName(String bookName) {
         BookCursorWrapper cursor = new BookCursorWrapper(mDatabase.rawQuery("SELECT * FROM Book WHERE name =  '" + bookName + "'", null));
@@ -164,11 +211,23 @@ public class VocaLab {
             int bookId = book.getBookId();
 
             for (Row myRow : sheet) {
-                for (Cell myCell : myRow) {
-                    if (myCell.toString().matches("^[A-Za-z].*[A-Za-z]$"))
-                        addNewWord(myCell.toString(), bookId);
-                    else {
-                        Log.d("TEST", myCell.toString()+ "ERROR");
+                Iterator<Cell> it = myRow.cellIterator();
+                Cell wordCell, meaningCell;
+                Word w;
+                if (it.hasNext()) {
+                    wordCell = it.next();
+                    addNewWord(wordCell.toString(), bookId);
+                    w = getWordByWordAndBook(wordCell.toString(), bookId);
+
+                    if (it.hasNext()) {
+                        meaningCell = it.next();
+                        String[] meanings = meaningCell.toString().split(";");
+                        for (String m : meanings) {
+                            Meaning newMeaning = new Meaning();
+                            newMeaning.setMeaning(m);
+                            newMeaning.setWordId(w.getWordId());
+                            insertMeaning(newMeaning);
+                        }
                     }
                 }
             }
@@ -180,7 +239,7 @@ public class VocaLab {
     }
 
     public int getNumberOfCompletedWordsInBook(int bookId) {
-        String queryStr = "SELECT COUNT(*) FROM "+WordTable.NAME + " WHERE "+WordTable.Cols.book_id +" = " + bookId
+        String queryStr = "SELECT COUNT(*) FROM " + WordTable.NAME + " WHERE " + WordTable.Cols.book_id + " = " + bookId
                 + " AND " + WordTable.Cols.completed + " = 1";
         Cursor cursor = mDatabase.rawQuery(queryStr, null);
         cursor.moveToFirst();
@@ -190,7 +249,7 @@ public class VocaLab {
     }
 
     public int getNumberOfNotCompletedWordsInBook(int bookId) {
-        String queryStr = "SELECT COUNT(*) FROM "+WordTable.NAME + " WHERE "+WordTable.Cols.book_id +" = " + bookId
+        String queryStr = "SELECT COUNT(*) FROM " + WordTable.NAME + " WHERE " + WordTable.Cols.book_id + " = " + bookId
                 + " AND " + WordTable.Cols.completed + " = 0";
         Cursor cursor = mDatabase.rawQuery(queryStr, null);
         cursor.moveToFirst();
@@ -216,18 +275,22 @@ public class VocaLab {
             Sheet sheet1 = null;
             sheet1 = wb.createSheet("단어목록");
 
-            CellStyle cs = wb.createCellStyle();
-            cs.setFillForegroundColor(HSSFColor.LIME.index);
-            cs.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-
             // write to xls work book (on memory)
             for (int i = 0; i < words.size(); ++i) {
                 Row row = sheet1.createRow(i);
+
+                // set word
                 Cell c = row.createCell(0);
                 c.setCellValue(words.get(i).getWord());
-                if ((i & 1) == 0) {
-                    c.setCellStyle(cs);
+
+                // set meanings
+                c = row.createCell(1);
+                List<Meaning> listMeaning = getMeaning(words.get(i).getWordId());
+                String meanings = "";
+                for (Meaning m : listMeaning) {
+                    meanings += m.getMeaning() + ";";
                 }
+                c.setCellValue(meanings);
             }
 
             // no words -> return false
@@ -269,7 +332,6 @@ public class VocaLab {
 
         // update book (update number of contained words and last modified date)
         Book updateBook = getBookByID(bookId);
-        updateBook.setNumWords(updateBook.getNumWords() + 1);
         updateBook.setLastModified(VocaLab.getToday());
         updateBook(updateBook);
     }
@@ -279,7 +341,6 @@ public class VocaLab {
         String lastModified = VocaLab.getToday();
         book.setBookName(bookTitle);
         book.setLastModified(lastModified);
-        book.setNumWords(0);
 
         addBook(book);
     }
@@ -329,9 +390,9 @@ public class VocaLab {
                 new String[]{word_id});
     }
 
-    public List<Word> getTestWords(ArrayList<Book> examBooks) {
+    public ArrayList<Word> getTestWords(ArrayList<Book> examBooks) {
         WordCursorWrapper cursor = queryTestWords(examBooks);
-        List<Word> words = new ArrayList<>();
+        ArrayList<Word> words = new ArrayList<>();
         try {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -440,6 +501,20 @@ public class VocaLab {
         } finally {
             cursor.close();
         }
+    }
+
+    public Word getWordByWordAndBook(String word, int bookId) {
+        WordCursorWrapper cursor = queryWords(WordTable.Cols.word + " = ? " +
+                "AND " + WordTable.Cols.book_id + " = ?", new String[]{word, bookId + ""});
+        try {
+            if (!cursor.isAfterLast()) {
+                cursor.moveToFirst();
+                return cursor.getWord();
+            }
+        } finally {
+            cursor.close();
+        }
+        return null;
     }
 
     public Word getWordByID(int id) {

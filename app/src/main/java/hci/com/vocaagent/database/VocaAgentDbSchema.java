@@ -7,7 +7,6 @@ public class VocaAgentDbSchema {
         public static final class Cols {
             public static final String book_id = "bid";
             public static final String name = "name";
-            public static final String num_word = "num_word";
             public static final String last_modified = "last_modified";
         }
     }
@@ -52,19 +51,21 @@ public class VocaAgentDbSchema {
 
     // This schema supports adding various meanings and sentences per word in a book.
     // (two same words cannot exist in one book)
-    public static final class Meaning {
+    public static final class MeaningTable {
         public static final String NAME = "Meaning";
         public static final class Cols {
+            public static final String id = "id";
             public static final String wordId = "wid";
             public static final String meaning = "meaning";
         }
     }
 
-    public static final class Sentence {
-        public static final String NAME = "Sentence";
-        public static final class Cols {
-            public static final String wordId = "wid";
-            public static final String sentence = "sentence";
-        }
-    }
+    // This table is not used for now
+//    public static final class SentenceTable {
+//        public static final String NAME = "Sentence";
+//        public static final class Cols {
+//            public static final String wordId = "wid";
+//            public static final String sentence = "sentence";
+//        }
+//    }
 }

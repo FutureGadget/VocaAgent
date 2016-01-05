@@ -7,7 +7,6 @@ public class Book implements Parcelable{
     private int bookId;
     private String bookName;
     private String lastModified;
-    private int numWords;
 
     public Book() {
         super();
@@ -16,15 +15,6 @@ public class Book implements Parcelable{
         bookId = in.readInt();
         bookName = in.readString();
         lastModified = in.readString();
-        numWords = in.readInt();
-    }
-
-    public int getNumWords() {
-        return numWords;
-    }
-
-    public void setNumWords(int numWords) {
-        this.numWords = numWords;
     }
 
     public String getLastModified() {
@@ -61,7 +51,6 @@ public class Book implements Parcelable{
         dest.writeInt(bookId);
         dest.writeString(bookName);
         dest.writeString(lastModified);
-        dest.writeInt(numWords);
     }
 
     public static final Parcelable.Creator<Book> CREATOR = new Parcelable.Creator<Book>()

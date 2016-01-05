@@ -131,16 +131,13 @@ public class BookFragment extends Fragment {
     }
 
     private void deleteWords() {
-        int countDeleted = 0;
         VocaLab vocaLab = VocaLab.getVoca(getActivity());
         for (Word w : mWordsSelected) {
             vocaLab.deleteWords(WordTable.Cols.word_id +
                     " = ? AND " + WordTable.Cols.book_id + " = ?", new String[]{w.getWordId() + "", mBookId + ""});
-            ++countDeleted;
         }
         // update book (update number of contained words and last modified date)
         Book updateBook = vocaLab.getBookByID(mBookId);
-        updateBook.setNumWords(updateBook.getNumWords()-countDeleted);
         updateBook.setLastModified(VocaLab.getToday());
         vocaLab.updateBook(updateBook);
         updateUI();
@@ -188,7 +185,10 @@ public class BookFragment extends Fragment {
                     if (mCheckBox.isChecked()) {
                         mWordsSelected.add(mWord);
                     } else {
-                        mWordsSelected.remove(mWord);
+                        for (Word del : mWordsSelected) {
+                            if (del.getWordId() == mWord.getWordId())
+                                mWordsSelected.remove(del);
+                        }
                     }
                 }
             });
