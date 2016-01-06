@@ -67,7 +67,6 @@ public class FlashCardFragment extends Fragment {
         mWordTextView.setText(mWord.getWord());
 
         if (mOption == MEMORIZE_MODE) {
-            printMeanings();
             mWordVoiceButton = (ImageButton) v.findViewById(R.id.voice_word);
             mWordVoiceButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -115,6 +114,12 @@ public class FlashCardFragment extends Fragment {
         protected Void doInBackground(Void... params) {
             mBackupMeanings = DictionaryParser.getMeanings(mWord.getWord());
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (mOption == MEMORIZE_MODE)
+                printMeanings();
         }
     }
 }
