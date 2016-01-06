@@ -228,7 +228,8 @@ public class SelectBookFragment extends Fragment {
                         mExamBooks.add(mBook);
 
                     } else {
-                        for (Book del : mExamBooks) {
+                        Book[] dels = mExamBooks.toArray(new Book[mExamBooks.size()]);
+                        for (Book del : dels) {
                             if (del.getBookId() == mBook.getBookId())
                                 mExamBooks.remove(del);
                         }

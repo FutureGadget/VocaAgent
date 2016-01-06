@@ -8,8 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,18 +15,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import hci.com.vocaagent.database.VocaAgentDbSchema.*;
+import hci.com.vocaagent.database.VocaAgentDbSchema.WordTable;
 
 /**
  * Users can modify words in vocabulary books on this Fragment.
@@ -124,8 +120,7 @@ public class BookFragment extends Fragment {
             vocaLab.addNewWord(wordString, mBookId);
 
             updateUI();
-        }
-        else if (requestCode == REQUEST_REMOVE_WORD) {
+        } else if (requestCode == REQUEST_REMOVE_WORD) {
             deleteWords();
         }
     }
@@ -185,7 +180,8 @@ public class BookFragment extends Fragment {
                     if (mCheckBox.isChecked()) {
                         mWordsSelected.add(mWord);
                     } else {
-                        for (Word del : mWordsSelected) {
+                        Word dels[] = mWordsSelected.toArray(new Word[mWordsSelected.size()]);
+                        for (Word del : dels) {
                             if (del.getWordId() == mWord.getWordId())
                                 mWordsSelected.remove(del);
                         }
