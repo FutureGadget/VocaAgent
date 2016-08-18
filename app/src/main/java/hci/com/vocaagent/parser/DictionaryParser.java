@@ -27,13 +27,10 @@ public class DictionaryParser {
         String meanings = "";
         try {
             Document doc = Jsoup.connect(searchHeader + optionSearch + word + searchEnglish).get();
-            Element meaning = doc.select("div[class~=(clean)]>ul.list_mean").first();
-            if (meaning == null)
+            Elements liMeanings = doc.select("div[class~=(clean)]+ul>li");
+            if (liMeanings == null)
                 return "Sorry, we couldn't find meanings.";
-            List<String> meaningList = processWordMeaning(meaning.text());
-            for (String s : meaningList) {
-                meanings += s + "\n";
-            }
+            meanings = processWordMeaning(liMeanings);
         } catch (IOException e) {
         }
         return meanings.trim();
@@ -153,21 +150,11 @@ public class DictionaryParser {
         }
     }
 
-    public static List<String> processWordMeaning(String s) {
-        ArrayList<String> list = new ArrayList<>();
-        int start = '①';
-        int i = 0;
-        int index;
-        while (!s.isEmpty()) {
-            index = start + (++i);
-            if (s.indexOf(index) == -1) {
-                list.add(s.trim());
-                break;
-            } else {
-                list.add(s.substring(0, s.indexOf(index)).trim());
-                s = s.substring(s.indexOf(index), s.length());
-            }
+    public static String processWordMeaning(Elements liMeanings) {
+        String meanings = "";
+        for (Element e : liMeanings) {
+            meanings += e.text()+"\n";
         }
-        return list;
+        return meanings;
     }
 }
