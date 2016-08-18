@@ -8,8 +8,8 @@ android {
         applicationId "hci.com.vocaagent"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 4
-        versionName "2.2"
+        versionCode 5
+        versionName "2.3"
     }
     buildTypes {
         release {
