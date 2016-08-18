@@ -39,70 +39,67 @@ public class DictionaryParser {
     // get sentences along with translations of them
     public static RandomQueue getSentence(final String word) {
         RandomQueue sentences = new RandomQueue();
-        String trans, example, answer;
+        String trans, examText, answer;
         boolean matched = false;
         try {
             Document d = Jsoup.connect(searchHeader + optionSearch + word + searchEnglish).get();
-            Elements e = d.select("div.clean_word>strong>a");
+            Element link = d.select("div[class~=(clean)]>strong>a").first();
 
-            String newUrl = searchHeader + e.attr("href");
+            String newUrl = searchHeader + link.attr("href");
 
             // get candidate words pattern
             d = Jsoup.connect(newUrl).get();
-            e = d.select("div#variant_div");
+            Elements liVariants = d.select("ul.list_sort>li");
 
             // build regex pattern
             String p;
             Pattern pattern;
             Matcher m;
-            p = getCandidateWordsPattern(e.text(), word);
+            p = getCandidateWordsPattern(liVariants, word);
             pattern = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
 
-            newUrl = newUrl.replace("http://alldic.daum.net/word/view.do?", "http://alldic.daum.net/word/view_example.do?");
-            d = Jsoup.connect(newUrl).get();
-            e = d.select("div.list_exam");
+            Elements liExamples = d.select("ul.list_example>li");
 
-            for (Element element : e) {
-                Elements listExams = element.select("div.desc");
-                for (Element text : listExams) {
-                    answer = null;
-                    Element sentence = text.select("div.txt>span.inner").first();
-                    Element translation = text.select("div.trans>span.inner").first();
-                    example = sentence.text();
-                    trans = translation.text();
-                    // replace matched
-                    m = pattern.matcher(example);
-                    if (m.find()) {
-                        matched = true;
-                        MatchResult result = m.toMatchResult();
-                        answer = result.group(2);
-                    }
-                    sentences.add(example, trans, answer);
+            for (Element e : liExamples) {
+                answer = null;
+                examText = e.select("span.txt_example>span").text();
+                trans = e.select("span.mean_example").text();
+
+                /*
+                    get answer word from the searched sentence
+                    The matched word will be replaced with blank later.)
+                 */
+                m = pattern.matcher(examText);
+                if (m.find()) {
+                    matched = true;
+                    MatchResult result = m.toMatchResult();
+                    answer = result.group(2);
                 }
+                sentences.add(examText, trans, answer);
             }
 
             // try backup route
             if (sentences.size() < 5 || !matched) {
                 newUrl = searchHeader + optionSearch + "\""+ word + "\"" + backupExampleRoute;
                 d = Jsoup.connect(newUrl).get();
-                e = d.select("div.list_exam");
+                liExamples = d.select("ul.list_example>li");
 
-                for (Element element : e) {
-                    Elements listExams = element.select("div.desc");
-                    for (Element text : listExams) {
-                        answer = null;
-                        Element sentence = text.select("div.txt>span.inner").first();
-                        Element translation = text.select("div.trans>span.inner").first();
-                        example = sentence.text();
-                        trans = translation.text();
-                        // replace matched
-                        m = pattern.matcher(example);
-                        if (m.find()) {
-                            MatchResult result = m.toMatchResult();
-                            answer = result.group(2);
-                        }
-                        sentences.add(example, trans, answer);
+                for (Element e : liExamples) {
+                    answer = null;
+                    examText = e.select("span.txt_example>span").text();
+                    trans = e.select("span.mean_example").text();
+
+                /*
+                    get answer word from the searched sentence
+                    The matched word will be replaced with blank later.)
+                 */
+                    m = pattern.matcher(examText);
+                    if (m.find()) {
+                        matched = true;
+                        MatchResult result = m.toMatchResult();
+                        answer = result.group(2);
                     }
+                    sentences.add(examText, trans, answer);
                 }
             }
         } catch (IOException ex) {
@@ -111,35 +108,20 @@ public class DictionaryParser {
         return sentences;
     }
 
-    public static String getCandidateWordsPattern(String line, String word) {
-        boolean skip = false;
-        PriorityQueue<String> queue = new PriorityQueue<>(10, new byLength());
-        line = line.replaceAll("[\u00a0|,]", " "); // remove &nbsp; , [, (comma)]
-        if (line == null || !line.contains("기본형")) {
-            queue.offer(word);
-            if (line == null)
-                skip = true;
-        }
-
+    public static String getCandidateWordsPattern(Elements li, String word) {
+        PriorityQueue<String> q = new PriorityQueue<>(10, new byLength());
         String pattern = "(\\W|^)(";
-
-        if (!skip) {
-            Pattern p = Pattern.compile("[A-Za-z]+( [A-Za-z]+)*");
-            Matcher m = p.matcher(line);
-
-            while (m.find()) {
-                queue.offer(m.group());
+        if (li.text().equals("")) {
+            q.offer(word);
+        } else {
+            for (Element e : li) {
+                q.offer(e.ownText());
             }
         }
-
-        int size = queue.size();
-        while (size-- > 0) {
-            pattern += queue.poll();
-            if (size > 0) {
-                pattern += "|";
-            }
+        while(q.size() > 1) {
+            pattern += q.poll()+"|";
         }
-        pattern += ")(\\W)";
+        pattern += q.poll() + ")(\\W)";
         return pattern;
     }
 
