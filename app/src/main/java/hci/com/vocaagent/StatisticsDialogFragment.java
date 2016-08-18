@@ -23,7 +23,7 @@ public class StatisticsDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.dialog_statistics, container, false);
-        getDialog().setCanceledOnTouchOutside(false); // not modal
+        getDialog().setCanceledOnTouchOutside(false); // modal
         getDialog().setTitle(R.string.end_of_test);
         mQuitButton = (Button) v.findViewById(R.id.quit_test_button);
         mReviewButton = (Button) v.findViewById(R.id.review_button);
@@ -54,7 +54,9 @@ public class StatisticsDialogFragment extends DialogFragment {
         });
 
         // auto fit height linear layout manager
-        final org.solovyev.android.views.llm.LinearLayoutManager linearLayoutManager = new org.solovyev.android.views.llm.LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        final org.solovyev.android.views.llm.LinearLayoutManager linearLayoutManager =
+                new org.solovyev.android.views.llm.LinearLayoutManager(getActivity(),
+                        LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mAdapter = new ResultWordAdapter(VocaLab.getVoca(getActivity()).getResultWords());
         mRecyclerView.setAdapter(mAdapter);
