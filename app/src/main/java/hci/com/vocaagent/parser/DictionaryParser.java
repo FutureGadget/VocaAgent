@@ -28,8 +28,8 @@ public class DictionaryParser {
         try {
             Document doc = Jsoup.connect(searchHeader + optionSearch + word + searchEnglish).get();
             Elements liMeanings = doc.select("div[class~=(clean)]+ul>li");
-            if (liMeanings == null)
-                return "Sorry, we couldn't find meanings.";
+            if (liMeanings.text().equals(""))
+                return "Sorry, we couldn't find the meanings.";
             meanings = processWordMeaning(liMeanings);
         } catch (IOException e) {
         }
