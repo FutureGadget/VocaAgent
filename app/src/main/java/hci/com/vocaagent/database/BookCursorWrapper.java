@@ -14,13 +14,11 @@ public class BookCursorWrapper extends CursorWrapper {
     public Book getBook() {
         int bookId = getInt(getColumnIndex(BookTable.Cols.book_id));
         String name = getString(getColumnIndex(BookTable.Cols.name));
-        int numWord = getInt(getColumnIndex(BookTable.Cols.num_word));
         String lastModified = getString(getColumnIndex(BookTable.Cols.last_modified));
 
         Book book = new Book();
         book.setBookId(bookId);
         book.setBookName(name);
-        book.setNumWords(numWord);
         book.setLastModified(lastModified);
         return book;
     }

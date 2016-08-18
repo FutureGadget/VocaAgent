@@ -51,6 +51,20 @@ public class RandomQueue implements Iterable {
             return item;
         }
 
+        // supports backward traversing
+        public boolean hasBefore() {
+            return cursor > 0;
+        }
+
+        public String[] before() {
+            --cursor;
+            String[] item = new String[3];
+            item[0] = list.get(cursor).sentence;
+            item[1] = list.get(cursor).translation;
+            item[2] = list.get(cursor).answer;
+            return item;
+        }
+
         @Override
         public void remove() {
             // Intentionally left blank

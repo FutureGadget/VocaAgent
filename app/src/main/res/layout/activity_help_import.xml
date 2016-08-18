@@ -54,7 +54,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="- xls 파일안에 단어를 넣으실 때 단어만 넣어주시면 됩니다." />
+                android:text="- xls 파일안에 단어를 넣으실 때 단어와 뜻을 쌍으로 넣거나 단어만 넣어도 됩니다." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="- 뜻을 입력하지 않을 경우 사전에서 자주쓰이는 의미를 사용합니다." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="- 한 단어에 여러 뜻을 입력하는 경우 세미콜론(;)으로 구분하시면 됩니다." />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -67,12 +79,31 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:text="예시)"/>
+                    android:text="예시1)"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/screenshot" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="예시2)"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/screenshot2" />
             </LinearLayout>
 
             <TextView

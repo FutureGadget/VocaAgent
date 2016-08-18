@@ -1,6 +1,9 @@
 package hci.com.vocaagent;
 
-public class Word {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Word implements Parcelable {
     private int wordId;
     private String word;
     private int bookid;
@@ -10,6 +13,52 @@ public class Word {
     private int numCorrect;
     private int phase;
     private int today;
+
+    public Word () {
+        super();
+    }
+
+    public Word (Parcel in) {
+        wordId = in.readInt();
+        word = in.readString();
+        bookid = in.readInt();
+        completed = (in.readInt() == 1);
+        recentTestDate = in.readString();
+        testCount = in.readInt();
+        numCorrect = in.readInt();
+        phase = in.readInt();
+        today = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(wordId);
+        dest.writeString(word);
+        dest.writeInt(bookid);
+        dest.writeInt((completed ? 1 : 0));
+        dest.writeString(recentTestDate);
+        dest.writeInt(testCount);
+        dest.writeInt(numCorrect);
+        dest.writeInt(phase);
+        dest.writeInt(today);
+    }
+
+    public static final Parcelable.Creator<Word> CREATOR = new Parcelable.Creator<Word>()
+    {
+        public Word createFromParcel(Parcel in)
+        {
+            return new Word(in);
+        }
+        public Word[] newArray(int size)
+        {
+            return new Word[size];
+        }
+    };
 
     public int getToday() {
         return today;

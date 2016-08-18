@@ -45,6 +45,12 @@
             android:name=".HelpImportActivity"
             android:label="@string/title_activity_help_import"
             android:theme="@style/AppTheme" />
+
+        <activity android:name=".FlashCardPagerActivity"
+            android:parentActivityName=".SelectBookActivity">
+            <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="8298000"/> </activity>
     </application>
 
 </manifest>

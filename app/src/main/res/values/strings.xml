@@ -43,4 +43,10 @@
         <item>노트삭제</item>
         <item>이름변경</item>
     </string-array>
+
+    <!-- options to flash card test -->
+    <string-array name="flash_options_arr">
+        <item>암기모드</item>
+        <item>뜻가리기</item>
+    </string-array>
 </resources>

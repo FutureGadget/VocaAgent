@@ -8,6 +8,12 @@
         android:icon="@drawable/ic_play_arrow_white_48dp">
     </item>
     <item
+        android:id="@+id/select_book_menu_flashcard"
+        android:title="플래쉬카드"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_filter_none_white_48dp">
+    </item>
+    <item
         android:id="@+id/selectbook_menu_test_completed_words"
         android:title="완료 단어 복습"
         app:showAsAction="withText">

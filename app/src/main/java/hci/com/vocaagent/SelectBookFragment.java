@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,8 +51,13 @@ public class SelectBookFragment extends Fragment {
     public static final int EXAM_TYPE_COMPLETED = 2;
     public static final int EXAM_TYPE_CONTINUE = 3;
 
+    // options for flash card type tests
+    public static final int EXAM_FLASH_TYPE_MEM = 0;
+    public static final int EXAM_FLASH_TYPE_TEST = 1;
+
     public static final String DIALOG_ADD_BOOK = "DIALOG_ADD_BOOK";
     public static final String NOTE_MANAGE_OPTIONS_DIALOG = "NOTE_MANAGE_OPTIONS_DIALOG";
+    public static final String FLASHCARD_OPTIONS_DIALOG = "FLASHCARD_OPTIONS_DIALOG";
 
 
     @Override
@@ -86,8 +92,6 @@ public class SelectBookFragment extends Fragment {
         if (mAdapter == null)
             mAdapter = new NoteAdapter();
         mBookRecyclerView.setAdapter(mAdapter);
-
-        updateUI();
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("학습 시작");
 
@@ -144,6 +148,15 @@ public class SelectBookFragment extends Fragment {
                 } else {
                     Intent intent = ExamPagerActivity.newIntent(getActivity(), EXAM_TYPE_NORMAL, mExamBooks);
                     startActivityForResult(intent, REQUEST_START_TEST); // test request code = 1
+                }
+                return true;
+            case R.id.select_book_menu_flashcard:
+                if (mExamBooks.isEmpty()) {
+                    Toast.makeText(getActivity(), "단어장을 선택하세요.", Toast.LENGTH_SHORT).show();
+                } else {
+                    FlashCardOptionsDialog dialog = FlashCardOptionsDialog.createDialogFragment(
+                            VocaLab.getVoca(getActivity()).getTestWords(mExamBooks));
+                    dialog.show(getActivity().getSupportFragmentManager(), FLASHCARD_OPTIONS_DIALOG);
                 }
                 return true;
             case R.id.selectbook_menu_test_completed_words:
@@ -215,7 +228,11 @@ public class SelectBookFragment extends Fragment {
                         mExamBooks.add(mBook);
 
                     } else {
-                        mExamBooks.remove(mBook);
+                        Book[] dels = mExamBooks.toArray(new Book[mExamBooks.size()]);
+                        for (Book del : dels) {
+                            if (del.getBookId() == mBook.getBookId())
+                                mExamBooks.remove(del);
+                        }
                     }
                 }
             });
